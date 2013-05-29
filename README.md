@@ -63,17 +63,17 @@ the added content by comparison with the original page.
       
       
 An element is:
-      - a button
-      - a link
+  - a button
+  - a link
       
 An element has:
-      - an internal id
-      - an x coordinate
-      - an y coordinate
-      - a width
-      - a height
-      - a screenshot (base64 encoded)
-      - a textual value
-      - a state (broken / not broken)
-      - an href
+  - an internal id
+  - an x coordinate
+  - an y coordinate
+  - a width
+  - a height
+  - a screenshot (base64 encoded)
+  - a textual value
+  - a state (broken / not broken)
+  - an href
       
