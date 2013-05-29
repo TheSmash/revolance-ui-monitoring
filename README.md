@@ -55,7 +55,7 @@ The page content is:
   - a list of elements
       
 A Page variant is:
-  - a hash page of an original page
+  - a url+hash page of an original url page
   - a popup menu dynamically drawn when clicking on a link or button of the original page.
   
 The variant content is linked to another page (called the original). Therefore the variant content is only
