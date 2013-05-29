@@ -1,7 +1,7 @@
-Revolance UI
-============
+
 
 Copyleft
+========
 
 This file is part of Revolance UI Suite.
 
@@ -17,6 +17,10 @@ This file is part of Revolance UI Suite.
 
     You should have received a copy of the GNU General Public License
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+
+Revolance UI
+============
+
 
 This is the repository where the reign of manual QA shorten on the UI testing part.
 QA have their value on automation, explorating testing of assembled components and 
