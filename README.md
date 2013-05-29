@@ -1,4 +1,4 @@
-revolance-ui
+Revolance UI
 ============
 
 This is the repository where the reign of manual QA shorten on the UI testing part.
@@ -29,35 +29,37 @@ Components:
 
 
 A bot (revolance-ui-explorer) explores all the pages of a web app and then produces a JSon report.
-  => At the moment the generated report only contains page, link and buttons parsed.
-  => The retrieved data are a collection of pages.
+  - At the moment the generated report only contains page, link and buttons parsed.
+  - The retrieved data are a collection of pages.
   
 A plugin that aggregate a user defined application and produces a ready to use distribution.
-  => Usefull for an execution of the bot through the command line interface
+  - Usefull for an execution of the bot through the command line interface
       
 A gui (revolance-ui-merger) allow the user to load two reports to compare them. 
-  => Useful to compare regression or content enforcement given some user rights.
+  - Useful to compare regression or content enforcement given some user rights.
 
 Data Model:
 ===========
 
 A Page has:
-      - an internal id
-      - a url
-      - a title
-      - a width 
-      - a height
-      - a screenshot (base64 encoded)
-      - some content (for now the links & buttons)
-      - some variants 
+  - an internal id
+  - a url
+  - a title
+  - a width 
+  - a height
+  - a screenshot (base64 encoded)
+  - some content (for now the links & buttons)
+  - some variants 
 
 The page content is:
-      - a list of elements
+  - a list of elements
       
 A Page variant is:
-      - a hash page of an original page
-      - a popup menu dynamically drawn when clicking on a link or button of the original page.
-  It has some content. Which is only the added content by comparison with the original page.
+  - a hash page of an original page
+  - a popup menu dynamically drawn when clicking on a link or button of the original page.
+  
+The variant content is linked to another page (called the original). Therefore the variant content is only
+the added content by comparison with the original page.
       
       
 An element is:
