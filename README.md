@@ -1,9 +1,8 @@
 
-
 Copyleft
 ========
 
-This file is part of Revolance UI Suite.
+        This file is part of Revolance UI Suite.
 
     Revolance UI Suite is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
