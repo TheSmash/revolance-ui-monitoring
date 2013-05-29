@@ -76,4 +76,5 @@ An element has:
   - a textual value
   - a state (broken / not broken)
   - an href
+  - an impl (Link or Button)
       
