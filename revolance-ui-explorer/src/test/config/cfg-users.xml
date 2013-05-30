@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration>
+
+    <users>
+
+        <user>
+            <id>super user</id>
+            <login>administrator</login>
+            <password>pwd</password>
+            <newPassword>newPwd</newPassword>
+            <isRef>true</isRef>
+        </user>
+
+        <user>
+            <id>user_A</id>
+            <login>user_A</login>
+            <password>pwd</password>
+            <newPassword>newPwd</newPassword>
+        </user>
+
+        <user>
+            <id>user_B</id>
+            <login>user_B</login>
+            <password>pwd</password>
+            <newPassword>newPwd</newPassword>
+        </user>
+
+    </users>
+
+</configuration>

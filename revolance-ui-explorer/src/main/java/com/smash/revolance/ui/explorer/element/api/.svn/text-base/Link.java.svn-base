@@ -1,0 +1,112 @@
+package ets.bour.revolance.element.api;
+
+import ets.bour.revolance.element.IPageElement;
+import ets.bour.revolance.helper.BotHelper;
+import ets.bour.revolance.page.IPage;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * User: ebour
+ * Date: 29/01/13
+ * Time: 19:11
+ */
+public class Link extends PageElement
+{
+    public Link(IPage source, WebElement element)
+    {
+        super( source, element );
+        setHref( element.getAttribute( "href" ) );
+    }
+
+    @Override
+    public boolean equals(IPageElement element)
+    {
+        if ( element == null )
+        {
+            return false;
+        } else
+        {
+            return getText().contentEquals( element.getText() )
+                    && StringUtils.remove( getHref(), getUser().getSiteMap().getDomain() )
+                    .contentEquals( StringUtils.remove( element.getHref(), element.getUser().getSiteMap().getDomain() ) );
+        }
+    }
+
+    public static boolean isLink(WebElement element)
+    {
+        String tag = element.getTagName();
+        return PageElement.isVisible( element ) && tag.contentEquals( "a" );
+    }
+
+    public static boolean containsLink(List<IPageElement> elements, Link link)
+    {
+        for ( IPageElement element : filterLinks( elements ) )
+        {
+            if ( element.getText().contentEquals( link.getText() )
+                    && element.getHref().contentEquals( link.getHref() )
+                    && PageElement.isIncluded(element, link.getLocation()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<IPageElement> filterLinks(List<IPageElement> elements)
+    {
+        List<IPageElement> links = new ArrayList<IPageElement>(  );
+
+        for( IPageElement element : elements )
+        {
+            if( element instanceof Link )
+            {
+                links.add( element );
+            }
+        }
+
+        return links;
+    }
+
+    public static List<IPageElement> getLinks(IPage page) throws Exception
+    {
+        List<IPageElement> links = new ArrayList<IPageElement>();
+
+        for(WebElement element : BotHelper.getRawLinks(page.getUser().getBot(), page))
+        {
+            Link link = new Link( page, element );
+
+            if(link.getArea()>0)
+            {
+                if(!containsLink(links, link))
+                {
+                    links.add( link );
+                }
+            }
+        }
+
+        return links;
+    }
+
+    /**
+     * For testing convenience
+     *
+     * @param elements
+     * @param link
+     * @return
+     */
+    public static boolean containsLink(List<IPageElement> elements, String link)
+    {
+        for ( IPageElement element : filterLinks( elements ) )
+        {
+            if ( element.getText().contentEquals( link ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}

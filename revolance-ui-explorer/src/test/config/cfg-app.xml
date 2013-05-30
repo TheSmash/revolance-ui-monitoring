@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<root>
+    <configuration>
+
+        <instances>
+
+            <instance>
+                <id>website</id>
+                <!--<homeUrl> </homeUrl>-->
+                <!--<domain> </domain>-->
+            </instance>
+
+            <instance>
+                <id>website-2.0</id>
+            </instance>
+
+        </instances>
+
+        <reportFolder></reportFolder>
+        <applicationDir>java</applicationDir>
+
+        <browserWidth>800</browserWidth>
+        <browserHeight>600</browserHeight>
+        <browserBinary>/usr/bin/google-chrome</browserBinary>
+
+        <followLinks>true</followLinks>
+        <followButtons>true</followButtons>
+        <buildSitemap>true</buildSitemap>
+
+        <takePageScreenshot>true</takePageScreenshot>
+        <takePageElementScreenshot>false</takePageElementScreenshot>
+
+        <compareUsersOnInstance>false</compareUsersOnInstance>
+        <compareUsersCrossInstances>true</compareUsersCrossInstances>
+
+        <applicationImpl>com.smash.revolance.ui.explorer.application.secured.SecuredApplication</applicationImpl>
+
+        <usersCfgFile>cfg-users.xml</usersCfgFile>
+
+        <excludeLinks>
+
+            <!-- <excludeLinkText>link</excludeLinkText> -->
+
+        </excludeLinks>
+
+        <excludeButtons>
+
+            <!-- <excludeButtonText>button</excludeButtonText> -->
+
+        </excludeButtons>
+
+        <templateFolder>src/test/resources/templates</templateFolder>
+
+    </configuration>
+</root>

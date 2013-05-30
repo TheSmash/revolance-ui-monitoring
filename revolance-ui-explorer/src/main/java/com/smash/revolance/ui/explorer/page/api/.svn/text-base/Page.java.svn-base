@@ -1,0 +1,1068 @@
+package ets.bour.revolance.page.api;
+
+import ets.bour.revolance.application.Application;
+import ets.bour.revolance.diff.DiffType;
+import ets.bour.revolance.element.IPageElement;
+import ets.bour.revolance.element.api.Button;
+import ets.bour.revolance.element.api.Link;
+import ets.bour.revolance.element.api.PageElement;
+import ets.bour.revolance.helper.BotHelper;
+import ets.bour.revolance.helper.ImageHelper;
+import ets.bour.revolance.helper.UrlHelper;
+import ets.bour.revolance.helper.UserHelper;
+import ets.bour.revolance.page.IPage;
+import ets.bour.revolance.user.SiteMap;
+import ets.bour.revolance.user.User;
+import ets.bour.revolance.user.bot.Bot;
+import org.apache.commons.io.FileUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.json.JSONObject;
+import org.openqa.selenium.WebDriver;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: ebour
+ * Date: 30/11/12
+ * Time: 17:04
+ */
+public class Page implements IPage
+{
+    private String id = "";
+    private String title = "";
+    private String url = "";
+
+    private User user;
+
+    private File    caption;
+    private boolean broken;
+    private boolean browsed;
+
+    private boolean screenshotTaken;
+
+    private boolean authorized = true;
+
+    private List<IPageElement> links;
+    private List<IPageElement> buttons;
+    private List<IPageElement> images;
+    private List<IPageElement> data;
+
+    private List<IPage>        variants;
+    private Page               original;
+
+    private Map<DiffType, List<IPageElement>> variations;
+    private File captionFolder;
+    private File elementsReportFolder;
+
+    private String checksum;
+
+    private BufferedImage image;
+    private IPageElement source;
+
+    public Page(User user, String url)
+    {
+        setId( UUID.randomUUID().toString() );
+        setUser( user );
+        setUrl( url );
+        setOriginal( this );
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public List<IPageElement> getOriginalContent() throws Exception
+    {
+        return getOriginal().getContent();
+    }
+
+    public void setOriginal(Page original)
+    {
+        this.original = original;
+    }
+
+    @Override
+    public IPageElement getSourceElement()
+    {
+        return source;
+    }
+
+    @Override
+    public String getUrl()
+    {
+        return url;
+    }
+
+    @Override
+    public void setUrl(String url)
+    {
+        this.url = UrlHelper.removeHash(url);
+    }
+
+    private void setUser(User user)
+    {
+        this.user = user;
+    }
+
+    @Override
+    public void explore() throws Exception
+    {
+        if ( !hasBeenBrowsed() )
+        {
+            UserHelper.browse( this );
+
+            if ( isOriginal() )
+            {
+                exploreOriginal();
+            }
+            else
+            {
+                exploreVariant();
+            }
+        }
+    }
+
+    private void exploreVariant() throws Exception
+    {
+        if( hasVariations() )
+        {
+            explore( getClickableVariations() );
+        }
+        else
+        {
+            removeVariant(this);
+        }
+    }
+
+    private void explore( List<IPageElement> clickables ) throws Exception
+    {
+        for ( IPageElement clickable : clickables )
+        {
+            if( !getUser().hasExplored( clickable.getHref() )
+                    && !UrlHelper.areEquivalent( getUrl(), clickable.getHref() ))
+            {
+                clickable.click();
+
+                if ( clickable.hasBeenClicked() )
+                {
+                    String currentUrl = getBrowser().getCurrentUrl();
+                    if ( !UrlHelper.areEquivalent( currentUrl, getUrl() ) )
+                    {
+                        getUserSitemap().getPage( null, currentUrl, clickable ).explore( );
+                    }
+                    else
+                    {
+                        String checksum;
+                        String id = UUID.randomUUID().toString();
+                        File img = new File(getCaptionFolder(), id + ".png");
+                        if ( (checksum = BotHelper.pageContentHasChanged(getBot(), this, img)) != null )
+                        {
+                            // Create new page and inject data to speed up the computations
+                            IPage page = getUserSitemap().getPage( checksum, currentUrl, clickable, img );
+                            page.setId( id );
+
+                            // Explore the brand new page
+                            page.explore( );
+                        }
+                        else // If there was no change in the page content
+                        {
+                            img.delete();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean hasVariations() throws Exception
+    {
+        return getAddedVariations().size()>0 || getRemovedVariations().size()>0;
+    }
+
+    private List<IPageElement> getAddedVariations() throws Exception
+    {
+        return getVariations().get(DiffType.ADDED);
+    }
+
+    private List<IPageElement> getRemovedVariations() throws Exception
+    {
+        return getVariations().get(DiffType.DELETED);
+    }
+
+    private List<IPageElement> getBaseVariations() throws Exception
+    {
+        return getVariations().get(DiffType.BASE);
+    }
+
+    @Override
+    public Map<DiffType, List<IPageElement>> getVariations() throws Exception
+    {
+        if ( variations == null)
+        {
+            variations = new HashMap<DiffType, List<IPageElement>>();
+            List<IPageElement> content = getContent();
+
+            List<IPageElement> baseElements    = new ArrayList<IPageElement>();
+            List<IPageElement> addedElements   = new ArrayList<IPageElement>();
+            List<IPageElement> removedElements = new ArrayList<IPageElement>();
+
+            for(IPageElement variantElement : content)
+            {
+                if(getOriginal().contains(variantElement))
+                {
+                    baseElements.add(variantElement);
+                }
+                else
+                {
+                    addedElements.add( variantElement );
+                }
+            }
+
+            for(IPageElement originalElement : getOriginalContent())
+            {
+                if(!this.contains(originalElement))
+                {
+                    removedElements.add(originalElement);
+                }
+            }
+
+            variations.put( DiffType.ADDED, addedElements     );
+            variations.put( DiffType.BASE, baseElements       );
+            variations.put( DiffType.DELETED, removedElements );
+        }
+        return variations;
+    }
+
+    private void removeVariant(Page variant) throws Exception
+    {
+        getVariants().remove(variant);
+        variant.delete( );
+    }
+
+    public void delete() throws Exception
+    {
+        if( getUser().isPageScreenshotEnabled())
+        {
+            File caption = getCaptionFile();
+            if( caption.exists() )
+            {
+                FileUtils.forceDelete( caption );
+            }
+        }
+        if( getUser().isPageElementScreenshotEnabled() )
+        {
+            for(IPageElement element : getContent())
+            {
+                element.delete( );
+            }
+        }
+    }
+
+    public void exploreOriginal() throws Exception
+    {
+        if(!isBroken())
+        {
+
+            System.out.println("Exploring the original version of the page: " + getTitle());
+
+            IPageElement source = handleUserAccountLogic();
+
+            // If the page change during the handling of user account (login / change password)
+            if(!UrlHelper.areEquivalent( getBot().getCurrentUrl(), getUrl() ))
+            {
+                // Then we've got a new page
+                IPage newPage = getSiteMap().getPage( null, getBot().getCurrentUrl(), source );
+                UserHelper.awaitPageLoaded( newPage );
+                newPage.explore( );
+            }
+            else
+            {
+                explore( getClickableContent() );
+            }
+
+        }
+    }
+
+    private IPageElement handleUserAccountLogic() throws Exception
+    {
+        if(getApplication() != null)
+        {
+            if(getApplication().isSecured())
+            {
+                if(!getUser().isLoggedIn())
+                {
+                    return logIn();
+                }
+                else if(!getUser().hasChangedPwd())
+                {
+                    return changePasswd();
+                }
+            }
+            Thread.sleep( 1000 );
+        }
+        return null;
+    }
+
+    private IPageElement changePasswd() throws Exception
+    {
+        String button = getApplication().changePassword(getUser(), this);
+        if(!button.isEmpty())
+        {
+            IPageElement buttonElement = Button.getButtonByValue( getButtons(), button );
+            buttonElement.click();
+
+            System.out.println("User " + getUser().getId() + " has now changed his passwd");
+            BotHelper.sleep( 1 );
+            getUser().setPwdChanged(true);
+            return buttonElement;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private IPageElement logIn() throws Exception
+    {
+        String button = getApplication().login(getUser(), this);
+        if(!button.isEmpty())
+        {
+            IPageElement buttonElement = Button.getButtonByValue( getButtons(), button );
+            buttonElement.click();
+
+            System.out.println("User " + getUser().getId() + " is now logged in");
+            BotHelper.sleep( 1 );
+            getUser().setLoggedIn(true);
+            return buttonElement;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private Page buildVariant(IPageElement source)
+    {
+        Page variant = new Page( getUser(), getUrl() );
+        variant.setOriginal( getOriginal() );
+        variant.setSource( source );
+        return variant;
+    }
+
+    @Override
+    public boolean hasBeenBrowsed()
+    {
+        return browsed;
+    }
+
+    public File takeScreenShot() throws Exception
+    {
+        if(!screenshotTaken)
+        {
+            if(getTitle().isEmpty())
+            {
+                setTitle( getBot().getCurrentTitle() );
+            }
+            File caption = getCaptionFile();
+
+            System.out.print("\rTaking page snapshot: " + caption);
+            takeScreenShot(caption);
+            System.out.println("\rTaking page snapshot: " + caption + " [Done]");
+        }
+        return caption;
+    }
+
+    public void takeScreenShot(File file) throws Exception
+    {
+        if(!screenshotTaken && getUser().isPageScreenshotEnabled())
+        {
+            BotHelper.takeScreenshot(getUser().getBot(), file);
+            screenshotTaken = true;
+        }
+    }
+
+    @Override
+    public List<IPageElement> getLinks() throws Exception
+    {
+        if( links == null)
+        {
+            links = new ArrayList<IPageElement>();
+
+            if(rightDomain() && !isBroken())
+            {
+                links.addAll( Link.getLinks(this) );
+                System.out.println("Found " + links.size() + " links");
+
+                takeScreenshots( links );
+            }
+
+        }
+        return links;
+    }
+
+    public boolean rightDomain()
+    {
+        return BotHelper.rightDomain( this );
+    }
+
+    @Override
+    public String getTitle()
+    {
+        if(!isOriginal())
+        {
+            title = getOriginal().getTitle() + "_VARIANT_" + getId();
+        }
+        return title;
+    }
+
+    @Override
+    public boolean isBroken()
+    {
+        return broken;
+    }
+
+    @Override
+    public boolean hasBrokenLinks() throws Exception
+    {
+        return !getBrokenLinks().isEmpty();
+    }
+
+    @Override
+    public List<IPageElement> getBrokenLinks() throws Exception
+    {
+        List<IPageElement> brokenLinks = new ArrayList<IPageElement>();
+
+        for ( IPageElement link : getLinks() )
+        {
+            if ( ( (Link) link ).isBroken() )
+            {
+                brokenLinks.add( link );
+            }
+        }
+        return brokenLinks;
+    }
+
+    @Override
+    public File getCaptionFile() throws Exception
+    {
+        if ( caption == null )
+        {
+            caption = new File( getCaptionFolder(), getTitle() + ".png" );
+        }
+        return caption;
+    }
+
+    @Override
+    public boolean isHomePage()
+    {
+        return this == user.getSiteMap().getHome();
+    }
+
+    public boolean isBoundary()
+    {
+        return !BotHelper.rightDomain( this );
+    }
+
+    @Override
+    public void setBroken(boolean b)
+    {
+        broken = b;
+    }
+
+    @Override
+    public void setTitle(String title)
+    {
+        this.title = title.replaceAll(" ", "_").replaceAll("\\|", "_");
+    }
+
+    @Override
+    public void setCaptionFile(File img)
+    {
+        this.caption = img;
+        this.image = null; // Force the image to be reloaded
+    }
+
+    @Override
+    public void setBrowsed(boolean b)
+    {
+        browsed = b;
+    }
+
+    @Override
+    public User getUser()
+    {
+        return user;
+    }
+
+    @Override
+    public SiteMap getUserSitemap()
+    {
+        return getUser().getSiteMap();
+    }
+
+    public WebDriver getBrowser() throws Exception
+    {
+        return user.getBrowser();
+    }
+
+    @Override
+    public List<IPageElement> getContent() throws Exception
+    {
+        List<IPageElement> content = new ArrayList<IPageElement>();
+        if ( rightDomain() && !isBroken() )
+        {
+            content.addAll( getReadableContent() );
+            content.addAll( getClickableContent() );
+
+            Collections.sort( content );
+            System.out.println( "Parsing page content [Done]" );
+        }
+        return content;
+    }
+
+    private void takeScreenshots(List<IPageElement> content) throws Exception
+    {
+        if ( getUser().isPageElementScreenshotEnabled() )
+        {
+            int contentIdx = 0;
+            for ( IPageElement pageElement : content )
+            {
+                contentIdx ++;
+                System.out.print(String.format("\rTaking element screenshot ( %d / %d )", contentIdx, content.size()));
+                pageElement.takeScreenShot();
+            }
+            System.out.println(String.format("\rTaking elements screenshot ( %d ) [Done]", contentIdx));
+            image = null;
+        }
+    }
+
+    @Override
+    public List<IPageElement> getClickableContent() throws Exception
+    {
+        List<IPageElement> clickableElements = new ArrayList<IPageElement>();
+
+        if(getUser().isFollowLinksEnabled())
+        {
+            clickableElements.addAll( getLinks() );
+        }
+
+        if(getUser().isFollowButtonsEnabled())
+        {
+            clickableElements.addAll( getButtons() );
+        }
+
+        Collections.sort(clickableElements);
+        return clickableElements;
+    }
+
+    private void filterElementsIncludedInEachOthers(List<IPageElement> elements)
+    {
+        if(elements.size()>2)
+        {
+            List<IPageElement> filteredElements = new ArrayList<IPageElement>();
+            IPageElement bigElement;
+            while((bigElement = getBiggestArea(elements)) != null)
+            {
+                elements.remove(bigElement);
+                List<IPageElement> included = new ArrayList<IPageElement>();
+                for(IPageElement anElement : elements)
+                {
+                    if(anElement.isIncluded(bigElement))
+                    {
+                        included.add(anElement);
+                    }
+                }
+
+                elements.removeAll( included );
+                filteredElements.add( bigElement );
+            }
+
+            elements.clear();
+            elements.addAll(filteredElements);
+        }
+    }
+
+    private IPageElement getBiggestArea(List<IPageElement> elements)
+    {
+        if(elements == null)
+        {
+            return null;
+        }
+        if(elements.isEmpty())
+        {
+            return null;
+        }
+        int maxArea = 0;
+        IPageElement pageElement = null;
+        for(IPageElement element : elements)
+        {
+            if(element.getArea()>maxArea)
+            {
+                pageElement = element;
+                maxArea = element.getArea();
+            }
+        }
+        return pageElement;
+    }
+
+    @Override
+    public boolean contains(IPageElement element) throws Exception
+    {
+        for ( IPageElement refElement : getContent() )
+        {
+            if ( refElement.equals( element ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Map<DiffType, List<IPageElement>> getDiff(List<IPageElement> elements) throws Exception
+    {
+        HashMap<DiffType, List<IPageElement>> differencies = new HashMap<DiffType, List<IPageElement>>();
+
+        differencies.put(DiffType.DELETED, getRemovedElements( elements ));
+        differencies.put(DiffType.BASE, getBaseElements( elements ));
+        differencies.put(DiffType.ADDED, getAddedElements( elements ));
+
+        return differencies;
+    }
+
+    @Override
+    public Map<DiffType, List<IPageElement>> getDiff(IPage page) throws Exception
+    {
+        if(page == null)
+        {
+            return new HashMap<DiffType, List<IPageElement>> ();
+        }
+        else
+        {
+            return getDiff( page.getContent() );
+        }
+    }
+
+    @Override
+    public Application getApplication() throws Exception
+    {
+        return getUser().getApplication();
+    }
+
+    @Override
+    public List<IPageElement> getRemovedElements(List<IPageElement> elements) throws Exception
+    {
+        List<IPageElement> removedElements = new ArrayList<IPageElement>();
+        for(IPageElement refElement : elements)
+        {
+            if(!this.contains(refElement))
+            {
+                removedElements.add(refElement);
+            }
+        }
+
+        markElements( removedElements, DiffType.DELETED);
+        filterElementsIncludedInEachOthers(removedElements);
+
+        Collections.sort(removedElements);
+        return removedElements;
+    }
+
+    public static void markElements(List<IPageElement> elements, DiffType type)
+    {
+        for ( IPageElement element : elements )
+        {
+            element.setDiffType( type );
+        }
+    }
+
+    @Override
+    public List<IPageElement> getAddedElements(List<IPageElement> elements) throws Exception
+    {
+        List<IPageElement> addedElements = new ArrayList<IPageElement>();
+        for(IPageElement element : getContent())
+        {
+            boolean added = true;
+            for(IPageElement elem : elements)
+            {
+                if(elem.equals( element ))
+                {
+                    added = false;
+                    break;
+                }
+            }
+            if(added)
+            {
+                addedElements.add(element);
+            }
+        }
+
+        markElements( addedElements, DiffType.ADDED );
+        filterElementsIncludedInEachOthers(addedElements);
+
+        Collections.sort(addedElements);
+        return addedElements;
+    }
+
+    public List<IPageElement> getBaseElements(List<IPageElement> elements) throws Exception
+    {
+        List<IPageElement> baseElements = new ArrayList<IPageElement>();
+
+        baseElements.addAll( elements );
+        baseElements.removeAll( getRemovedElements(elements) );
+
+        markElements( baseElements, DiffType.BASE );
+        filterElementsIncludedInEachOthers(baseElements);
+
+        Collections.sort(baseElements);
+        return baseElements;
+    }
+
+    public File getCaptionFolder()
+    {
+        if(isOriginal())
+        {
+            return _getCaptionFolder();
+        }
+        else
+        {
+            return getOriginal().getCaptionFolder();
+        }
+    }
+
+    private File _getCaptionFolder()
+    {
+        if (captionFolder == null)
+        {
+            captionFolder = new File(getUser().getCaptionFolder(), getOriginal().getTitle());
+            if( !captionFolder.exists() )
+            {
+                captionFolder.mkdirs();
+            }
+        }
+        return captionFolder;
+    }
+
+    @Override
+    public String getCaptionPath() throws Exception
+    {
+        return getCaptionFile().getAbsolutePath();
+    }
+
+    public void save() throws Exception
+    {
+        File file = new File(getElementsReportFolder(), "elements.json");
+        JSONObject json = new JSONObject();
+
+        json.put( "title", getTitle() );
+        json.put( "url", getUrl() );
+        json.put( "caption", getCaptionFilePath() );
+
+        JSONArray buttons = new JSONArray(  );
+        for(IPageElement element : getButtons())
+        {
+            buttons.put( element.toJSon() );
+        }
+        json.put( "buttons", buttons );
+        json.write( new FileWriter( file ) );
+    }
+
+    @Override
+    public BufferedImage getImage() throws Exception
+    {
+        if(image == null)
+        {
+            image = ImageIO.read(getCaptionFile());
+        }
+        return image;
+    }
+
+    public File getElementsReportFolder() throws Exception
+    {
+        if(isOriginal())
+        {
+            return _getElementReportFolder();
+        }
+        return getOriginal().getElementsReportFolder();
+    }
+
+    private File _getElementReportFolder() throws IOException
+    {
+        if(elementsReportFolder == null)
+        {
+            elementsReportFolder = new File(getUser().getElementsFolder(), getTitle());
+            if( !elementsReportFolder.exists() )
+            {
+                elementsReportFolder.mkdirs();
+            }
+        }
+        return elementsReportFolder;
+    }
+
+    @Override
+    public List<IPageElement> getButtons() throws Exception
+    {
+        if( buttons == null )
+        {
+            buttons = new ArrayList<IPageElement>();
+
+            if(rightDomain() && !isBroken() )
+            {
+                buttons.addAll( Button.getButtons(this) );
+                System.out.println("Found " + buttons.size() + " buttons");
+
+                takeScreenshots( buttons );
+            }
+
+        }
+        return buttons;
+    }
+
+    public List<IPageElement> getBaseElements(Page page) throws Exception
+    {
+        return getBaseElements( page.getContent() );
+    }
+
+    public List<IPageElement> getRemovedElements(Page page) throws Exception
+    {
+        return getRemovedElements( page.getContent() );
+    }
+
+    public List<IPageElement> getAddedElements(Page page) throws Exception
+    {
+        return getAddedElements( page.getContent() );
+    }
+
+    public Map<DiffType, List<IPageElement>> getDiff(Page page) throws Exception
+    {
+        return getDiff( page.getContent() );
+    }
+
+    public List<IPage> getVariants()
+    {
+        if ( isOriginal() )
+        {
+            return _getVariants();
+        }
+        else
+        {
+            return getOriginal().getVariants();
+        }
+    }
+
+    private List<IPage> _getVariants()
+    {
+        if ( variants == null )
+        {
+            variants = new ArrayList<IPage>();
+        }
+        return variants;
+    }
+
+    /*
+    @Override
+    public boolean isRefPage() throws Exception
+    {
+        return getRefPage() == this;
+    }
+    */
+
+    @Override
+    public boolean isOriginal()
+    {
+        return this == original;
+    }
+
+    public IPage getVariant(IPageElement source) throws Exception
+    {
+        return getVariant( source, true );
+    }
+
+    public IPage getVariant(IPageElement source, boolean generate) throws Exception
+    {
+        if(source != null)
+        {
+            for(IPage variant : getVariants())
+            {
+                if(variant.getSourceElement().equals( source ))
+                {
+                    return variant;
+                }
+            }
+        }
+        if(generate)
+        {
+            Page variant = buildVariant(source);
+            addVariant(variant);
+            return variant;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public String getChecksum() throws Exception
+    {
+        if(checksum == null)
+        {
+            takeScreenShot();
+            checksum = ImageHelper.getImageChecksum( getCaptionFile() );
+        }
+        return checksum;
+    }
+
+    @Override
+    public void setChecksum(String checksum)
+    {
+        this.checksum = checksum;
+    }
+
+    @Override
+    public Page getOriginal()
+    {
+        return original;
+    }
+
+    @Override
+    public SiteMap getSiteMap()
+    {
+        return getUser().getSiteMap();
+    }
+
+    public Bot getBot() throws Exception
+    {
+        return getUser().getBot();
+    }
+
+    public void setAuthorized(boolean authorized)
+    {
+        this.authorized = authorized;
+    }
+
+    public boolean isAuthorized()
+    {
+        return authorized;
+    }
+
+    private void addVariant(Page page)
+    {
+        if(isOriginal())
+        {
+            _getVariants().add( page );
+        }
+        else
+        {
+            getOriginal().addVariant(page);
+        }
+    }
+
+    private List<IPageElement> getClickableVariations() throws Exception
+    {
+        List<IPageElement> elements = new ArrayList<IPageElement>();
+
+        elements.addAll( PageElement.filterClickableElements( getAddedVariations() ) );
+
+        return elements;
+    }
+
+    public String toString()
+    {
+        return String.format( "%s [%s]%n", getTitle(), getUrl() );
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public static IPage createPage(User user, String url, String title) throws Exception
+    {
+        IPage page = new Page(user, url);
+        page.setTitle( title );
+        return page;
+    }
+
+    public static IPage createPage(User user, String url, String title, String checksum, File caption) throws Exception
+    {
+        IPage page = new Page(user, url);
+        page.setTitle( title );
+        page.setCaptionFile( caption );
+        page.setChecksum( checksum );
+        user.getSiteMap().registerPage( page );
+        return page;
+    }
+
+    public String getCaptionFilePath() throws Exception
+    {
+        return getCaptionFile().getAbsolutePath();
+    }
+
+    public List<IPageElement> getReadableContent()
+    {
+        List<IPageElement> readableElements = new ArrayList<IPageElement>();
+
+        readableElements.addAll( getData() );
+        readableElements.addAll( getImages() );
+
+        Collections.sort( readableElements );
+        return readableElements;
+    }
+
+    public List<IPageElement> getImages()
+    {
+        if(images == null)
+        {
+            images = new ArrayList<IPageElement>(  );
+        }
+        return images;
+    }
+
+    public List<IPageElement> getData()
+    {
+        if(data == null)
+        {
+            data = new ArrayList<IPageElement>(  );
+        }
+        return data;
+    }
+
+    public JSONObject getJSon() throws Exception
+    {
+        JSONObject pageJson = new JSONObject(  );
+
+        pageJson.put( "url", getUrl() );
+        pageJson.put( "title", getTitle() );
+        pageJson.put( "user", getUser().getId() );
+        pageJson.put( "caption", getCaptionPath() );
+        pageJson.put( "isOriginal", isOriginal() );
+        pageJson.put( "buttonCount", getButtons().size() );
+        pageJson.put( "linkCount", getLinks().size() );
+
+        return pageJson;
+    }
+
+    public String toJSon() throws Exception
+    {
+        return getJSon().toString(4);
+    }
+
+    public void setSource(IPageElement source)
+    {
+        this.source = source;
+    }
+
+    public IPageElement getSource()
+    {
+        return source;
+    }
+}

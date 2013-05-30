@@ -1,0 +1,119 @@
+package ets.bour.revolance.element.api;
+
+import ets.bour.revolance.element.IPageElement;
+import ets.bour.revolance.helper.BotHelper;
+import ets.bour.revolance.page.IPage;
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * User: ebour
+ * Date: 28/01/13
+ * Time: 20:33
+ */
+public class Button extends PageElement
+{
+    public Button(IPage page, WebElement element)
+    {
+        super( page, element );
+        setType( element.getAttribute( "type" ) );
+        setValue( element.getAttribute( "value" ) );
+    }
+
+    @Override
+    public boolean equals(IPageElement element)
+    {
+        return getValue().contentEquals( element.getText() );
+    }
+
+    public static boolean isButton(WebElement element)
+    {
+        String tag = element.getTagName();
+        String type = element.getAttribute( "type" );
+        return PageElement.isVisible( element )
+                && tag.contentEquals( "input" )
+                && ( type.contentEquals( "button" ) || type.contentEquals( "submit" ) );
+    }
+
+    public static boolean containsButton(List<IPageElement> elements, IPageElement element) throws Exception
+    {
+        for ( IPageElement button : filterButtons( elements ) )
+        {
+            if ( button.getText().contentEquals( element.getText() )
+                    && PageElement.isIncluded(button, element.getLocation()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<IPageElement> filterButtons(List<IPageElement> elements)
+    {
+        List<IPageElement> buttons = new ArrayList<IPageElement>(  );
+
+        for( IPageElement element : elements )
+        {
+            if( element instanceof Button )
+            {
+                buttons.add( element );
+            }
+        }
+
+        return buttons;
+    }
+
+    public static List<IPageElement> getButtons(IPage page) throws Exception
+    {
+        List<IPageElement> buttons = new ArrayList<IPageElement>();
+
+        for(WebElement element : BotHelper.getRawButtons(page.getUser().getBot(), page))
+        {
+            Button button = new Button( page, element );
+            if(button.getArea()>0)
+            {
+                if(!Button.containsButton( buttons, button ))
+                {
+                    buttons.add( button );
+                }
+            }
+        }
+
+        return buttons;
+    }
+
+    public static IPageElement getButtonByValue(List<IPageElement> elements, String value) throws Exception
+    {
+        for(IPageElement element : filterButtons( elements ))
+        {
+            if(element.getValue().contentEquals( value ))
+            {
+                return element;
+            }
+        }
+        throw new Exception("Unable to find button: " + value);
+    }
+
+    /**
+     * For testing purposes
+     *
+     * @param elements
+     * @param action
+     * @return
+     * @throws Exception
+     */
+    public static boolean containsButton(List<IPageElement> elements, String action) throws Exception
+    {
+        for ( IPageElement button : filterButtons( elements ) )
+        {
+            if ( button.getText().contentEquals( action ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
