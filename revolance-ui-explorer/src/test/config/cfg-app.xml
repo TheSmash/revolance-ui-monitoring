@@ -12,6 +12,8 @@
 
             <instance>
                 <id>website-2.0</id>
+                <!--<homeUrl> </homeUrl>-->
+                <!--<domain> </domain>-->
             </instance>
 
         </instances>
@@ -25,13 +27,9 @@
 
         <followLinks>true</followLinks>
         <followButtons>true</followButtons>
-        <buildSitemap>true</buildSitemap>
 
         <takePageScreenshot>true</takePageScreenshot>
         <takePageElementScreenshot>false</takePageElementScreenshot>
-
-        <compareUsersOnInstance>false</compareUsersOnInstance>
-        <compareUsersCrossInstances>true</compareUsersCrossInstances>
 
         <applicationImpl>com.smash.revolance.ui.explorer.application.secured.SecuredApplication</applicationImpl>
 
@@ -48,8 +46,6 @@
             <!-- <excludeButtonText>button</excludeButtonText> -->
 
         </excludeButtons>
-
-        <templateFolder>src/test/resources/templates</templateFolder>
 
     </configuration>
 </root>

@@ -51,7 +51,7 @@ public class SecuredApplication extends Application
     @Override
     public boolean isPageBroken(IPage page)
     {
-        return false;
+        return page.getUrl().endsWith( "broken.html" );
     }
 
     @Override

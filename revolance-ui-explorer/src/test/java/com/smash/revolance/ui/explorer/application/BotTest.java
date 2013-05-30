@@ -165,7 +165,7 @@ public class BotTest
         // help page check
         IPage helpPage = sitemap.findPageByUrl( help ).getInstance();
         links = helpPage.getLinks();
-        assertThat( links.size(), is( 1 ) );
+        assertThat( links.size(), is( 2 ) );
         assertThat( Link.containsLink( links, "Broken" ), is( true ) );
         assertThat( Link.containsLink( links, "Google" ), is( true ) );
     }

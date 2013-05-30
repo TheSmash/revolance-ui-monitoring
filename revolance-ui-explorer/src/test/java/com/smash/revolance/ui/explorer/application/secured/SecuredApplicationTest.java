@@ -23,6 +23,7 @@ import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.BrowserFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import static org.hamcrest.core.Is.is;
  * Date: 26/01/13
  * Time: 17:50
  */
+@Ignore
 public class SecuredApplicationTest
 {
     private static String      target, templates;
