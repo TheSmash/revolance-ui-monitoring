@@ -18,6 +18,7 @@ package com.smash.revolance.ui.explorer.application;
 */
 
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.user.Tester;
 import com.smash.revolance.ui.explorer.user.User;
 import org.openqa.selenium.Alert;
 
@@ -32,62 +33,29 @@ import java.util.List;
  */
 public abstract class Application
 {
-    private File userCfg;
-
     private List<User> users = new ArrayList<User>();
 
-    private User             refUser;
-    private ApplicationSetup setup;
+    private ApplicationConfiguration bean = new ApplicationConfiguration();
 
-    private String id;
-    private boolean ref = false;
-    private String url;
-
-    private File               regressionReport;
-    private ApplicationManager manager;
-    private String             domain;
-    private String             impl;
-    private boolean            exploreVariants;
-
-    protected Application(ApplicationManager manager)
+    public Application()
     {
-        users = new ArrayList<User>();
-        this.manager = manager;
+
     }
 
-    public Application(ApplicationManager manager, File userCfg) throws Exception
+    public Application(Application application)
     {
-        this( manager );
-        this.userCfg = userCfg;
-    }
-
-    public Application(ApplicationManager manager, String userCfg) throws Exception
-    {
-        this( manager, new File( userCfg ) );
-    }
-
-    public Application(Application application, String version)
-    {
-        this.setup = application.setup;
-        this.manager = application.manager;
-        this.regressionReport = new File( application.regressionReport.getAbsolutePath() );
-        this.url = application.url;
-        this.ref = application.ref;
-        this.refUser = application.refUser;
+        this.bean = application.bean;
         this.users = new ArrayList<User>( application.users );
-        this.userCfg = new File(application.userCfg.getAbsolutePath());
-        this.domain = application.domain;
-        this.id = version;
     }
 
     public String getId()
     {
-        return id;
+        return bean.getId();
     }
 
-    public void setup(ApplicationSetup cfg)
+    public void setup(ApplicationConfiguration cfg)
     {
-        this.setup = new ApplicationSetup(cfg);
+        this.bean = new ApplicationConfiguration( cfg );
     }
 
     public List<User> getUsers()
@@ -97,73 +65,20 @@ public abstract class Application
 
     public void addUser(User user) throws Exception
     {
-        user.setApplication( this );
-
-        user.setDomain( getDomain() );
-        user.setHome( getHomeUrl() );
-
-        user.enableFollowLinks(isFollowLinksEnabled());
-        if (isFollowLinksEnabled())
+        if ( !users.contains( user ) )
         {
-            user.setExcludedLinks(getExcludedLinks());
+            user.setApplication( this );
+            users.add( user );
         }
+    }
 
-        user.enableFollowButtons(isFollowButtonsEnabled());
-        if (isFollowButtonsEnabled())
+    public void reloadUsers() throws Exception
+    {
+        for ( User user : getUsers() )
         {
-            user.setExcludedButtons(getExcludedButtons());
+            addUser( user );
         }
-
-        user.enablePageScreenshot(isTakePageScreenshotEnabled());
-        user.enablePageElementScreenshot(isTakePageElementScreenshotEnabled());
-
-        user.setBaseReportFolder(new File(getReportFolder()));
-
-        user.setBrowserHeight(getBrowserHeight());
-        user.setBrowserWidth( getBrowserWidth() );
-        user.setBrowserBinary(getBrowserBinary());
-
-        user.setExploreVariants( getExploreVariants() );
-
-        users.add(user);
     }
-
-    public User getRefUser()
-    {
-        return refUser;
-    }
-
-    public void setRefUser(User refUser)
-    {
-        this.refUser = refUser;
-    }
-
-    /*
-    {
-
-        //TODO: Check if the user has already logged in or not and raise error accordingly
-
-        user.getBrowser().findElement(By.id("username")).sendKeys(user.getLogin());
-        user.getBrowser().findElement(By.id("password")).sendKeys(user.getPasswd());
-        user.getBrowser().findElement(By.id("login-form")).submit();
-        user.setLoggedIn(true);
-
-
-    }
-    */
-
-    /*
-{
-    //TODO: Check if the user has already change the pwd or not and raise error accordingly
-
-    //TODO: add new password field in the user object
-
-    user.getBrowser().findElement(By.id("passwordNew")).sendKeys(user.getPasswd());
-    user.getBrowser().findElement(By.id("passwordConfirm")).sendKeys(user.getPasswd());
-    user.getBrowser().findElement(By.id("change-password-form")).submit();
-
-}
-*/
 
     public int getUserCount() throws Exception
     {
@@ -172,7 +87,7 @@ public abstract class Application
 
     public String getReportFolder()
     {
-        return setup.getReportFolder();
+        return bean.getReportFolder();
     }
 
     public User getUser(String id) throws Exception
@@ -187,95 +102,56 @@ public abstract class Application
         throw new Exception("User with id: " + id + " cannot be found in the application.");
     }
 
-    public boolean isTakePageScreenshotEnabled()
-    {
-        return setup.isTakePageScreenshotEnabled();
-    }
-
-    public boolean isTakePageElementScreenshotEnabled()
-    {
-        return setup.isTakePageElementScreenshotEnabled();
-    }
-
-    public boolean isFollowLinksEnabled()
-    {
-        return setup.isFollowLinksEnabled();
-    }
-
-    public List<String> getExcludedLinks()
-    {
-        return setup.getExcludedLinks();
-    }
-
-    public List<String> getExcludedButtons()
-    {
-        return setup.getExcludedButtons();
-    }
-
-
-    public boolean isFollowButtonsEnabled()
-    {
-        return setup.isFollowButtonsEnabled();
-    }
-
-    public boolean isRef()
-    {
-        return ref;
-    }
-
-    public void setRef(boolean ref)
-    {
-        this.ref = ref;
-    }
-
-    public void setHomeUrl(String url) throws Exception
-    {
-        this.url = url;
-        for(User user : getUsers())
-        {
-            user.setHome( url );
-        }
-    }
-
     public void setId(String id)
     {
-        this.id = id;
+        this.bean.setId( id );
     }
 
-    public String getHomeUrl()
+    public void setReportFolder(String reportFolder) throws Exception
     {
-        return url;
-    }
-
-    public void setReportFolder(String reportFolder)
-    {
-        setup.setReportFolder(reportFolder + "/" + id);
-    }
-
-    public void addUsers(List<User> users) throws Exception
-    {
-        for(User user : users)
+        bean.setReportFolder( reportFolder + "/" + getId() );
+        for(User user : getUsers())
         {
-            if (user.isRef())
-            {
-                setRefUser(user);
-            }
-            addUser(user);
+            user.setBaseReportFolder( bean.getReportFolder() );
         }
     }
 
-    public void setDomain(String domain)
+    public void setDomain(String domain) throws Exception
     {
-        this.domain = domain;
+        bean.setDomain( domain );
         for(User user : getUsers())
         {
-            user.setDomain(domain);
+            user.setDomain( domain );
+        }
+    }
+
+    public void setUsersHome(String home)
+    {
+        for(User user : getUsers())
+        {
+            user.setHome( home );
+        }
+    }
+
+    public void setExcludedLink(String link)
+    {
+        for(User user : getUsers())
+        {
+            user.addExcludedLink( link );
+        }
+    }
+
+    public void setExcludedButton(String button)
+    {
+        for(User user : getUsers())
+        {
+            user.addExcludedButtons( button );
         }
     }
 
     public String getDomain()
     {
-        return domain;
+        return bean.getDomain();
     }
 
     public void explore() throws Exception
@@ -296,7 +172,7 @@ public abstract class Application
 
         while ( !remainingUsers.isEmpty() )
         {
-            await( 90 );
+            await( 15 );
             List<User> usersToRemove = new ArrayList<User>(  );
             for(User user : users)
             {
@@ -328,65 +204,54 @@ public abstract class Application
         }
     }
 
+    public abstract void handleAlert(Alert alert);
 
-    public ApplicationManager getApplicationManager()
-    {
-        return manager;
-    }
+    public abstract boolean enterNewPassword(User user, IPage page) throws Exception;
+    public abstract boolean enterLogin(User user, IPage page) throws Exception;
 
-    public int getBrowserWidth()
+    public abstract boolean isPageBroken(IPage page);
+    public abstract boolean isAuthorized(IPage page);
+    public abstract boolean isSecured();
+
+    public abstract void awaitPageLoaded(IPage page) throws Exception;
+
+    public File getUsersCfgFile()
     {
-        return setup.getBrowserWidth();
+        return bean.getUsersCfgFile();
     }
 
     public int getBrowserHeight()
     {
-        return setup.getBrowserHeight();
+        return bean.getBrowserHeight();
     }
 
-    public abstract void enterNewPassword(User user, IPage page) throws Exception;
-    public abstract void enterLogin(User user, IPage page) throws Exception;
-
-    public abstract boolean isPageBroken(IPage page);
-    public abstract boolean isUnauthorized(IPage page);
-
-    public abstract boolean awaitPageLoaded(IPage page) throws Exception;
-
-    public abstract boolean isSecured();
-
-
-    public void doSitemapReport() throws Exception
+    public int getBrowserWidth()
     {
-        for(User user : getUsers())
-        {
-            user.doSitemapReport();
-        }
+        return bean.getBrowserWidth();
     }
 
-    public String getBrowserBinary()
+    public boolean isExploreVariantsEnabled()
     {
-        return setup.getBrowserBinary();
+        return bean.isExploreVariantsEnabled();
     }
 
-    public void setImpl(String impl)
+    public boolean isPageElementScreenshotEnabled()
     {
-        this.impl = impl;
+        return bean.isPageElementScreenshotEnabled();
     }
 
-    public String getImpl()
+    public boolean isPageScreenshotEnabled()
     {
-        return impl;
+        return bean.isPageScreenshotEnabled();
     }
 
-    public abstract void handleAlert(Alert alert);
-
-    public boolean getExploreVariants()
+    public boolean isFollowLinksEnabled()
     {
-        return exploreVariants;
+        return bean.isFollowLinksEnabled();
     }
 
-    public void setExploreVariants(boolean b)
+    public boolean isFollowButtonsEnabled()
     {
-        this.exploreVariants = b;
+        return bean.isFollowButtonsEnabled();
     }
 }

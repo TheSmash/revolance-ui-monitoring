@@ -54,7 +54,7 @@ public class UrlHelper
 
     public static boolean containsHash(String url)
     {
-        return url.contains( "#" );
+        return url.contains( "#" ) && url.split( "#" ).length>1;
     }
 
     private static String _removeHash(String url)

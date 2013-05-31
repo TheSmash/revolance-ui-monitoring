@@ -17,9 +17,9 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.helper.BotHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
@@ -34,9 +34,10 @@ import java.util.List;
  */
 public class Button extends Element
 {
-    public Button(IPage page, WebElement element)
+    public Button(Page page, WebElement element)
     {
         super( page, element );
+        setImplementation( "Button" );
         setType( element.getAttribute( "type" ) );
         setValue( element.getAttribute( "value" ) );
     }
@@ -55,11 +56,11 @@ public class Button extends Element
                 && ( type.contentEquals( "button" ) || type.contentEquals( "submit" ) );
     }
 
-    public static boolean containsButton(List<IElement> elements, IElement element) throws Exception
+    public static boolean containsButton(List<Element> elements, Button element) throws Exception
     {
-        for ( IElement button : filterButtons( elements ) )
+        for ( Element button : filterButtons( elements ) )
         {
-            if ( button.getValue().contentEquals( element.getValue() ) )
+            if ( button.getContent().contentEquals( element.getContent() ) )
             {
                 return true;
             }
@@ -67,11 +68,11 @@ public class Button extends Element
         return false;
     }
 
-    public static List<IElement> filterButtons(List<IElement> elements)
+    public static List<Element> filterButtons(List<Element> elements)
     {
-        List<IElement> buttons = new ArrayList<IElement>(  );
+        List<Element> buttons = new ArrayList<Element>(  );
 
-        for( IElement element : elements )
+        for( Element element : elements )
         {
             if( element instanceof Button )
             {
@@ -82,9 +83,9 @@ public class Button extends Element
         return buttons;
     }
 
-    public static List<IElement> getButtons(IPage page) throws Exception
+    public static List<Element> getButtons(Page page) throws Exception
     {
-        List<IElement> buttons = new ArrayList<IElement>();
+        List<Element> buttons = new ArrayList<Element>();
 
         for(WebElement element : BotHelper.getRawButtons(page.getUser().getBot(), page))
         {
@@ -94,7 +95,8 @@ public class Button extends Element
                 {
                     Button button = new Button( page, element );
                     String type = button.getType();
-                    if(button.getArea()>0 && type.contentEquals( "submit" ) || type.contentEquals( "button" ) )
+                    if(button.getArea()>0
+                            && (type.contentEquals( "submit" ) || type.contentEquals( "button" )) )
                     {
                         if(!Button.containsButton( buttons, button ))
                         {
@@ -112,35 +114,17 @@ public class Button extends Element
         return buttons;
     }
 
-    public static IElement getButtonByValue(List<IElement> elements, String value) throws Exception
+    public static boolean containsButton(List<Element> elements, String value) throws Exception
     {
-        for(IElement element : filterButtons( elements ))
+        for(Element element : filterButtons( elements ))
         {
-            if(element.getValue().contentEquals( value ))
-            {
-                return element;
-            }
-        }
-        throw new Exception("Unable to find button: " + value);
-    }
-
-    /**
-     * For testing purposes
-     *
-     * @param elements
-     * @param action
-     * @return
-     * @throws Exception
-     */
-    public static boolean containsButton(List<IElement> elements, String action) throws Exception
-    {
-        for ( IElement button : filterButtons( elements ) )
-        {
-            if ( button.getValue().contentEquals( action ) )
+            if(element.getContent().contentEquals( value ))
             {
                 return true;
             }
         }
         return false;
     }
+
+
 }

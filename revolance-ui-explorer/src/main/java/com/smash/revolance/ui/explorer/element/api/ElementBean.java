@@ -20,9 +20,7 @@ package com.smash.revolance.ui.explorer.element.api;
 import com.smash.revolance.ui.explorer.helper.JsonHelper;
 import com.smash.revolance.ui.explorer.diff.DiffCondition;
 import com.smash.revolance.ui.explorer.diff.ElementDiffType;
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openqa.selenium.Dimension;
@@ -43,47 +41,58 @@ import java.util.List;
                 isGetterVisibility= JsonAutoDetect.Visibility.NONE)
 public class ElementBean implements Comparable<ElementBean>
 {
+    // Area of the element
     private int x, y, w, h;
 
-    private String tag   = "";
-    private String id    = "";
-    private String clz   = "";
-    private String txt   = "";
-    private String type  = "";
-    private String href  = "";
-    private String value = "";
-
-    private String impl    = "";
+    // UI look of the element
     private String caption = "";
 
-    private boolean clicked = false;
-    private boolean broken  = false;
+    // HTML description of the element
+    private String tag            = "";
+    private String id             = "";
+    private String clz            = "";
+    private String txt            = "";
+    private String type           = "";
+    private String href           = "";
+    private String value          = "";
+    private String target         = "";
+    private String implementation = "";
 
     private String internalId = "";
 
+    // bot functional data
+    private boolean clicked = false;
+
+    // When the page contains a broken link
+    private boolean broken = false;
+
+    // Clicking on an element, we should see a change (url or dynamic content udpate)
     private boolean disabled = true;
+
+    // URLs are relative but those outside the user's domain are absolute
+    private boolean external = false;
 
     @JsonIgnore
     private PageBean page;
 
     @JsonIgnore
-    private IElement instance;
+    private Element instance;
+
+//+ Constructors
 
     public ElementBean()
     {
 
     }
 
-    public ElementBean(IElement instance)
+    public ElementBean(Element instance)
     {
         setInstance( instance );
     }
 
-    public ElementBean(String impl)
-    {
-        setImpl( impl );
-    }
+//- Constructors
 
+//+ Getters / Setters
 
     public void setClicked(boolean clicked)
     {
@@ -119,13 +128,18 @@ public class ElementBean implements Comparable<ElementBean>
 
     public void setTag(String tag)
     {
-        if(tag != null)
+        if ( tag != null )
             this.tag = tag;
+    }
+
+    public String getTag()
+    {
+        return tag;
     }
 
     public void setClz(String clz)
     {
-        if(clz != null)
+        if ( clz != null )
             this.clz = clz;
     }
 
@@ -156,14 +170,9 @@ public class ElementBean implements Comparable<ElementBean>
         return new Point(x, y);
     }
 
-    public String getTag()
-    {
-        return tag;
-    }
-
     public void setType(String type)
     {
-        if(type != null)
+        if ( type != null )
             this.type = type;
     }
 
@@ -172,25 +181,26 @@ public class ElementBean implements Comparable<ElementBean>
         return type;
     }
 
+    public void setText(String txt)
+    {
+        if( txt != null)
+            this.txt = txt;
+    }
+
     public String getText()
     {
         return txt;
     }
 
-    public void setText(String txt)
+    public void setValue(String value)
     {
-        this.txt = txt;
+        if( value != null)
+            this.value = value;
     }
 
     public String getValue()
     {
         return value;
-    }
-
-    public void setValue(String value)
-    {
-        if(value != null)
-            this.value = value;
     }
 
     public void setBroken(boolean broken)
@@ -213,127 +223,41 @@ public class ElementBean implements Comparable<ElementBean>
         return caption;
     }
 
-    public String toJson() throws IOException
+    public void setImplementation(String implementation)
     {
-        return JsonHelper.getInstance().map( this );
+        if( implementation != null )
+            this.implementation = implementation;
     }
 
-    public String getImpl()
+    public String getImplementation()
     {
-        return impl;
+        return implementation;
     }
 
-    public void setImpl(String impl)
+    public void setTarget(String target)
     {
-        this.impl = impl;
+        if( target != null )
+            this.target = target;
     }
 
-    public PageBean getPage()
+    public String getTarget()
     {
-        return page;
+        return target;
     }
 
-    public void setPage(PageBean page)
+    public void setExternal(boolean external)
     {
-        this.page = page;
+        this.external = external;
     }
 
-    public IElement getInstance()
+    public boolean isExternal()
     {
-        return instance;
+        return external;
     }
 
-    public void setInstance(IElement instance)
+    public void setDisabled(boolean disabled)
     {
-        this.instance = instance;
-    }
-
-    public boolean isIncluded(ElementBean element)
-    {
-        return element.getText().contains( getText() )
-                && element.getLocation().contains( getLocation() );
-    }
-
-    public Rectangle getLocation()
-    {
-        return new Rectangle( getPos().getX(), getPos().getY(), getDim().getWidth(), getDim().getHeight() );
-    }
-
-    @Override
-    public int compareTo(ElementBean element)
-    {
-        Point elementCenter = element.getCenter();
-        if ( elementCenter.getY() > getCenter().getY() )
-        {
-            return -1;
-        }
-        else
-        {
-            if( element.getPos().getX() < this.getPos().getX() )
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-    }
-
-    public int getArea()
-    {
-        return getDim().getWidth() * getDim().getHeight();
-    }
-
-    public static List<ElementBean> filterLinks(List<ElementBean> elements)
-    {
-        return filterByImpl( elements, "Link" );
-    }
-
-    private static List<ElementBean> filterByImpl(List<ElementBean> content, String impl)
-    {
-        List<ElementBean> elements = new ArrayList<ElementBean>(  );
-
-        for( ElementBean element : content )
-        {
-            if( element.getImpl().contentEquals( impl ) )
-            {
-                elements.add( element );
-            }
-        }
-
-        return elements;
-    }
-
-    public static List<ElementBean> filterButtons(List<ElementBean> content)
-    {
-        return filterByImpl( content, "Button" );
-    }
-
-    public static boolean containsLink(List<ElementBean> elements, Link link)
-    {
-        for ( ElementBean element : filterLinks( elements ) )
-        {
-            if ( element.getText().contentEquals( link.getText() )
-                    && element.getHref().contentEquals( link.getHref() )
-                    && Element.isIncluded( element, link.getLocation() ))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean containsLink(List<ElementBean> elements, String link)
-    {
-        for ( ElementBean element : filterLinks( elements ) )
-        {
-            if ( element.getText().contentEquals( link ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        this.disabled = disabled;
     }
 
     public boolean isDisabled()
@@ -341,10 +265,43 @@ public class ElementBean implements Comparable<ElementBean>
         return disabled;
     }
 
-    public void setDisabled(boolean disabled)
+    public void setPage(PageBean page)
     {
-        this.disabled = disabled;
+        this.page = page;
     }
+
+    public PageBean getPage()
+    {
+        return page;
+    }
+
+    public void setInternalId(String internalId)
+    {
+        this.internalId = internalId;
+    }
+
+    public String getInternalId()
+    {
+        return internalId;
+    }
+
+    public void setInstance(Element instance)
+    {
+        this.instance = instance;
+    }
+
+    public Element getInstance()
+    {
+        if( instance == null )
+        {
+            instance = Element.buildElement( this );
+        }
+        return instance;
+    }
+
+//- Getters / Setters
+
+// + Comparison methods
 
     public boolean equals(ElementBean bean) throws IOException
     {
@@ -368,7 +325,7 @@ public class ElementBean implements Comparable<ElementBean>
 
     public boolean equalsByType(ElementBean bean)
     {
-        return bean.getImpl().contentEquals( getImpl() );
+        return bean.getImplementation().contentEquals( getImplementation() );
     }
 
     public boolean equalsByLook(ElementBean bean)
@@ -386,27 +343,12 @@ public class ElementBean implements Comparable<ElementBean>
 
     public boolean equalsByTarget(ElementBean bean)
     {
-        return getRelativeHref().contentEquals( bean.getRelativeHref() );
+        return getHref().contentEquals( bean.getHref() );
     }
 
     public boolean equalsByContent(ElementBean bean)
     {
         return getContent().contentEquals( bean.getContent() );
-    }
-
-    public String toString()
-    {
-        return getValue();
-    }
-
-    public String getContent()
-    {
-        return getText().isEmpty()?getValue():getText();
-    }
-
-    public String getRelativeHref()
-    {
-        return StringUtils.remove( getHref(), getPage().getUser().getDomain() );
     }
 
     public boolean equalsBy(ElementBean element, DiffCondition condition, ElementDiffType... diffTypes)
@@ -500,39 +442,182 @@ public class ElementBean implements Comparable<ElementBean>
         return differencies;
     }
 
-    public void setInternalId(String internalId)
+// - Comparison methods
+
+//+ Convenience methods
+
+    /**
+     * Detect if the area of this element includes the area of the element in parameter
+     *
+     * @param element
+     *
+     * @return true if this element includes the element in parameter or false otherwise.
+     */
+    public boolean isIncluded(ElementBean element)
     {
-        this.internalId = internalId;
+        return element.getText().contains( getText() )
+                && element.getLocation().contains( getLocation() );
     }
 
-    public String getInternalId()
+
+    /**
+     * Compute a rectangle object for this object location
+     *
+     * @return a rectangle sized and located at this element
+     */
+    public Rectangle getLocation()
     {
-        return internalId;
+        return new Rectangle( getPos().getX(), getPos().getY(), getDim().getWidth(), getDim().getHeight() );
     }
 
-
-    public boolean isClickable()
+    /**
+     * Sort the elements in a collection so that the topleft element is before the top right and before the bottom left.
+     *
+     * @param element
+     *
+     * @return -1 is this element is to be placed before the element in parameter or 1 otherwise
+     */
+    @Override
+    public int compareTo(ElementBean element)
     {
-        if ( getImpl().contentEquals( "Image" ) || getImpl().contentEquals( "Data" ))
+        Point elementCenter = element.getCenter();
+        if ( elementCenter.getY() > getCenter().getY() )
         {
-            return false;
-        }
-        else if ( getImpl().contentEquals( "Link" ) )
-        {
-            return !getPage().getInstance().getUser().getExcludedLinks().contains( getText() );
-        }
-        else if ( getImpl().contentEquals( "Button" ) )
-        {
-            return !getPage().getInstance().getUser().getExcludedButtons().contains( getText().isEmpty()?getValue():getText() );
+            return -1;
         }
         else
         {
-            return true;
+            if( element.getPos().getX() < this.getPos().getX() )
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 
+    /**
+     * Compute the pixel area of this element.
+     *
+     * @return getWidth() * getHeight()
+     */
+    public int getArea()
+    {
+        return getDim().getWidth() * getDim().getHeight();
+    }
+
+    /**
+     * Keep only the links contained in the content.
+     *
+     * @param content
+     *
+     * @return a list of the links in the content
+     */
+    public static List<ElementBean> filterLinks(List<ElementBean> content)
+    {
+        return filterByImpl( content, "Link" );
+    }
+
+    /**
+     * Keep only the buttons contained in the content.
+     *
+     * @param content
+     *
+     * @return a list of the buttons in the content
+     */
+    public static List<ElementBean> filterButtons(List<ElementBean> content)
+    {
+        return filterByImpl( content, "Button" );
+    }
+
+
+    public static boolean containsLink(List<ElementBean> elements, Link link)
+    {
+        for ( ElementBean element : filterLinks( elements ) )
+        {
+            if ( element.getText().contentEquals( link.getText() )
+                    && element.getHref().contentEquals( link.getHref() )
+                    && Element.isIncluded( element, link.getLocation() ))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean containsLink(List<ElementBean> elements, String link)
+    {
+        for ( ElementBean element : filterLinks( elements ) )
+        {
+            if ( element.getContent().contentEquals( link ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * For convenience, retrieve the center of this element
+     *
+     * @return the center Point of this element
+     */
     public Point getCenter()
     {
-        return new Point( getPos().getY() + getDim().getHeight() / 2, getPos().getX() + getDim().getWidth() / 2 );
+        Rectangle area = getLocation();
+        return new Point( (int) area.getCenterX(), (int) area.getCenterY() );
     }
+
+    /**
+     * For convenience, retrieve the user visible value of this element
+     *
+     * @return the text visible in the browser for this element
+     */
+    public String getContent()
+    {
+        return getText().isEmpty()?getValue():getText();
+    }
+
+    public String toJson() throws IOException
+    {
+        return JsonHelper.getInstance().map( this );
+    }
+
+    public String toString()
+    {
+        return getContent();
+    }
+
+//- Convenience methods
+
+//+ Private methods
+
+    /**
+     * Filter the content given an implementation. .
+     *
+     * @param content
+     * @param implementation
+     *        The implementation can be: 'Link' or 'Button'
+     *
+     * @return a list of the content matching the implementation criteria
+     */
+    private static List<ElementBean> filterByImpl(List<ElementBean> content, String implementation)
+    {
+        List<ElementBean> elements = new ArrayList<ElementBean>(  );
+
+        for( ElementBean element : content )
+        {
+            if( element.getImplementation().contentEquals( implementation ) )
+            {
+                elements.add( element );
+            }
+        }
+
+        return elements;
+    }
+
+//- Private methods
+
 }

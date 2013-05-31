@@ -17,8 +17,13 @@ package com.smash.revolance.ui.explorer.user;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import com.smash.revolance.ui.explorer.page.api.PageBean;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: wsmash
@@ -31,22 +36,34 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class UserBean
 {
     @JsonIgnore
-    private User    instance;
+    private User instance;
 
-    private String  login;
-    private String  id;
-    private String  reportFolder;
-    private String  captionFolder;
-    private boolean ref;
+    private String id;
+    private String login;
+
+
     private String  newPasswd;
-    private String passwd;
+    private String  passwd;
     private boolean followButtonsEnabled;
     private boolean followLinksEnabled;
-    private boolean pageScreenshotEnabled;
-    private boolean pageElementScreenShotEnabled;
-    private String domain;
-    private String sitemapFolder;
-    private String home;
+    private boolean pageScreenshot;
+    private boolean pageElementScreenShot;
+    private String  domain;
+    private String  sitemapFolder;
+    private String  home;
+    private String  driverPath;
+
+    @JsonDeserialize(contentAs = String.class, as = ArrayList.class)
+    private List<String> excludedLinks = new ArrayList<String>();
+
+    @JsonDeserialize(contentAs = String.class, as = ArrayList.class)
+    private List<String> excludedButtons = new ArrayList<String>();
+
+    private int     browserHeight;
+    private int     browserWidth;
+    private String  browserBinary;
+    private boolean exploreVariants;
+    private String  reportFolder;
 
     public UserBean(User instance)
     {
@@ -93,26 +110,6 @@ public class UserBean
         this.reportFolder = reportFolder;
     }
 
-    public String getCaptionFolder()
-    {
-        return captionFolder;
-    }
-
-    public void setCaptionFolder(String captionFolder)
-    {
-        this.captionFolder = captionFolder;
-    }
-
-    public void setRef(boolean ref)
-    {
-        this.ref = ref;
-    }
-
-    public boolean isRef()
-    {
-        return ref;
-    }
-
     public void setNewPasswd(String newPasswd)
     {
         this.newPasswd = newPasswd;
@@ -155,22 +152,22 @@ public class UserBean
 
     public boolean isPageScreenshotEnabled()
     {
-        return pageScreenshotEnabled;
+        return pageScreenshot;
     }
 
     public void setPageScreenshotEnabled(boolean b)
     {
-        this.pageScreenshotEnabled = b;
+        this.pageScreenshot = b;
     }
 
     public void setPageElementScreenshotEnabled(boolean b)
     {
-        this.pageElementScreenShotEnabled = b;
+        this.pageElementScreenShot = b;
     }
 
     public boolean isPageElementScreenshotEnabled()
     {
-        return pageElementScreenShotEnabled;
+        return pageElementScreenShot;
     }
 
     public void setInstance(User instance)
@@ -198,13 +195,83 @@ public class UserBean
         this.sitemapFolder = sitemapFolder;
     }
 
+    public void setHome(String home)
+    {
+        this.home = home;
+    }
+
     public String getHome()
     {
         return home;
     }
 
-    public void setHome(String home)
+    public void setDriverPath(String driverPath)
     {
-        this.home = home;
+        this.driverPath = driverPath;
+    }
+
+    public String getDriverPath()
+    {
+        return driverPath;
+    }
+
+    public List<String> getExcludedLinks()
+    {
+        return excludedLinks;
+    }
+
+    public void setExcludedLinks(List<String> excludedLinks)
+    {
+        this.excludedLinks = excludedLinks;
+    }
+
+    public List<String> getExcludedButtons()
+    {
+        return excludedButtons;
+    }
+
+    public void setExcludedButtons(List<String> excludedButtons)
+    {
+        this.excludedButtons = excludedButtons;
+    }
+
+    public int getBrowserHeight()
+    {
+        return browserHeight;
+    }
+
+    public void setBrowserHeight(int browserHeight)
+    {
+        this.browserHeight = browserHeight;
+    }
+
+    public int getBrowserWidth()
+    {
+        return browserWidth;
+    }
+
+    public void setBrowserWidth(int browserWidth)
+    {
+        this.browserWidth = browserWidth;
+    }
+
+    public String getBrowserBinary()
+    {
+        return browserBinary;
+    }
+
+    public void setBrowserBinary(String browserBinary)
+    {
+        this.browserBinary = browserBinary;
+    }
+
+    public void setExploreVariants(boolean exploreVariants)
+    {
+        this.exploreVariants = exploreVariants;
+    }
+
+    public boolean isExploreVariantsEnabled()
+    {
+        return exploreVariants;
     }
 }

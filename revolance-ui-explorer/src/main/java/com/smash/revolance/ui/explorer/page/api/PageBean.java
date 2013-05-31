@@ -59,22 +59,20 @@ public class PageBean
     private PageBean original;
 
     @JsonDeserialize(contentAs = PageBean.class, as = ArrayList.class)
-    private List<PageBean> variants;
-    private ElementBean    source;
+    private List<PageBean> variants = new ArrayList<PageBean>();
+    private ElementBean source;
 
     private boolean broken;
     private boolean browsed;
     private boolean homePage;
-
+    private boolean external;
     private boolean authorized = true;
-    private boolean rightDomain;
 
     @JsonIgnore
     private UserBean user;
 
     @JsonIgnore
-    private IPage instance;
-
+    private Page                            instance;
     private Map<DiffType, List<ElementBean>> variations;
 
     public PageBean()
@@ -82,20 +80,10 @@ public class PageBean
 
     }
 
-    public PageBean(IPage instance)
+    public PageBean(Page instance)
     {
         this();
         setInstance( instance );
-    }
-
-    public boolean isRightDomain()
-    {
-        return rightDomain;
-    }
-
-    public void setRightDomain(boolean rightDomain)
-    {
-        this.rightDomain = rightDomain;
     }
 
     public List<ElementBean> getLinks()
@@ -200,12 +188,12 @@ public class PageBean
         this.variants = variants;
     }
 
-    public void setInstance(IPage instance)
+    public void setInstance(Page instance)
     {
         this.instance = instance;
     }
 
-    public IPage getInstance()
+    public Page getInstance()
     {
         return instance;
     }
@@ -564,7 +552,6 @@ public class PageBean
         return getOriginal().getContent();
     }
 
-
     public void setUserBean(UserBean user)
     {
         this.user = user;
@@ -713,7 +700,7 @@ public class PageBean
     {
         for(ElementBean element : content)
         {
-            if(element.getValue().contentEquals( txt ) && element.getImpl().contentEquals( impl ) && element.isDisabled() != active)
+            if(element.getValue().contentEquals( txt ) && element.getImplementation().contentEquals( impl ) && element.isDisabled() != active)
             {
                 return element;
             }
@@ -721,20 +708,18 @@ public class PageBean
         throw new ElementNotFound("Unable to find element in page.");
     }
 
-    public void removeBaseContent() throws Exception
+    public void setBroken(boolean broken)
     {
-        List<ElementBean> content = getContent();
-        List<ElementBean> contentToRemove = new ArrayList<ElementBean>(  );
-
-        for(ElementBean element : content)
-        {
-            if( original.contains( element ) )
-            {
-                contentToRemove.add( element );
-            }
-        }
-
-        this.content.removeAll( contentToRemove );
+        this.broken = broken;
     }
 
+    public boolean isExternal()
+    {
+        return external;
+    }
+
+    public void setExternal(boolean external)
+    {
+        this.external = external;
+    }
 }

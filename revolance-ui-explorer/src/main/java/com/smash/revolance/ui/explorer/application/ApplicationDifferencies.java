@@ -21,6 +21,7 @@ import com.smash.revolance.ui.explorer.helper.JsonHelper;
 import com.smash.revolance.ui.explorer.diff.DiffType;
 import com.smash.revolance.ui.explorer.diff.PageDiffType;
 import com.smash.revolance.ui.explorer.element.api.ElementBean;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 import com.smash.revolance.ui.explorer.user.User;
@@ -87,7 +88,7 @@ public class ApplicationDifferencies
                 {
                     for(PageBean variant : page.getVariants())
                     {
-                        PageBean refVariant = refPage.getInstance().getVariant( variant.getSource(), false );
+                        PageBean refVariant = refPage.getInstance().getVariant( variant.getSource(), false ).getBean();
                         pageDifferencies = new PageDifferencies( page, refPage );
                         pageDifferencies.setDiffType( DiffType.BASE );
                         pageDifferencies.setPageDiffTypes( getPageDiffTypes( page, refVariant ) );

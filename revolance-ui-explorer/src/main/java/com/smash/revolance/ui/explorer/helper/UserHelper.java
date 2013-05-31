@@ -18,6 +18,7 @@ package com.smash.revolance.ui.explorer.helper;
 */
 
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.Bot;
 import org.openqa.selenium.UnhandledAlertException;
@@ -30,16 +31,16 @@ import org.openqa.selenium.WebDriver;
  */
 public class UserHelper
 {
-    public static void browseTo(IPage page)
+    public static void browseTo(Page page)
     {
         browseTo( page, false );
     }
 
-    public static void browseTo(IPage page, boolean force)
+    public static void browseTo(Page page, boolean force)
     {
         if ( page != null )
         {
-            final String url = page.getUrl();
+            String url = page.getUrl();
             try
             {
                 final User user = page.getUser();
@@ -67,23 +68,18 @@ public class UserHelper
         }
     }
 
-    public static void  awaitPageLoaded(IPage page) throws Exception
+    public static void awaitPageLoaded(Page page) throws Exception
     {
         page.getApplication().awaitPageLoaded( page );
     }
 
-    public static void browse(IPage page) throws Exception
+    public static void browseAndParseContent(Page page) throws Exception
     {
         browseTo(page);
-
-        if (!page.hasBeenParsed())
-        {
-            parseContent(page);
-            page.setParsed( true );
-        }
+        parseContent(page);
     }
 
-    public static void parseContent(IPage page) throws Exception
+    public static void parseContent(Page page) throws Exception
     {
         if( ! page.hasBeenParsed() )
         {
@@ -93,24 +89,30 @@ public class UserHelper
             {
                 page.setBroken( true );
             }
-            else if ( user.getApplication().isUnauthorized( page ) )
+            else if ( !user.getApplication().isAuthorized( page ) )
             {
                 page.setAuthorized( false );
             }
+
+            if ( user.isPageScreenshotEnabled() && page.getCaption().isEmpty() )
+            {
+                page.takeScreenShot();
+            }
+
+            if(!page.isBroken() && !page.isExternal())
+            {
+                page.getContent();
+            }
+            else if ( page.isExternal() )
+            {
+                System.out.println( "Url: " + page.getUrl() + " is out of the domain: " + page.getSiteMap().getDomain() );
+            }
             else
             {
-                if ( user.isPageScreenshotEnabled() && page.getCaption().isEmpty() )
-                {
-                    page.takeScreenShot();
-                }
-
-                page.getContent();
-
-                if ( !BotHelper.rightDomain( page ) )
-                {
-                    System.out.println( "Url: " + page.getUrl() + " is out of the domain: " + page.getSiteMap().getDomain() );
-                }
+                System.out.println( "Url: " + page.getUrl() + " is broken." );
             }
+
+            page.setParsed( true );
         }
     }
 

@@ -14,7 +14,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 function createCookie(c_name)
@@ -198,7 +198,7 @@ function getPasswordFromForm()
 function hasUsernameFromForm()
 {
     username = getUsernameFromForm();
-    return username != "" && username != undefined;
+    return username !== "" && username !== undefined;
 }
 
 function hasPasswordFromForm()
@@ -216,7 +216,7 @@ function redirectTo( rel_page )
 {	
 	try
 	{
-		var path = window.location.href + "/../" + rel_page;
+		var path = document.URL.substring(0, document.URL.lastIndexOf('/')) + '/' + rel_page;
 //		alert("page=" + path);
 	 	window.location.href = path;
 	}
@@ -261,12 +261,12 @@ function setHasChangedPasswd()
 
 function hasChangedPasswd()
 {
-	return getValue("passwdChanged") == "true";
+	return getValue("passwdChanged") === "true";
 }
 
 function hasLoggedIn()
 {
-	return getValue("logged") == "true";
+	return getValue("logged") === "true";
 }
 
 function setPrivillege(privillege)
@@ -289,11 +289,11 @@ function createPrivillege(username)
 	{
 		setPrivillege("all");
 	}
-	else if( username == "user_A" )
+	else if( username === "user_A" )
 	{
 		setPrivillege("navigation");
 	}
-	else if( username == "user_B" )
+	else if( username === "user_B" )
 	{
 		setPrivillege("action");	
 	}
@@ -316,7 +316,7 @@ function setHomePage( )
 
 function showNavigation()
 {
-	var menu = "<ul><li>sub-menu-1</li><li>sub-menu-2</li></ul>";
+    var menu = '<ul><li><a href="#">link-1</a></li><li><a href="#">link-2</a></li></ul>';
 	var div = document.createElement("div");
 	div.innerHTML = menu;
 	getBody().appendChild(div);
@@ -324,7 +324,7 @@ function showNavigation()
 
 function showActions()
 {
-	var actions = "<input type=\"button\">button-1</input><input type=\"button\">button-2</input>";
+	var actions = '<input type="button" value="button-1" /><button value="button-2" />';
 	var div = document.createElement("div");
 	div.innerHTML = actions;
 	getBody().appendChild(div);
@@ -349,16 +349,16 @@ function enforceContent(privillege)
 
 	showGreedings();
 
-	if(privillege == "all")
+	if(privillege === "all")
 	{
 		showNavigation();
 		showActions();
 	}
-	else if(privillege == "navigation")
+	else if(privillege === "navigation")
 	{
 		showNavigation();
 	}
-	else if(privillege == "action")
+	else if(privillege === "action")
 	{
 		showActions();
 	}

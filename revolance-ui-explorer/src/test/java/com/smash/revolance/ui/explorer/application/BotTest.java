@@ -17,27 +17,23 @@ package com.smash.revolance.ui.explorer.application;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
-import com.smash.revolance.ui.explorer.element.api.ElementBean;
+import com.smash.revolance.ui.explorer.element.api.Button;
+import com.smash.revolance.ui.explorer.element.api.Element;
 import com.smash.revolance.ui.explorer.element.api.Link;
-import com.smash.revolance.ui.explorer.helper.BotHelper;
-import com.smash.revolance.ui.explorer.helper.FileHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
-import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.Bot;
+import org.apache.commons.exec.OS;
 import org.junit.*;
 import org.openqa.selenium.WebDriver;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -49,26 +45,29 @@ import static org.hamcrest.core.Is.is;
  */
 public class BotTest
 {
+    private static final File userCfg;
     private static final File appCfg;
 
     private static final String website;
-    private static final String target;
     private static final String index;
     private static final String pageA;
     private static final String pageB;
+
     private static final String help;
-    private static final String broken;
+
+    private static final String BROKEN = "broken.html";
 
     static
     {
-        appCfg = new File(new File("").getAbsoluteFile(), "src/test/config/cfg-app.xml");
+        appCfg = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-app.xml" );
+        userCfg = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-users.xml" );
 
-        website = "file://" + new File(new File("").getAbsoluteFile(), "src/test/resources/website").getAbsolutePath();
-        target = new File(new File("").getAbsoluteFile(), "target").getAbsolutePath();
+        website = "file://" + new File( new File( "" ).getAbsoluteFile(), "src/test/resources/website" ).getAbsolutePath();
+
         index = website + "/index.html";
         pageA = website + "/page_A.html";
         pageB = website + "/page_B.html";
-        broken = website + "/broken.html";
+
         help = website + "/help.html";
     }
 
@@ -83,18 +82,22 @@ public class BotTest
     public static void setUp() throws Exception
     {
         manager = new ApplicationManager( appCfg );
-        app = manager.get( "website" );
+        app = manager.getApplication( "website" );
+
+        assertThat( app.getUserCount(), is(3) );
 
         user = app.getUser( "super user" );
+
+        setupBrowserForFirefox( user );
+
         user.enablePageScreenshot( false );
         user.enablePageElementScreenshot( false );
-        user.enableFollowButtons( false );
-        user.enableFollowLinks( true );
-
+        user.setFollowButtons( false );
+        user.setFollowLinks( true );
+        user.setExploreVariantsEnabled( false );
 
         user.setDomain( website );
-        user.getSiteMap().setHome( index );
-
+        user.setHome( index );
         user.explore();
 
         bot = user.getBot();
@@ -102,17 +105,28 @@ public class BotTest
         sitemap = user.getSiteMap();
     }
 
+    private static void setupBrowserForFirefox(User user)
+    {
+        user.setBrowserType( "Firefox" );
+    }
+
+    private static void setupBrowserForChrome(User user)
+    {
+        user.setBrowserType( "Chrome" );
+        user.setDriverPath( getChromeDriverPath() );
+        user.setBrowserBinary( "/usr/bin/google-chrome" );
+    }
+
+    public static String getChromeDriverPath()
+    {
+        return new File( new File( "" ).getAbsoluteFile(), "src/test/driver/" + ( OS.isFamilyUnix() ? "unix" : "win" ) + "/chromedriver" + ( OS.isFamilyUnix() ? "" : ".exe" ) ).getAbsolutePath();
+    }
+
+
     @After
     public void tearDown()
     {
-        try
-        {
-            browser.quit();
-        }
-        catch (Exception e)
-        {
-
-        }
+        browser.quit();
     }
 
     @Test
@@ -125,80 +139,44 @@ public class BotTest
     @Test
     public void botShouldExtractButtonsFromPageContent() throws Exception
     {
-        List<IElement> buttons;
         IPage page_B = sitemap.findPageByUrl( pageB ).getInstance();
-        buttons = page_B.getLinks();
+        List<Element> buttons = page_B.getButtons();
+
         assertThat( buttons.size(), is( 2 ) );
-        assertThat( Link.containsLink( buttons, "button" ), is( true ) );
-        assertThat( Link.containsLink( buttons, "index" ), is( true ) );
+        assertThat( Button.containsButton( buttons, "button" ), is( true ) );
+        assertThat( Button.containsButton( buttons, "index" ), is( true ) );
     }
 
     @Test
     public void botShouldExtractLinksFromPageContent() throws Exception
     {
-        List<IElement> links;
-
-
-        // Home page check
-        IPage homePage = sitemap.findPageByUrl( index ).getInstance();
-        links = homePage.getLinks();
-        assertThat( links.size(), is( 2 ) );
-        assertThat( Link.containsLink( links, "page_A" ), is( true ) );
-        assertThat( Link.containsLink( links, "page_B" ), is( true ) );
-
-        // page_A page check
-        IPage page_A = sitemap.findPageByUrl( pageA ).getInstance();
-        links = page_A.getLinks();
-        assertThat( links.size(), is( 3 ) );
-        assertThat( Link.containsLink( links, "index" ), is( true ) );
-        assertThat( Link.containsLink( links, "page_B" ), is( true ) );
-        assertThat( Link.containsLink( links, "help" ), is( true ) );
-
         // page_B page check
         IPage page_B = sitemap.findPageByUrl( pageB ).getInstance();
-        links = page_B.getLinks();
+        List<Element> links = page_B.getLinks();
         assertThat( links.size(), is( 3 ) );
         assertThat( Link.containsLink( links, "index" ), is( true ) );
         assertThat( Link.containsLink( links, "page_A" ), is( true ) );
         assertThat( Link.containsLink( links, "help" ), is( true ) );
-
-        // help page check
-        IPage helpPage = sitemap.findPageByUrl( help ).getInstance();
-        links = helpPage.getLinks();
-        assertThat( links.size(), is( 2 ) );
-        assertThat( Link.containsLink( links, "Broken" ), is( true ) );
-        assertThat( Link.containsLink( links, "Google" ), is( true ) );
     }
 
     @Test
     public void botShouldDetectBrokenLinks() throws Exception
     {
-        assertThat( sitemap.getBrokenLinks().size(), is( 2 ) );
-        assertThat( sitemap.getBrokenLinks().contains( broken ), is( true ) );
+        assertThat( sitemap.getBrokenPages().size(), is( 1 ) );
+        assertThat( sitemap.getBrokenPages().get(0).getUrl(), endsWith( BROKEN ));
+        assertThat( sitemap.getBrokenPages().get(0).getSource().isBroken(), is(true) );
 
-        // help page check
-        IPage helpPage = sitemap.getPage( help, false ).getInstance();
-        List<IElement> brokenLinks = helpPage.getBrokenLinks();
-        assertThat(helpPage.hasBrokenLinks(), is(true));
-        assertThat(Link.containsLink(brokenLinks, broken), is(true));
+        assertThat( sitemap.getBrokenLinks().size(), is( 1 ) );
+        assertThat( sitemap.getBrokenLinks().contains( "Broken" ), is( true ) );
     }
 
     @Test
     public void botShouldNotExploreAnyPageOutOfTheUserDomain() throws Exception
     {
-        // True
-        user.setHome("http://google.fr");
-        assertThat(BotHelper.rightDomain(user, "https://google.fr/maynotexists/nothingcanbedonehere"), is(true));
-
-        // Not True
-        sitemap.setHome("http://google.fr");
-        assertThat(BotHelper.rightDomain(user, "https://glagla.fr"), is(false));
+        IPage google = sitemap.findPageByUrl( "http://www.google.fr" ).getInstance();
+        assertThat( google.isExternal(), is(true) );
+        assertThat( google.getSource().getContent(), is("Google") );
     }
 
-    @Test
-    public void botShouldHandleVariants() throws Exception
-    {
-        assertThat(sitemap.findPageByUrl(pageB).getVariants().size(), is(1));
-    }
 
 }

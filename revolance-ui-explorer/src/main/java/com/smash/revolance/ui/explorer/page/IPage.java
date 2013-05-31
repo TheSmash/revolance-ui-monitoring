@@ -19,16 +19,12 @@ package com.smash.revolance.ui.explorer.page;
 
 import com.smash.revolance.ui.explorer.application.Application;
 
-import com.smash.revolance.ui.explorer.element.IElement;
-import com.smash.revolance.ui.explorer.element.api.ElementBean;
+import com.smash.revolance.ui.explorer.element.api.Element;
 import com.smash.revolance.ui.explorer.page.api.Page;
-import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 import com.smash.revolance.ui.explorer.user.User;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,43 +35,37 @@ import java.util.List;
 public interface IPage
 {
 
-    IElement getSource();
+    User getUser();
+
+    String getId();
 
     String getUrl();
 
+    String getTitle();
+
+    Element getSource();
+
     void explore() throws Exception;
 
-    boolean hasBeenBrowsed();
+    boolean hasBeenExplored();
 
-    List<IElement> getLinks() throws Exception;
+    boolean hasBeenParsed();
 
-    String getTitle();
+    List<Element> getLinks() throws Exception;
 
     boolean isBroken();
 
     boolean hasBrokenLinks() throws Exception;
 
-    List<IElement> getBrokenLinks() throws Exception;
+    List<Element> getBrokenLinks() throws Exception;
 
-    boolean isHomePage();
+    List<Element> getContent() throws Exception;
 
-    void setBroken(boolean b);
-
-    void setTitle(String title);
-
-    void setBrowsed(boolean b);
-
-    User getUser();
-
-    SiteMap getUserSitemap();
-
-    List<IElement> getContent() throws Exception;
-
-    List<IElement> getClickableContent() throws Exception;
+    List<Element> getClickableContent() throws Exception;
 
     Application getApplication() throws Exception;
 
-    List<IElement> getButtons() throws Exception;
+    List<Element> getButtons() throws Exception;
 
     boolean isOriginal();
 
@@ -83,47 +73,14 @@ public interface IPage
 
     SiteMap getSiteMap();
 
-    void setAuthorized(boolean b);
-
-    String takeScreenShot() throws Exception;
-
     BufferedImage getImage() throws Exception;
 
-    PageBean getVariant(ElementBean source, boolean generate) throws Exception;
-
-    PageBean getVariant(IElement clickable, String hash, boolean generate) throws Exception;
-
-    Collection<PageBean> getVariants();
-
-    void setUrl(String currentUrl);
-
-    void setId(String id);
+    List<Page> getVariants();
 
     void delete() throws Exception;
 
-    PageBean findVariantByHash(String hash);
-
-    PageBean findVariantByCaption(String caption) throws Exception;
-
-    PageBean findVariantBySource(ElementBean source) throws Exception;
-
-    void setSource(IElement source);
-
-    PageBean getBean();
-
-    void setCaption(String img) throws IOException;
-
-    void setImage(BufferedImage img) throws Exception;
-
     String getCaption();
 
-    boolean hasBeenExplored();
+    boolean isExternal();
 
-    boolean hasBeenParsed();
-
-    void setParsed(boolean b);
-
-    void setExplored(boolean b);
-
-    void addVariant(PageBean variant);
 }

@@ -18,10 +18,11 @@ package com.smash.revolance.ui.explorer.application;
 */
 
 import com.smash.revolance.ui.explorer.helper.XMLHelper;
+import com.smash.revolance.ui.explorer.page.api.Page;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -31,57 +32,29 @@ import java.util.*;
  */
 public class ApplicationManager
 {
-    private Application appRef;
     private Map<String, Application> apps = new HashMap<String, Application>();
 
-    private File appCfg;
-    private File userCfg;
-    private File applicationsDir;
-
-    public ApplicationManager(ApplicationManager manager)
+    public ApplicationManager(List<Application> applications)
     {
-        this.appRef = manager.appRef;
-        this.apps = new HashMap<String, Application>( manager.apps );
-        this.appCfg = new File(manager.appCfg.getAbsolutePath());
-        this.userCfg = new File(manager.userCfg.getAbsolutePath());
-        this.applicationsDir = new File(manager.applicationsDir.getAbsolutePath());
+        for(Application application : applications)
+        {
+            add( application );
+        }
     }
 
     public ApplicationManager(File appCfg) throws Exception
     {
-        this( XMLHelper.getApplicationManager( appCfg ) );
+        this( XMLHelper.getApplications( new ApplicationFactory(), appCfg ) );
     }
 
-    public ApplicationManager(File appCfg, File userCfg)
+    public Application getApplication(String appId)
     {
-        this.appCfg = appCfg;
-        this.userCfg = userCfg;
-    }
-
-    public Application getRefApp()
-    {
-        return appRef;
-    }
-
-    public Application get(String instanceId)
-    {
-        return apps.get(instanceId);
-    }
-
-    public Application buildApplication(String applicationImpl) throws ClassNotFoundException, IllegalAccessException, InstantiationException, MalformedURLException, NoSuchMethodException, InvocationTargetException
-    {
-        ApplicationLoader appLoader = new ApplicationLoader( userCfg );
-        Application app = appLoader.loadApplication( this, applicationImpl );
-        return app;
+        return apps.get( appId );
     }
 
     public void add(Application application)
     {
         apps.put( application.getId(), application );
-        if(application.isRef())
-        {
-            appRef = application;
-        }
     }
 
     public List<Application> getApplications()
@@ -97,18 +70,4 @@ public class ApplicationManager
         }
     }
 
-    public File getApplicationsDir()
-    {
-        return applicationsDir;
-    }
-
-    public void setApplicationsDir(String applicationDir)
-    {
-        this.applicationsDir = new File(getHome(), applicationDir);
-    }
-
-    public String getHome()
-    {
-        return appCfg.getParentFile().getParentFile().getAbsolutePath();
-    }
 }

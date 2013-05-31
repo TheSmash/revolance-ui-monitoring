@@ -19,7 +19,6 @@ package com.smash.revolance.ui.explorer.page.api;
 
 import com.smash.revolance.ui.explorer.application.Application;
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.element.api.*;
 import com.smash.revolance.ui.explorer.helper.*;
 import com.smash.revolance.ui.explorer.page.IPage;
@@ -30,7 +29,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openqa.selenium.WebDriver;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -46,13 +44,12 @@ public class Page implements IPage
     private PageBean bean = new PageBean( this );
 
     private boolean screenshotTaken;
-    private boolean broken;
 
     @JsonIgnore
-    private List<IElement> links;
+    private List<Element> links;
 
     @JsonIgnore
-    private List<IElement> buttons;
+    private List<Element> buttons;
     private BufferedImage  image;
 
     private boolean        explored;
@@ -70,7 +67,7 @@ public class Page implements IPage
         setUser( user );
         setUrl( url );
         setHome( user.getHome() == null ? true : getUrl().contentEquals( user.getHome() ) );
-        setRightDomain( BotHelper.rightDomain( this ) );
+        setExternal( !BotHelper.rightDomain( this ) );
     }
 
     public Page(PageBean bean)
@@ -90,32 +87,37 @@ public class Page implements IPage
     }
 
     @Override
-    public IElement getSource()
+    public Element getSource()
     {
-        if(this.bean.getSource() == null)
-        {
-            return null;
-        }
-        else
-        {
-            return this.bean.getSource().getInstance();
-        }
+        return this.bean.getSource().getInstance();
     }
 
     @Override
     public String getUrl()
     {
-        return getUser().getDomain() + bean.getUrl();
+        if( !isExternal() )
+        {
+            // The url is relative to the domain
+            return getUser().getDomain() + bean.getUrl();
+        }
+        else
+        {
+            return bean.getUrl();
+        }
     }
 
-    @Override
     public void setUrl(String url)
     {
         if( url.startsWith( getUser().getDomain() ) )
         {
             url = url.substring( getUser().getDomain().length() );
+            bean.setUrl( url );
         }
-        bean.setUrl( url );
+        else
+        {
+            bean.setExternal( true );
+            bean.setUrl( url );
+        }
     }
 
     private void setUser(User user)
@@ -128,10 +130,16 @@ public class Page implements IPage
     {
         if ( !hasBeenExplored() )
         {
-            browse( this );
-            _explore();
-
-            setExplored( true );
+            browseAndParseContent( this );
+            if(!isExternal() && !isBroken())
+            {
+                _explore();
+                setExplored( true );
+            }
+            else if(isBroken())
+            {
+                bean.getSource().setBroken( true );
+            }
         }
     }
 
@@ -149,7 +157,6 @@ public class Page implements IPage
             exploreVariant();
             System.out.println("Exploring variant [Done]");
         }
-
     }
 
     private void exploreVariant() throws Exception
@@ -168,9 +175,9 @@ public class Page implements IPage
         }
     }
 
-    private void explore( List<IElement> clickables ) throws Exception
+    private void explore( List<Element> clickables ) throws Exception
     {
-        for ( IElement clickable : clickables )
+        for ( Element clickable : clickables )
         {
             if( getSiteMap().hasBeenExplored( clickable.getHref() ) || clickable.hasBeenClicked() )
             {
@@ -198,12 +205,12 @@ public class Page implements IPage
                         }
                     }
                 }
-                clickable.setClicked( towardCurrentUrl );
+                clickable.setClicked( !towardCurrentUrl );
             }
         }
     }
 
-    private void handleDynamicChange(IElement source) throws Exception
+    private void handleDynamicChange(Element source) throws Exception
     {
         String id = UUID.randomUUID().toString();
         String caption = BotHelper.pageContentHasChanged(getBot(), bean.getCaption());
@@ -212,7 +219,7 @@ public class Page implements IPage
             // Create new page and inject data to speed up the computations
 
             // Checking if there is already a variant with that checksum
-            PageBean variant = findVariantByCaption( caption );
+            Page variant = findVariantByCaption( caption );
 
             // otherwise we've to create one from scratch
             if( variant == null )
@@ -222,22 +229,22 @@ public class Page implements IPage
 
             if( variant == null )
             {
-                variant = _buildVariant( source, false ).getBean();
+                variant = _buildVariant( source, false );
                 variant.setId( id );
 
                 variant.setCaption( caption );
-                variant.getInstance().setImage( ImageHelper.decodeToImage( caption ) );
+                variant.setImage( ImageHelper.decodeToImage( caption ) );
 
                 addVariant( variant );
 
                 // Parse the new content. But does not explore added clickable elements
-                UserHelper.parseContent( variant.getInstance() );
+                UserHelper.parseContent( variant );
                 variant.removeBaseContent();
-                variant.getInstance().setParsed( true );
+                variant.setParsed( true );
 
                 if(getUser().wantsToExploreVariants())
                 {
-                    variant.getInstance().explore( );
+                    variant.explore();
                 }
             }
 
@@ -245,25 +252,41 @@ public class Page implements IPage
         }
     }
 
-    private void handleUrlChange(IElement clickable, String currentUrl) throws Exception
+    public void removeBaseContent() throws Exception
+    {
+        List<Element> content = getContent();
+        List<Element> contentToRemove = new ArrayList<Element>(  );
+
+        for(Element element : content)
+        {
+            if( getOriginal().getBean().contains( element.getBean() ) )
+            {
+                contentToRemove.add( element );
+            }
+        }
+
+        getContent().removeAll( contentToRemove );
+    }
+
+    private void handleUrlChange(Element clickable, String currentUrl) throws Exception
     {
         clickable.setDisabled( false );
         if(UrlHelper.containsHash(currentUrl))
         {
             String hash = UrlHelper.getHash(currentUrl);
-            IPage variant = getVariant(clickable, hash, true).getInstance();
+            Page variant = getVariant( clickable, hash, true );
             if(!variant.hasBeenExplored() && getUser().wantsToExploreVariants())
             {
                 variant.explore();
             }
             else
             {
-                browse( getOriginal() ); // return to the original page
+                browseAndParseContent( getOriginal() ); // return to the original page
             }
         }
         else // Real change of page
         {
-            IPage page = getUserSitemap().getPage(currentUrl, true).getInstance();
+            Page page = getUserSitemap().getPage(currentUrl, true).getInstance();
             if( !page.hasBeenExplored() )
             {
                 page.setSource(clickable);
@@ -290,20 +313,26 @@ public class Page implements IPage
         {
             if(getApplication().isSecured())
             {
-                logIn();
-                changePasswd();
+                if( logIn() )
+                {
+                    return;
+                }
+                else if( changePasswd() )
+                {
+                    return;
+                }
             }
         }
     }
 
-    private void changePasswd() throws Exception
+    private boolean changePasswd() throws Exception
     {
-        getApplication().enterNewPassword( getUser(), this );
+        return getApplication().enterNewPassword( getUser(), this );
     }
 
-    private void logIn() throws Exception
+    private boolean logIn() throws Exception
     {
-        getApplication().enterLogin( getUser(), this );
+        return getApplication().enterLogin( getUser(), this );
     }
 
     @Override
@@ -318,7 +347,6 @@ public class Page implements IPage
         return parsed;
     }
 
-    @Override
     public void setParsed(boolean b)
     {
         parsed = true;
@@ -337,7 +365,7 @@ public class Page implements IPage
 
         if( getUser().isPageElementScreenshotEnabled() )
         {
-            for(IElement element : getContent())
+            for(Element element : getContent())
             {
                 element.delete();
                 getContent().remove( element );
@@ -349,7 +377,7 @@ public class Page implements IPage
         bean = null;
     }
 
-    private Page _buildVariant(IElement source, boolean takeScreenshot) throws Exception
+    private Page _buildVariant(Element source, boolean takeScreenshot) throws Exception
     {
         Page variant = new Page( getUser(), getUrl() );
         variant.setOriginal( getOriginal() );
@@ -361,7 +389,6 @@ public class Page implements IPage
         return variant;
     }
 
-    @Override
     public boolean hasBeenBrowsed()
     {
         return bean.hasBeenBrowsed();
@@ -396,19 +423,21 @@ public class Page implements IPage
 
 
     @Override
-    public List<IElement> getLinks() throws Exception
+    public List<Element> getLinks() throws Exception
     {
         if( links == null )
         {
+            links = new ArrayList<Element>(  );
+
             if(!getUser().isExplorationDone())
             {
-                if(rightDomain() && !isBroken())
+                if(!isExternal() && !isBroken())
                 {
                     System.out.print( "Retrieving links" );
 
-                    links = Link.getLinks( this );
+                    links.addAll( Link.getLinks( this ) );
                     ArrayList<ElementBean> beanLinks = new ArrayList<ElementBean>(  );
-                    for(IElement link : links)
+                    for(Element link : links)
                     {
                         beanLinks.add( link.getBean() );
                     }
@@ -420,11 +449,6 @@ public class Page implements IPage
             }
         }
         return links;
-    }
-
-    public boolean rightDomain()
-    {
-        return bean.isRightDomain();
     }
 
     @Override
@@ -450,13 +474,13 @@ public class Page implements IPage
     }
 
     @Override
-    public List<IElement> getBrokenLinks() throws Exception
+    public List<Element> getBrokenLinks() throws Exception
     {
-        List<IElement> brokenLinks = new ArrayList<IElement>();
+        List<Element> brokenLinks = new ArrayList<Element>();
 
-        for ( IElement link : getLinks() )
+        for ( Element link : getLinks() )
         {
-            if ( ( (Link) link ).isBroken() )
+            if ( link.isBroken() )
             {
                 brokenLinks.add( link );
             }
@@ -464,43 +488,36 @@ public class Page implements IPage
         return brokenLinks;
     }
 
-    @Override
     public boolean isHomePage()
     {
         return bean.isHome();
     }
 
-    @Override
     public void setBroken(boolean b)
     {
-        broken = b;
+        bean.setBroken( b );
     }
 
-    @Override
     public void setTitle(String title)
     {
         bean.setTitle( title );
     }
 
-    @Override
     public void setCaption(String img) throws IOException
     {
         this.bean.setCaption( img );
     }
 
-    @Override
     public void setBrowsed(boolean b)
     {
         bean.setBrowsed( b );
     }
 
-    @Override
     public User getUser()
     {
         return bean.getUser().getInstance();
     }
 
-    @Override
     public SiteMap getUserSitemap()
     {
         return getUser().getSiteMap();
@@ -511,12 +528,12 @@ public class Page implements IPage
         return getUser().getBrowser();
     }
 
-    private void takeScreenshots(List<IElement> content) throws Exception
+    private void takeScreenshots(List<Element> content) throws Exception
     {
         if ( getUser().isPageScreenshotEnabled() && getUser().isPageElementScreenshotEnabled() )
         {
             int contentIdx = 0;
-            for ( IElement pageElement : content )
+            for ( Element pageElement : content )
             {
                 contentIdx ++;
                 System.out.print(String.format("\rTaking element screenshot ( %d / %d )", contentIdx, content.size()));
@@ -543,19 +560,21 @@ public class Page implements IPage
     }
 
     @Override
-    public List<IElement> getButtons() throws Exception
+    public List<Element> getButtons() throws Exception
     {
         if( buttons == null )
         {
+            buttons = new ArrayList<Element>(  );
+
             if(!getUser().isExplorationDone())
             {
-                if(rightDomain() && !isBroken() )
+                if(!isExternal() && !isBroken() )
                 {
                     System.out.print("Retrieving buttons");
-                    buttons = Button.getButtons( this );
+                    buttons.addAll( Button.getButtons( this ) );
                     ArrayList<ElementBean> beanButtons = new ArrayList<ElementBean>(  );
 
-                    for(IElement button : buttons)
+                    for(Element button : buttons)
                     {
                         beanButtons.add( button.getBean() );
                     }
@@ -570,11 +589,16 @@ public class Page implements IPage
         return buttons;
     }
 
-    public List<PageBean> getVariants()
+    public List<Page> getVariants()
     {
         if ( isOriginal() )
         {
-            return _getVariants();
+            List<Page> variants = new ArrayList<Page>(  );
+            for(PageBean page : _getVariants())
+            {
+                variants.add( page.getInstance() );
+            }
+            return variants;
         }
         else
         {
@@ -584,10 +608,6 @@ public class Page implements IPage
 
     private List<PageBean> _getVariants()
     {
-        if ( bean.getVariants() == null )
-        {
-            bean.setVariants( new ArrayList<PageBean>() );
-        }
         return bean.getVariants();
     }
 
@@ -597,9 +617,9 @@ public class Page implements IPage
         return bean.isOriginal();
     }
 
-    public PageBean getVariant(IElement source, String hash, boolean generate) throws Exception
+    public Page getVariant(Element source, String hash, boolean generate) throws Exception
     {
-        PageBean page = findVariantByHash(hash);
+        Page page = findVariantByHash(hash);
         if(page == null)
         {
             if(generate)
@@ -610,11 +630,11 @@ public class Page implements IPage
         return page;
     }
 
-    public PageBean findVariantByHash(String hash)
+    public Page findVariantByHash(String hash)
     {
         if(!hash.isEmpty())
         {
-            for(PageBean variant : getVariants())
+            for(Page variant : getVariants())
             {
                 if( UrlHelper.getHash(getUrl()).contentEquals(hash) )
                 {
@@ -625,9 +645,9 @@ public class Page implements IPage
         return null;
     }
 
-    public PageBean findVariantByCaption(String caption) throws Exception
+    public Page findVariantByCaption(String caption) throws Exception
     {
-        for(PageBean variant : getVariants())
+        for(Page variant : getVariants())
         {
             if( variant.getCaption().contentEquals(caption) )
             {
@@ -637,9 +657,9 @@ public class Page implements IPage
         return null;
     }
 
-    private PageBean buildHashVariant(IElement source, String hash) throws Exception
+    private Page buildHashVariant(Element source, String hash) throws Exception
     {
-        PageBean variant = _buildVariant( source, getUser().isPageScreenshotEnabled() ).getBean();
+        Page variant = _buildVariant( source, getUser().isPageScreenshotEnabled() );
         variant.setUrl(variant.getUrl() + "#" + hash);
         return variant;
     }
@@ -652,9 +672,9 @@ public class Page implements IPage
      * @return
      * @throws Exception
      */
-    public PageBean getVariant(ElementBean source, boolean generate) throws Exception
+    public Page getVariant(ElementBean source, boolean generate) throws Exception
     {
-        PageBean page = findVariantBySource(source);
+        Page page = findVariantBySource(source);
         if(page != null)
         {
             return page;
@@ -663,7 +683,7 @@ public class Page implements IPage
         {
             if(generate)
             {
-                return _buildVariant( source.getInstance(), getUser().isPageScreenshotEnabled() ).getBean();
+                return _buildVariant( source.getInstance(), getUser().isPageScreenshotEnabled() );
             }
             else
             {
@@ -679,7 +699,7 @@ public class Page implements IPage
      * @return
      * @throws Exception
      */
-    public PageBean getVariant(ElementBean source) throws Exception
+    public Page getVariant(ElementBean source) throws Exception
     {
         return getVariant( source, false );
     }
@@ -693,7 +713,7 @@ public class Page implements IPage
      * @return
      * @throws Exception
      */
-    public PageBean findVariantBySource(ElementBean source) throws Exception
+    public Page findVariantBySource(ElementBean source) throws Exception
     {
         if(source == null)
         {
@@ -701,7 +721,7 @@ public class Page implements IPage
         }
         else
         {
-            for(PageBean page : getVariants())
+            for(Page page : getVariants())
             {
                 if(source.equals(page.getSource()))
                 {
@@ -715,7 +735,7 @@ public class Page implements IPage
     @Override
     public Page getOriginal()
     {
-        return (Page) bean.getOriginal().getInstance();
+        return bean.getOriginal().getInstance();
     }
 
     @Override
@@ -739,11 +759,11 @@ public class Page implements IPage
         return bean.isAuthorized();
     }
 
-    public void addVariant(PageBean page)
+    public void addVariant(Page page)
     {
         if(isOriginal())
         {
-            _getVariants().add( page );
+            _getVariants().add( page.getBean() );
         }
         else
         {
@@ -751,9 +771,20 @@ public class Page implements IPage
         }
     }
 
-    private List<IElement> getClickableVariations() throws Exception
+    @Override
+    public boolean isExternal()
     {
-        List<IElement> elements = new ArrayList<IElement>();
+        return bean.isExternal();
+    }
+
+    public void setExternal(boolean b)
+    {
+        bean.setExternal( b );
+    }
+
+    private List<Element> getClickableVariations() throws Exception
+    {
+        List<Element> elements = new ArrayList<Element>();
 
         elements.addAll( Element.filterClickableElements( bean.getAddedVariations() ) );
 
@@ -772,7 +803,7 @@ public class Page implements IPage
 
     public static PageBean createPage(User user, String url, String title) throws Exception
     {
-        IPage page = new Page(user, url);
+        Page page = new Page(user, url);
         page.setTitle( title );
         user.getSiteMap().addPage( page );
         return page.getBean();
@@ -780,19 +811,18 @@ public class Page implements IPage
 
     public static PageBean createPage(User user, String url, String title, String caption) throws Exception
     {
-        IPage page = new Page(user, url);
+        Page page = new Page(user, url);
         page.setTitle( title );
         page.setCaption( caption );
         user.getSiteMap().addPage(page);
         return page.getBean();
     }
 
-    public void setSource(IElement source)
+    public void setSource(Element source)
     {
         this.bean.setSource( source.getBean() );
     }
 
-    @Override
     public PageBean getBean()
     {
         return bean;
@@ -803,27 +833,18 @@ public class Page implements IPage
         this.bean.setHome( b );
     }
 
-    public void setRightDomain(boolean rightDomain)
-    {
-        this.bean.setRightDomain( rightDomain );
-    }
-
-    public boolean isRightDomain()
-    {
-        return bean.isRightDomain();
-    }
-
-    public List<IElement> getOriginalContent() throws Exception
+    public List<Element> getOriginalContent() throws Exception
     {
         return getOriginal().getContent();
     }
 
-    public List<IElement> getContent() throws Exception
+    @Override
+    public List<Element> getContent() throws Exception
     {
         System.out.println( "Parsing page content" );
 
-        List<IElement> content = new ArrayList<IElement>();
-        if ( isRightDomain() && !isBroken() )
+        List<Element> content = new ArrayList<Element>();
+        if ( !isExternal() && !isBroken() )
         {
             content.addAll( getClickableContent() );
 
@@ -835,9 +856,9 @@ public class Page implements IPage
     }
 
     @Override
-    public List<IElement> getClickableContent() throws Exception
+    public List<Element> getClickableContent() throws Exception
     {
-        List<IElement> clickableElements = new ArrayList<IElement>();
+        List<Element> clickableElements = new ArrayList<Element>();
 
         clickableElements.addAll( getLinks() );
         clickableElements.addAll( getButtons() );
@@ -874,5 +895,29 @@ public class Page implements IPage
     public void setExplored(boolean explored)
     {
         this.explored = explored;
+    }
+
+    public Element getButton(String button) throws Exception
+    {
+        for( Element aButton : getButtons() )
+        {
+            if( aButton.getContent().contentEquals( button ) )
+            {
+                return aButton;
+            }
+        }
+        return null;
+    }
+
+    public Element getLink(String link) throws Exception
+    {
+        for( Element aLink : getLinks() )
+        {
+            if( aLink.getContent().contentEquals( link ) )
+            {
+                return aLink;
+            }
+        }
+        return null;
     }
 }

@@ -48,36 +48,33 @@ public class User
 
     private SiteMap sitemap;
 
-    private File   baseReportFolder;
-    private File   reportFolder;
+    private File baseReportFolder;
+    private File reportFolder;
 
     private boolean browserActive;
     private boolean explorationDone;
 
     private Application app;
 
-    private List<String> excludedLinks = new ArrayList<String>();
 
-    private List<String> excludedButtons = new ArrayList<String>();
     private DriverService driverService;
-    private File          regressionReportFile;
-    private int           browserHeight;
-    private int           browserWidth;
-    private String        browserBinary;
+
 
     private UserBean bean = new UserBean( this );
-    private boolean exploreVariants;
+
+    private String browserType;
 
 
-    private User()
+    public User()
     {
-        sitemap = new SiteMap(bean);
+        sitemap = new SiteMap( bean );
     }
 
-    public User(String id, String login, String passwd, String newPasswd)
+    public User(String id, String home, String login, String passwd, String newPasswd)
     {
         this();
         setId( id );
+        setHome( home );
         setLogin( login );
         setPasswd( passwd );
         setNewPasswd( newPasswd );
@@ -100,11 +97,11 @@ public class User
 
     public Bot getBot() throws Exception
     {
-        if( bot == null )
+        if ( bot == null )
         {
             try
             {
-                bot = new Bot(this);
+                bot = new Bot( this );
             }
             catch (BrowserFactory.InstanciationError instanciationError)
             {
@@ -144,16 +141,6 @@ public class User
         bean.setNewPasswd( passwd );
     }
 
-    public boolean isRef()
-    {
-        return bean.isRef();
-    }
-
-    public void setRef(boolean b)
-    {
-        bean.setRef( b );
-    }
-
     public WebDriver getBrowser() throws Exception
     {
         if(browser == null)
@@ -170,16 +157,6 @@ public class User
             sitemap = new SiteMap(bean);
         }
         return sitemap;
-    }
-
-    public void enableFollowLinks(boolean b)
-    {
-        bean.setFollowLinksEnabled( b );
-    }
-
-    public boolean isFollowLinksEnabled()
-    {
-        return bean.isFollowLinksEnabled();
     }
 
     public File getReportFolder()
@@ -211,7 +188,7 @@ public class User
         return baseReportFolder;
     }
 
-    public void setBaseReportFolder(File folder) throws IOException
+    public void setBaseReportFolder(String folder) throws IOException
     {
         baseReportFolder = new File(folder, getApplication().getId());
     }
@@ -244,7 +221,6 @@ public class User
     public void setDomain(String domain)
     {
         bean.setDomain( domain );
-        getSiteMap().setDomain( domain );
     }
 
     public void explore() throws Exception
@@ -291,22 +267,22 @@ public class User
 
     public List<String> getExcludedLinks()
     {
-        return excludedLinks;
+        return bean.getExcludedLinks();
     }
 
     public void setExcludedLinks(List<String> excludedLinks)
     {
-        this.excludedLinks = excludedLinks;
+        this.bean.setExcludedLinks( excludedLinks );
     }
 
     public List<String> getExcludedButtons()
     {
-        return excludedButtons;
+        return bean.getExcludedButtons();
     }
 
     public void setExcludedButtons(List<String> excludedButtons)
     {
-        this.excludedButtons = excludedButtons;
+        this.bean.setExcludedButtons( excludedButtons );
     }
 
 
@@ -323,17 +299,6 @@ public class User
     public Collection<PageBean> getBrokenPages()
     {
         return getSiteMap().getBrokenPages();
-    }
-
-
-    public void enableFollowButtons(boolean b)
-    {
-        bean.setFollowButtonsEnabled( b );
-    }
-
-    public boolean isFollowButtonsEnabled()
-    {
-        return bean.isFollowButtonsEnabled();
     }
 
 
@@ -360,22 +325,22 @@ public class User
 
     public int getBrowserHeight()
     {
-        return browserHeight;
+        return bean.getBrowserHeight();
     }
 
     public void setBrowserHeight(int height)
     {
-        this.browserHeight = height;
+        this.bean.setBrowserHeight( height );
     }
 
     public int getBrowserWidth()
     {
-        return browserWidth;
+        return bean.getBrowserWidth();
     }
 
     public void setBrowserWidth(int width)
     {
-        this.browserWidth = width;
+        this.bean.setBrowserWidth( width );
     }
 
     public File doSitemapReport() throws Exception
@@ -389,12 +354,12 @@ public class User
 
     public String getBrowserBinary()
     {
-        return browserBinary;
+        return bean.getBrowserBinary();
     }
 
     public void setBrowserBinary(String binary)
     {
-        this.browserBinary = binary;
+        this.bean.setBrowserBinary( binary );
     }
 
     public UserBean getBean()
@@ -427,13 +392,84 @@ public class User
         return explorationDone;
     }
 
-    public void setExploreVariants(boolean exploreVariants)
+    public void setExploreVariantsEnabled(boolean b)
     {
-        this.exploreVariants = exploreVariants;
+        this.bean.setExploreVariants( b );
     }
 
     public boolean wantsToExploreVariants()
     {
-        return exploreVariants;
+        return bean.isExploreVariantsEnabled();
+    }
+
+    public String getBrowserType()
+    {
+        return browserType;
+    }
+
+    public void setBrowserType(String type)
+    {
+        this.browserType = type;
+    }
+
+    public void setFollowButtons(boolean followButtons)
+    {
+        this.bean.setFollowButtonsEnabled( followButtons );
+    }
+
+    public boolean wantsToFollowButtons()
+    {
+        return bean.isFollowButtonsEnabled();
+    }
+
+    public void setFollowLinks(boolean followLinks)
+    {
+        this.bean.setFollowLinksEnabled( followLinks );
+    }
+
+    public boolean wantsToFollowLinks()
+    {
+        return bean.isFollowLinksEnabled();
+    }
+
+    public void setDriverPath(String path)
+    {
+        bean.setDriverPath( path );
+    }
+
+    public String getDriverPath()
+    {
+        return bean.getDriverPath();
+    }
+
+    public void setPageElementScreenshotEnabled(boolean b)
+    {
+        this.bean.setPageElementScreenshotEnabled( b );
+    }
+
+    public void setPageScreenshotEnabled(boolean b)
+    {
+        this.bean.setPageScreenshotEnabled( b );
+    }
+
+    public String getApplicationId()
+    {
+        return this.app.getId();
+    }
+
+    public void addExcludedButtons( String button )
+    {
+        if( button != null && !button.isEmpty())
+        {
+            getExcludedButtons().add( button );
+        }
+    }
+
+    public void addExcludedLink(String link)
+    {
+        if( link != null && !link.isEmpty())
+        {
+            getExcludedLinks().add( link );
+        }
     }
 }

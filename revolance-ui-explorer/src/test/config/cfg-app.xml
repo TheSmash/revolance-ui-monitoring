@@ -6,20 +6,23 @@
 
             <instance>
                 <id>website</id>
-                <!--<homeUrl> </homeUrl>-->
-                <!--<domain> </domain>-->
+                <!-- <domain> </domain> -->
+                <!-- <applicationImpl></applicationImpl> -->
+                <!-- <applicationVersion></applicationVersion> -->
             </instance>
 
             <instance>
                 <id>website-2.0</id>
-                <!--<homeUrl> </homeUrl>-->
                 <!--<domain> </domain>-->
             </instance>
 
         </instances>
 
         <reportFolder></reportFolder>
-        <applicationDir>java</applicationDir>
+
+        <!-- <applicationDir></applicationDir> -->
+
+        <usersCfgFile>cfg-users.xml</usersCfgFile>
 
         <browserWidth>800</browserWidth>
         <browserHeight>600</browserHeight>
@@ -32,8 +35,6 @@
         <takePageElementScreenshot>false</takePageElementScreenshot>
 
         <applicationImpl>com.smash.revolance.ui.explorer.application.secured.SecuredApplication</applicationImpl>
-
-        <usersCfgFile>cfg-users.xml</usersCfgFile>
 
         <excludeLinks>
 

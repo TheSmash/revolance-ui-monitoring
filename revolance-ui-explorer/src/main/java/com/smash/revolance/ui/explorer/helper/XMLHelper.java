@@ -18,8 +18,9 @@ package com.smash.revolance.ui.explorer.helper;
 */
 
 import com.smash.revolance.ui.explorer.application.Application;
+import com.smash.revolance.ui.explorer.application.ApplicationConfiguration;
+import com.smash.revolance.ui.explorer.application.ApplicationFactory;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
-import com.smash.revolance.ui.explorer.application.ApplicationSetup;
 import com.smash.revolance.ui.explorer.user.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +34,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +46,13 @@ import java.util.List;
 public class XMLHelper
 {
 
-    public static List<User> getUsersFromConfigFile(File file) throws ParserConfigurationException, SAXException, IOException
+    public static List<User> loadUsersFromConfigFile(Application application) throws ParserConfigurationException, SAXException, IOException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException
     {
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<User>(  );
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(file);
+        Document doc = builder.parse(application.getUsersCfgFile());
 
         NodeList elements = doc.getDocumentElement().getElementsByTagName("user");
         for(int elementIdx = 0 ; elementIdx < elements.getLength(); elementIdx ++)
@@ -59,9 +61,15 @@ public class XMLHelper
             NodeList elementChilds = element.getChildNodes();
 
             String id = null;
+            String appId = null;
             String login = null;
+            String home = null;
             String password = null;
             String newPassword = null;
+
+            String browserType = null;
+            String driverPath = null;
+            String browserBinary = null;
 
             for(int elementChildIdx = 0; elementChildIdx < elementChilds.getLength() ; elementChildIdx++)
             {
@@ -73,6 +81,10 @@ public class XMLHelper
                     if( elementChildName.contentEquals("id") )
                     {
                         id = elementChildData.getNodeValue();
+                    }
+                    if(elementChildName.contentEquals( "appId" ))
+                    {
+                        appId = elementChildData.getNodeValue();
                     }
                     if( elementChildName.contentEquals("login") )
                     {
@@ -86,27 +98,92 @@ public class XMLHelper
                     {
                         newPassword = elementChildData.getNodeValue();
                     }
+                    if( elementChildName.contentEquals("home") )
+                    {
+                        home = elementChildData.getNodeValue();
+                    }
+                    if(elementChildName.contentEquals( "browserType" ))
+                    {
+                        browserType = elementChildData.getNodeValue();
+                    }
+                    if(elementChildName.contentEquals( "browserBinary" ))
+                    {
+                        browserBinary = elementChildData.getNodeValue();
+                    }
+                    if(elementChildName.contentEquals( "driverPath" ))
+                    {
+                        driverPath = elementChildData.getNodeValue();
+                    }
                 }
             }
 
-            if( id != null && newPassword != null && password != null && login != null )
+            if( application.getId().contentEquals( appId ) )
             {
-                User user = new User(id, login, password, newPassword);
-                users.add( user );
-            }
+                try
+                {
+                    User user = new User();
+                    user.setId( id );
+                    user.setLogin( login );
+                    user.setPasswd( password );
+                    user.setNewPasswd( newPassword );
+                    user.setHome( home );
 
+                    application.addUser( user );
+
+                    user.setBrowserType( browserType );
+                    user.setBrowserBinary( browserBinary );
+                    user.setDriverPath( driverPath );
+
+                    user.setFollowButtons( application.isFollowButtonsEnabled() );
+                    user.setFollowLinks( application.isFollowLinksEnabled() );
+                    user.setBaseReportFolder( application.getReportFolder() );
+                    user.setPageScreenshotEnabled( application.isPageScreenshotEnabled() );
+                    user.setPageElementScreenshotEnabled( application.isPageElementScreenshotEnabled() );
+                    user.setExploreVariantsEnabled( application.isExploreVariantsEnabled() );
+                    user.setBrowserWidth( application.getBrowserWidth() );
+                    user.setBrowserHeight( application.getBrowserHeight() );
+
+                    users.add( user );
+
+                }
+                catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                catch (InstantiationException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                catch (NoSuchMethodException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                catch (InvocationTargetException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
         }
 
         return users;
     }
 
-    public static ApplicationSetup getApplicationSetup(File appCfg) throws Exception
+    public static ApplicationConfiguration getApplicationSetup(File appCfg) throws Exception
     {
         if (!appCfg.exists())
         {
             throw new FileNotFoundException("Unable to find file: " + appCfg);
         }
-        ApplicationSetup setup = new ApplicationSetup();
+
+        ApplicationConfiguration setup = new ApplicationConfiguration();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -117,11 +194,15 @@ public class XMLHelper
         NodeList elementChilds = element.getChildNodes();
 
 
-        String applicationImpl = null;
+        // Purely application parameters
         String applicationDir = null;
-
-        String reportFolder = null;
+        String applicationImpl = null;
+        String applicationVersion = null;
         String usersCfgFile = null;
+
+        // user parameters that are centralized
+        String driverPath = null;
+        String reportFolder = null;
 
         boolean followLinks = false;
         boolean followButtons = false;
@@ -131,7 +212,9 @@ public class XMLHelper
 
         int browserHeight = 0;
         int browserWidth = 0;
-        String browserBinary = "";
+
+        String browserBinary = null;
+        String browserType = null;
 
         for(int elementChildIdx = 0; elementChildIdx < elementChilds.getLength() ; elementChildIdx++)
         {
@@ -146,7 +229,23 @@ public class XMLHelper
             {
                 if(elementChildData != null)
                 {
-                    if( elementChildName.contentEquals("reportFolder") )
+                    if( elementChildName.contentEquals("applicationImpl") )
+                    {
+                        applicationImpl = elementChildData.getNodeValue();
+                    }
+                    else if( elementChildName.contentEquals("applicationVersion") )
+                    {
+                        applicationVersion = elementChildData.getNodeValue();
+                    }
+                    else if( elementChildName.contentEquals("applicationDir") )
+                    {
+                        applicationDir = elementChildData.getNodeValue();
+                    }
+                    else if( elementChildName.contentEquals("usersCfgFile") )
+                    {
+                        usersCfgFile = elementChildData.getNodeValue();
+                    }
+                    else if( elementChildName.contentEquals("reportFolder") )
                     {
                         reportFolder = elementChildData.getNodeValue();
                     }
@@ -166,25 +265,21 @@ public class XMLHelper
                     {
                         takePageElementScreenshot = Boolean.valueOf( elementChildData.getNodeValue() );
                     }
-                    else if( elementChildName.contentEquals("applicationImpl") )
+                    else if( elementChildName.contentEquals("driverPath") )
                     {
-                        applicationImpl = elementChildData.getNodeValue();
+                        driverPath = elementChildData.getNodeValue();
                     }
-                    else if( elementChildName.contentEquals("applicationDir") )
+                    else if( elementChildName.contentEquals("browserType") )
                     {
-                        applicationDir = elementChildData.getNodeValue();
-                    }
-                    else if( elementChildName.contentEquals("usersCfgFile") )
-                    {
-                        usersCfgFile = elementChildData.getNodeValue();
+                        browserType = elementChildData.getNodeValue();
                     }
                     else if( elementChildName.contentEquals("browserWidth") )
                     {
-                        browserWidth = Integer.parseInt(elementChildData.getNodeValue());
+                        browserWidth = Integer.parseInt( elementChildData.getNodeValue() );
                     }
                     else if( elementChildName.contentEquals("browserHeight") )
                     {
-                        browserHeight = Integer.parseInt(elementChildData.getNodeValue());
+                        browserHeight = Integer.parseInt( elementChildData.getNodeValue() );
                     }
                     else if( elementChildName.contentEquals( "browserBinary" ))
                     {
@@ -200,30 +295,30 @@ public class XMLHelper
             }
         }
 
-        setup.setFollowLinks(followLinks);
-        setup.setFollowButtons(followButtons);
-
-        setup.setTakePageScreenshot( takePageScreenshot );
-        setup.setTakePageElementScreenshot( takePageElementScreenshot );
-
-        setup.setReportFolder(reportFolder);
-
-        if(applicationImpl != null)
-        {
-            setup.setApplicationImpl(applicationImpl);
-        }
-
-        setup.setApplicationDir( applicationDir );
-
-        setup.setExcludedLinks(getExcludedLinks(appCfg));
-        setup.setExcludedButtons(getExcludedButtons(appCfg));
-
+        // Application parameters
         setup.setAppCfgFile(appCfg);
         setup.setUsersCfgFile(usersCfgFile);
+        setup.setApplicationDir( applicationDir );
+        setup.setApplicationImpl(applicationImpl);
+        setup.setApplicationVersion( applicationVersion );
+
+        // User configuration parameters
+        setup.setFollowLinks(followLinks);
+        setup.setExcludedLinks( getExcludedLinks( appCfg ) );
+
+        setup.setFollowButtons( followButtons );
+        setup.setExcludedButtons( getExcludedButtons( appCfg ) );
+
+        setup.setPageScreenshotEnabled( takePageScreenshot );
+        setup.setPageElementScreenshotEnabled( takePageElementScreenshot );
+
+        setup.setReportFolder( reportFolder );
 
         setup.setBrowserHeight(browserHeight);
-        setup.setBrowserWidth(browserWidth);
-        setup.setBrowserBinary(browserBinary);
+        setup.setBrowserWidth( browserWidth );
+        setup.setBrowserBinary( browserBinary );
+        setup.setDriverPath( driverPath );
+        setup.setBrowserType( browserType );
 
         return setup;
     }
@@ -267,27 +362,31 @@ public class XMLHelper
         return excludedLinks;
     }
 
-    public static ApplicationManager getApplicationManager(File file) throws Exception
+    public static List<Application> getApplications(ApplicationFactory appFactory, File appCfg) throws Exception
     {
-        if (!file.exists())
+        if (!appCfg.exists())
         {
-            throw new FileNotFoundException("Unable to find file: " + file);
+            throw new FileNotFoundException("Unable to find file: " + appCfg);
         }
 
-        ApplicationSetup setup = getApplicationSetup(file);
+        List<Application> applications = new ArrayList<Application>(  );
 
-        ApplicationManager manager = new ApplicationManager( setup.getAppCfgFile(), setup.getUsersCfgFile() );
-        manager.setApplicationsDir( setup.getApplicationDir() );
+        ApplicationConfiguration setup = getApplicationSetup(appCfg);
 
         String applicationImpl = null;
-        if(setup.getApplicationImpl() != null)
+        if(setup.getApplicationImplementation() != null)
         {
-            applicationImpl = setup.getApplicationImpl();
+            applicationImpl = setup.getApplicationImplementation();
+        }
+        String applicationVersion = null;
+        if(setup.getApplicationVersion() != null)
+        {
+            applicationVersion = setup.getApplicationVersion();
         }
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(file);
+        Document doc = builder.parse(appCfg);
 
         NodeList elements = doc.getDocumentElement().getElementsByTagName("instance");
         for(int instanceIdx = 0; instanceIdx < elements.getLength(); instanceIdx++)
@@ -296,10 +395,8 @@ public class XMLHelper
             NodeList elementChilds = element.getChildNodes();
 
             String id = null;
-            String homeUrl = "";
             String domain = "";
 
-            boolean isRef = false;
             for(int elementChildIdx = 0; elementChildIdx < elementChilds.getLength() ; elementChildIdx++)
             {
                 Node elementChild = elementChilds.item( elementChildIdx );
@@ -313,43 +410,38 @@ public class XMLHelper
                         {
                             id = elementChildData.getNodeValue();
                         }
-                        else if(elementChildName.contentEquals("homeUrl"))
-                        {
-                            homeUrl = elementChildData.getNodeValue();
-                        }
                         else if(elementChildName.contentEquals("domain"))
                         {
                             domain = elementChildData.getNodeValue();
                         }
-                        else if(elementChildName.contentEquals("isRef"))
-                        {
-                            isRef = Boolean.valueOf(elementChildData.getNodeValue());
-                        }
                         else if(elementChildName.contentEquals( "applicationImpl" ))
                         {
                             applicationImpl = elementChildData.getNodeValue();
+                        }
+                        else if(elementChildName.contentEquals( "applicationVersion" ))
+                        {
+                            applicationVersion = elementChildData.getNodeValue();
                         }
                     }
                 }
             }
             if( id != null && applicationImpl != null )
             {
-                Application application = manager.buildApplication( applicationImpl );
+                ApplicationConfiguration newSetup = new ApplicationConfiguration( setup );
 
-                application.setId(id);
-                application.setRef( isRef );
-                application.setImpl( applicationImpl );
-                application.setHomeUrl( homeUrl );
-                application.setup(setup);
-                application.setDomain( domain );
-                // application.setReportFolder(setup.getReportFolder());
+                newSetup.setId( id );
+                newSetup.setDomain( domain );
+                newSetup.setApplicationImpl( applicationImpl );
+                newSetup.setApplicationVersion( applicationVersion );
 
-                application.addUsers( XMLHelper.getUsersFromConfigFile( setup.getUsersCfgFile() ) );
+                Application app = appFactory.buildApplication( newSetup );
 
-                manager.add( application );
+                XMLHelper.loadUsersFromConfigFile( app );
+
+                applications.add( app );
             }
         }
-        return manager;
+        return applications;
     }
 
     private static ArrayList<String> getExcludedButtons(File file) throws IOException, ParserConfigurationException, SAXException

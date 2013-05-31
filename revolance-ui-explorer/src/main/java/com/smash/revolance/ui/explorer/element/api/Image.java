@@ -18,6 +18,7 @@ package com.smash.revolance.ui.explorer.element.api;
 */
 
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -27,9 +28,10 @@ import org.openqa.selenium.WebElement;
  */
 public class Image extends Element
 {
-    public Image(IPage page, WebElement element)
+    public Image(Page page, WebElement element)
     {
         super( page, element );
+        setImplementation( "Image" );
         // setImg( element.getCssValue( "background" ) );
     }
 

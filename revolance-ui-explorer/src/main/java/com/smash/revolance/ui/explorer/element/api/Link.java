@@ -17,9 +17,9 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.helper.BotHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
@@ -34,9 +34,10 @@ import java.util.List;
  */
 public class Link extends Element
 {
-    public Link(IPage source, WebElement element)
+    public Link(Page source, WebElement element)
     {
         super( source, element );
+        setImplementation( "Link" );
         setHref( element.getAttribute( "href" ) );
     }
 
@@ -46,7 +47,7 @@ public class Link extends Element
     }
 
     @Override
-    public boolean equals(IElement element) throws IOException
+    public boolean equals(Element element) throws IOException
     {
         if ( element == null )
         {
@@ -61,11 +62,11 @@ public class Link extends Element
         return Element.isVisible( element ) && tag.contentEquals( "a" );
     }
 
-    public static boolean containsLink(List<IElement> elements, Link link)
+    public static boolean containsLink(List<Element> elements, Link link)
     {
-        for ( IElement element : filterLinks( elements ) )
+        for ( Element element : filterLinks( elements ) )
         {
-            if ( element.getText().contentEquals( link.getText() )
+            if ( element.getContent().contentEquals( link.getContent() )
                     && element.getHref().contentEquals( link.getHref() )  )
             {
                 return true;
@@ -74,11 +75,11 @@ public class Link extends Element
         return false;
     }
 
-    public static List<IElement> filterLinks(List<IElement> elements)
+    public static List<Element> filterLinks(List<Element> elements)
     {
-        List<IElement> links = new ArrayList<IElement>(  );
+        List<Element> links = new ArrayList<Element>(  );
 
-        for( IElement element : elements )
+        for( Element element : elements )
         {
             if( element instanceof Link )
             {
@@ -89,9 +90,9 @@ public class Link extends Element
         return links;
     }
 
-    public static List<IElement> getLinks(IPage page) throws Exception
+    public static List<Element> getLinks(Page page) throws Exception
     {
-        List<IElement> links = new ArrayList<IElement>();
+        List<Element> links = new ArrayList<Element>();
 
         for(WebElement element : BotHelper.getRawLinks(page.getUser().getBot(), page))
         {
@@ -103,7 +104,7 @@ public class Link extends Element
 
                     if(link.getArea()>0 && !link.getHref().isEmpty())
                     {
-                        if(!containsLink(links, link))
+                        if(!containsLink(links, link.getContent()))
                         {
                             links.add( link );
                         }
@@ -126,11 +127,11 @@ public class Link extends Element
      * @param link
      * @return
      */
-    public static boolean containsLink(List<IElement> elements, String link)
+    public static boolean containsLink(List<Element> elements, String link)
     {
-        for ( IElement element : filterLinks( elements ) )
+        for ( Element element : filterLinks( elements ) )
         {
-            if ( element.getText().contentEquals( link ) )
+            if ( element.getContent().contentEquals( link ) )
             {
                 return true;
             }

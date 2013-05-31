@@ -17,8 +17,8 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -29,15 +29,16 @@ import org.openqa.selenium.WebElement;
 public class Data extends Element
 {
 
-    public Data(IPage page, WebElement element)
+    public Data(Page page, WebElement element)
     {
         super( page, element );
+        setImplementation( "Data" );
     }
 
     @Override
-    public boolean equals(IElement element)
+    public boolean equals(Element element)
     {
-        return getText().contentEquals( element.getText() );
+        return getContent().contentEquals( element.getContent() );
     }
 
 }

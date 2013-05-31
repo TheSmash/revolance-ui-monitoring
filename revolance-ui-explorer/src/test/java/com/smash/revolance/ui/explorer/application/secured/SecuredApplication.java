@@ -33,18 +33,23 @@ import java.io.File;
  */
 public class SecuredApplication extends Application
 {
-    public SecuredApplication(ApplicationManager manager, File usersCfg) throws Exception
+    public SecuredApplication() throws Exception
     {
-        super(manager, usersCfg);
+        super();
     }
 
     @Override
-    public void enterLogin(User user, IPage page) throws Exception
+    public boolean enterLogin(User user, IPage page) throws Exception
     {
         if( page.getUrl().endsWith("login.html") )
         {
             user.getBrowser().findElement(By.id("username")).sendKeys(user.getLogin());
             user.getBrowser().findElement(By.id("password")).sendKeys(user.getPasswd());
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -55,15 +60,15 @@ public class SecuredApplication extends Application
     }
 
     @Override
-    public boolean isUnauthorized(IPage page)
+    public boolean isAuthorized(IPage page)
     {
-        return false;
+        return true;
     }
 
     @Override
-    public boolean awaitPageLoaded(IPage page)
+    public void awaitPageLoaded(IPage page)
     {
-        return true;
+
     }
 
     @Override
@@ -79,12 +84,17 @@ public class SecuredApplication extends Application
     }
 
     @Override
-    public void enterNewPassword(User user, IPage page) throws Exception
+    public boolean enterNewPassword(User user, IPage page) throws Exception
     {
         if(page.getUrl().endsWith("change-passwd.html"))
         {
             user.getBrowser().findElement(By.id("newPasswd")).sendKeys(user.getNewPasswd());
             user.getBrowser().findElement(By.id("confNewPasswd")).sendKeys(user.getNewPasswd());
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

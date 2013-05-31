@@ -17,8 +17,8 @@ package com.smash.revolance.ui.explorer.helper;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.element.api.Button;
+import com.smash.revolance.ui.explorer.element.api.Element;
 import com.smash.revolance.ui.explorer.element.api.ElementBean;
 import com.smash.revolance.ui.explorer.element.api.Link;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
@@ -34,20 +34,20 @@ import java.util.List;
  */
 public class PageHelper
 {
-    public static void filterElementsIncludedInEachOthers(List<IElement> elements)
+    public static void filterElementsIncludedInEachOthers(List<Element> elements)
     {
-        List<IElement> clickables = new ArrayList<IElement>(  );
+        List<Element> clickables = new ArrayList<Element>(  );
 
         clickables.addAll( Link.filterLinks( elements ) );
         clickables.addAll( Button.filterButtons( elements ) );
 
         elements.removeAll( clickables );
 
-        List<IElement> toBeRemoved = new ArrayList<IElement>(  );
+        List<Element> toBeRemoved = new ArrayList<Element>(  );
 
-        for(IElement clickable : clickables)
+        for(Element clickable : clickables)
         {
-            for(IElement element : elements)
+            for(Element element : elements)
             {
                 if( clickable.isIncluded( element ) )
                 {
@@ -60,7 +60,7 @@ public class PageHelper
         elements.addAll( clickables );
     }
 
-    public static IElement getBiggestElement(List<IElement> elements)
+    public static Element getBiggestElement(List<Element> elements)
     {
         if ( elements == null )
         {
@@ -71,8 +71,8 @@ public class PageHelper
             return null;
         }
         int maxArea = 0;
-        IElement pageElement = null;
-        for ( IElement element : elements )
+        Element pageElement = null;
+        for ( Element element : elements )
         {
             if ( element.getArea() > maxArea )
             {
@@ -88,7 +88,7 @@ public class PageHelper
         for(ElementBean element : page.getContent())
         {
             if( !element.isBroken()
-                    && element.isClickable()
+                    && element.getInstance().isClickable()
                     && (!element.isDisabled() || !element.hasBeenClicked() || sitemap.hasBeenExplored( element.getHref() ) ) )
             {
                 return false;

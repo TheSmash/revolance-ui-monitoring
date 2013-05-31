@@ -118,7 +118,7 @@ public class SiteMap
      * @param page
      * @throws Exception
      */
-    public void addPage(IPage page)
+    public void addPage(Page page)
     {
         if(page.isOriginal())
         {
@@ -161,7 +161,7 @@ public class SiteMap
             page = getPage(url);
             if(UrlHelper.containsHash(url))
             {
-                return page.getInstance().findVariantByHash(UrlHelper.getHash(url));
+                return page.getInstance().findVariantByHash(UrlHelper.getHash(url)).getBean();
             }
             else
             {
@@ -183,7 +183,7 @@ public class SiteMap
         return page;
     }
 
-    public Collection<PageBean> getBrokenPages()
+    public List<PageBean> getBrokenPages()
     {
         List<PageBean> brokenPages = new ArrayList<PageBean>();
         for(PageBean page : getPages())
@@ -196,12 +196,12 @@ public class SiteMap
         return brokenPages;
     }
 
-    public Collection<String> getBrokenLinks()
+    public List<String> getBrokenLinks()
     {
         List<String> brokenLinks = new ArrayList<String>();
         for(PageBean page : getBrokenPages())
         {
-            brokenLinks.add( page.getUrl() );
+            brokenLinks.add( page.getSource().getContent() );
         }
         return brokenLinks;
     }
@@ -398,26 +398,6 @@ public class SiteMap
         return user;
     }
 
-    public void setDomain(String domain)
-    {
-        this.user.setDomain( domain );
-    }
-
-    public int getSize()
-    {
-        return getPages().size();
-    }
-
-    public int getBrokenLinksSize()
-    {
-        return getBrokenLinks().size();
-    }
-
-    public boolean isHomeUrl(String url)
-    {
-        return url.contentEquals( user.getHome() );
-    }
-
     public boolean isEmpty()
     {
         return sitemap.isEmpty();
@@ -453,7 +433,7 @@ public class SiteMap
             page= findPageByUrl(url);
             if( page == null )
             {
-                page = page.getInstance().getVariant( null, UrlHelper.getHash( url ), false );
+                page = page.getInstance().getVariant( null, UrlHelper.getHash( url ), false ).getBean();
             }
         }
 

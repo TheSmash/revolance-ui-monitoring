@@ -17,11 +17,11 @@ package com.smash.revolance.ui.explorer.helper;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.element.api.Button;
 import com.smash.revolance.ui.explorer.element.api.Element;
 import com.smash.revolance.ui.explorer.element.api.Link;
 import com.smash.revolance.ui.explorer.page.IPage;
+import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.Bot;
 import org.openqa.selenium.*;
@@ -44,7 +44,19 @@ public class BotHelper
     public static boolean rightDomain(User user, String url)
     {
         String domain = user.getDomain();
-        return url.startsWith(domain);
+        return rightDomain( domain, url );
+    }
+
+    public static boolean rightDomain(String domain, String url)
+    {
+        if(domain != null && !domain.isEmpty() && url != null && !url.isEmpty())
+        {
+            return url.startsWith(domain);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static void sleep(long duration)
@@ -74,23 +86,11 @@ public class BotHelper
         {
             sleep( 1 );
             return BotHelper.takeScreenshot( bot );
-            /*
-            try
-            {
-                caption = new File(user.getCaptionFolder(), title + ".txt");
-                FileUtils.write(caption, browser.getPageSource());
-
-            }
-            catch (IOException e1)
-            {
-                System.err.println( e1 );
-            }
-            */
         }
     }
 
     /**
-     * Return the checksum of the new page if the page content has changed or null
+     * Return the checksum of the new page if the page content has changed or the previous one
      *
      *
      * @param bot
@@ -111,14 +111,14 @@ public class BotHelper
         }
     }
 
-    public static List<WebElement> getRawElements(Bot bot, IPage page) throws Exception
+    public static List<WebElement> getRawElements(Bot bot, Page page) throws Exception
     {
         UserHelper.browseTo(page);
         WebDriver browser = bot.getBrowser();
         return browser.findElements(By.xpath("//body//*"));
     }
 
-    public static List<WebElement> getRawLinks(Bot bot, IPage page) throws Exception
+    public static List<WebElement> getRawLinks(Bot bot, Page page) throws Exception
     {
         UserHelper.browseTo(page);
         WebDriver browser = bot.getBrowser();
@@ -131,7 +131,7 @@ public class BotHelper
         return elements;
     }
 
-    public static List<WebElement> getRawButtons(Bot bot, IPage page) throws Exception
+    public static List<WebElement> getRawButtons(Bot bot, Page page) throws Exception
     {
         UserHelper.browseTo(page);
         WebDriver browser = bot.getBrowser();
@@ -147,7 +147,7 @@ public class BotHelper
         return elements;
     }
 
-    public static WebElement findMatchingElement(Bot bot, IElement element) throws Exception
+    public static WebElement findMatchingElement(Bot bot, Element element) throws Exception
     {
         WebElement webelement = findWebElement( bot, element );
         if(webelement.isDisplayed() && webelement.isDisplayed())
@@ -160,7 +160,7 @@ public class BotHelper
         }
     }
 
-    public static WebElement findWebElement(Bot bot, IElement element) throws Exception
+    public static WebElement findWebElement(Bot bot, Element element) throws Exception
     {
         WebDriver browser = bot.getBrowser();
         if( !element.getId().trim().isEmpty() )

@@ -17,20 +17,11 @@ package com.smash.revolance.ui.explorer.bot;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
-import com.smash.revolance.ui.explorer.helper.BotHelper;
-import com.smash.revolance.ui.explorer.helper.ImageHelper;
-import com.smash.revolance.ui.explorer.helper.UrlHelper;
 import com.smash.revolance.ui.explorer.helper.UserHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.user.User;
 import org.openqa.selenium.WebDriver;
-
-import java.util.List;
-import java.util.UUID;
-
-import static com.smash.revolance.ui.explorer.helper.UserHelper.browse;
 
 /**
  * User: wsmash
@@ -46,7 +37,7 @@ public class Bot
 
     public Bot(User user) throws BrowserFactory.InstanciationError
     {
-        BrowserFactory.instanceciateNavigator( user );
+        BrowserFactory.instanceciateNavigator( user, user.getBrowserType() );
         setUser( user );
     }
 

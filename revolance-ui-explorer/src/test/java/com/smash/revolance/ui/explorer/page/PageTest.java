@@ -19,11 +19,12 @@ package com.smash.revolance.ui.explorer.page;
 
 import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.element.api.Button;
+import com.smash.revolance.ui.explorer.element.api.Element;
 import com.smash.revolance.ui.explorer.element.api.Link;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,15 +49,23 @@ public class PageTest
     public void setupTest() throws Exception
     {
         ApplicationManager manager = new ApplicationManager( appCfg );
-        Application app = manager.get( "website" );
+        Application app = manager.getApplication( "website" );
 
         user = app.getUser( "super user" );
 
-        user.setDomain( "file://" );
+        user.setDomain( index );
+
         user.enablePageScreenshot( false );
         user.enablePageElementScreenshot( false );
-        user.enableFollowButtons( false );
-        user.enableFollowLinks( false );
+        user.setFollowButtons( false );
+        user.setFollowLinks( false );
+        user.setBrowserType( "Firefox" );
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+        user.getBrowser().quit();
     }
 
     @Test
@@ -65,7 +74,7 @@ public class PageTest
         Page page = new Page( user, index );
         page.explore();
 
-        List<IElement> content = page.getContent();
+        List<Element> content = page.getContent();
 
         assertThat( content.size(), is( 3 ) );
         assertThat( Link.containsLink( content, "link_1" ), is( true ) );

@@ -27,8 +27,8 @@ import java.net.URLClassLoader;
  */
 public class JarClassLoader extends URLClassLoader
 {
-    public JarClassLoader(URL[] urls)
+    public JarClassLoader(URL url)
     {
-        super(urls);
+        super(new URL[]{url});
     }
 }

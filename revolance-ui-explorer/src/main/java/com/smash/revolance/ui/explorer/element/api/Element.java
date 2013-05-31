@@ -17,7 +17,6 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.IElement;
 import com.smash.revolance.ui.explorer.helper.BotHelper;
 import com.smash.revolance.ui.explorer.helper.ImageHelper;
 import com.smash.revolance.ui.explorer.helper.UserHelper;
@@ -46,19 +45,13 @@ import static com.smash.revolance.ui.explorer.helper.UserHelper.hasBeenExplored;
  * Date: 26/01/13
  * Time: 23:59
  */
-public abstract class Element implements IElement
+public abstract class Element implements Comparable<Element>
 {
-    private ElementBean bean;
+    private ElementBean bean = new ElementBean( this );
     private BufferedImage img;
 
-    private Element()
+    public Element(Page page, WebElement element)
     {
-        bean = new ElementBean( this.getClass().getSimpleName() );
-    }
-
-    public Element(IPage page, WebElement element)
-    {
-        this();
         setInternalId( UUID.randomUUID().toString() );
         setPage( page );
         setText( element.getText() );
@@ -68,21 +61,26 @@ public abstract class Element implements IElement
         setClz( element.getAttribute( "class" ) );
         setId( element.getAttribute( "id" ) );
         setValue( element.getAttribute( "value" ) );
+        setTarget( element.getAttribute( "target" ) );
     }
 
     public Element(PageBean pageBean, ElementBean bean)
     {
         this.bean = bean;
-        setPage( new Page(pageBean) );
+        setPage( new Page( pageBean ) );
     }
 
-    @Override
+    protected void setImplementation( String implementation )
+    {
+        this.bean.setImplementation( implementation );
+    }
+
     public void click() throws Exception
     {
-        if ( isClickable() && !hasBeenClicked()
-                && !hasBeenExplored( getUser(), getHref() ) )
+        if ( isClickable()  )
         {
             browseTo( getUser(), getUrl() );
+
             try
             {
                 _click( getBot() );
@@ -101,13 +99,13 @@ public abstract class Element implements IElement
     private void _click(Bot bot) throws Exception
     {
         WebElement element = findMatchingElement( bot, this );
-        if(element != null)
+        if ( element != null )
         {
-            System.out.println("Clicking on " + toJson());
+            System.out.println( "Clicking on " + toJson() );
             try
             {
                 String disabled = element.getAttribute( "disabled" );
-                if( disabled == null )
+                if ( disabled == null )
                 {
                     element.click(); // Can thow an ex
                     BotHelper.sleep( 1 );
@@ -126,18 +124,13 @@ public abstract class Element implements IElement
         System.err.println("Element could not be found:\n" + e.getMessage());
     }
 
-    public boolean equals(IElement element) throws Exception
-    {
-        return getBean().equals( element.getBean() );
-    }
 
-    @Override
-    public boolean isIncluded(IElement element)
+
+    public boolean isIncluded(Element element)
     {
         return element.getBean().isIncluded( getBean() );
     }
 
-    @Override
     public Rectangle getLocation()
     {
         return bean.getLocation();
@@ -157,16 +150,31 @@ public abstract class Element implements IElement
 
     public String getHref()
     {
-        return getUser().getDomain() + bean.getHref();
+        if(!bean.isExternal())
+        {
+            // The url is relative to the domain
+            return getUser().getDomain() + bean.getHref();
+        }
+        else
+        {
+            return bean.getHref();
+        }
     }
 
     public void setHref(String href)
     {
-        if( href.startsWith( getUser().getDomain() ) )
+        if ( href.startsWith( getUser().getDomain() ) )
         {
+            // The url is relative to the domain
             href = href.substring( getUser().getDomain().length() );
+            bean.setHref( href );
         }
-        bean.setHref( href );
+        else
+        {
+            // The url is absolute
+            bean.setExternal( true );
+            bean.setHref( href );
+        }
     }
 
     public boolean hasBeenClicked()
@@ -234,7 +242,7 @@ public abstract class Element implements IElement
         return bean.getText();
     }
 
-    public IPage getPage()
+    public Page getPage()
     {
         return bean.getPage().getInstance();
     }
@@ -282,7 +290,6 @@ public abstract class Element implements IElement
         return bean.getCaption();
     }
 
-    @Override
     public void takeScreenShot() throws Exception
     {
         if ( getArea() > 0 )
@@ -308,33 +315,44 @@ public abstract class Element implements IElement
     }
 
     @Override
-    public int compareTo(IElement element)
+    public int compareTo(Element element)
     {
         return bean.compareTo( element.getBean() );
     }
 
-    public void setPage(IPage page)
+    public void setPage(Page page)
     {
         bean.setPage( page.getBean() );
     }
 
     public boolean isClickable()
     {
-        if( bean.getImpl().contentEquals( "Link" ) )
+        if ( bean.getImplementation().contentEquals( "Link" ) )
         {
-            if( !getUser().isFollowLinksEnabled() )
+            if( !getUser().wantsToFollowLinks() )
             {
                 return false;
             }
+            else
+            {
+                return !getUser().getExcludedLinks().contains( getText() );
+            }
         }
-        else if( bean.getImpl().contentEquals( "Button" ) )
+        else if ( bean.getImplementation().contentEquals( "Button" ) )
         {
-            if( !getUser().isFollowButtonsEnabled() )
+            if( !getUser().wantsToFollowButtons() )
             {
                 return false;
             }
+            else
+            {
+                return !getUser().getExcludedButtons().contains( getText().isEmpty()?getValue():getText() );
+            }
         }
-        return bean.isClickable() ;
+        else
+        {
+            return false;
+        }
     }
 
     public static boolean isVisible(WebElement element)
@@ -384,7 +402,7 @@ public abstract class Element implements IElement
         return element.getLocation().contains( rectangle );
     }
 
-    public static boolean isIncluded(IElement element, Rectangle rectangle)
+    public static boolean isIncluded(Element element, Rectangle rectangle)
     {
         return isIncluded( element.getBean(), rectangle );
     }
@@ -398,9 +416,9 @@ public abstract class Element implements IElement
         return rectangleRef.contains( rectangle );
     }
 
-    public static List<IElement> filterClickableElements(List<ElementBean> elements)
+    public static List<Element> filterClickableElements(List<ElementBean> elements)
     {
-        List<IElement> filteredElements = new ArrayList<IElement>(  );
+        List<Element> filteredElements = new ArrayList<Element>(  );
 
         for(ElementBean element : elements)
         {
@@ -417,12 +435,14 @@ public abstract class Element implements IElement
     {
         for(WebElement element : elements)
         {
-            if(element.getText().contentEquals( text ) )
+            String txt = element.getText();
+            String value = element.getAttribute( "value" );
+            if( txt.contentEquals( text ) || value.contentEquals( txt ))
             {
                 return element;
             }
         }
-        throw new Exception( "Unable to find element with text '" + text + "'." );
+        throw new Exception( "Unable to find element with text/value matching '" + text + "'." );
     }
 
     public static WebElement filterElementByLocation(List<WebElement> elements, Rectangle rectangle) throws Exception
@@ -458,4 +478,37 @@ public abstract class Element implements IElement
         this.bean.setInternalId( internalId );
     }
 
+    public void setTarget(String target)
+    {
+        this.bean.setTarget( target );
+    }
+
+    public String getTarget()
+    {
+        return bean.getTarget();
+    }
+
+    public String getContent()
+    {
+        return bean.getContent();
+    }
+
+    public static Element buildElement(ElementBean elementBean)
+    {
+        Element element = null;
+        if( elementBean.getImplementation().contentEquals( "Link" ) )
+        {
+            element = new Link( elementBean );
+        }
+        else if( elementBean.getImplementation().contentEquals( "Button" ) )
+        {
+            element = new Button( elementBean );
+        }
+        return element;
+    }
+
+    public boolean equals(Element element) throws Exception
+    {
+        return getBean().equals( element.getBean() );
+    }
 }

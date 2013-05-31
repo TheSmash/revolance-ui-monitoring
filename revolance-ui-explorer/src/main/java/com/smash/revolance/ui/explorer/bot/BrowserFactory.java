@@ -17,13 +17,12 @@ package com.smash.revolance.ui.explorer.bot;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.application.ApplicationManager;
-import com.smash.revolance.ui.explorer.helper.OSHelper;
 import com.smash.revolance.ui.explorer.user.User;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -37,47 +36,88 @@ import java.util.concurrent.TimeUnit;
  */
 public class BrowserFactory
 {
-    public static void instanceciateNavigator(User user) throws InstanciationError
+    public static void instanceciateNavigator(User user, String browserType) throws InstanciationError
+    {
+        instanceciateNavigator(user, BrowserType.fromString( browserType ) );
+    }
+
+    public static void instanceciateNavigator(User user, BrowserType browserType) throws InstanciationError
     {
         if ( !user.isExplorationDone() )
         {
-            File driver = new File( getDriverPath( user.getApplication().getApplicationManager() ) );
-            File binary = new File( user.getBrowserBinary() );
+            WebDriver browser = null;
+            DriverService service = null;
 
-            // ImmutableMap<String, String> env = new ImmutableMap.Builder<String, String>().build();
-            ChromeDriverService.Builder serviceBuilder = new ChromeDriverService.Builder()
-                    .usingDriverExecutable( driver )
-                    .usingAnyFreePort();
+            if( browserType == BrowserType.Firefox )
+            {
+                 browser = new FirefoxDriver();
+            }
+            else if ( browserType == BrowserType.Chrome )
+            {
+                File driver = new File( user.getDriverPath( ) );
+                File binary = new File( user.getBrowserBinary() );
 
-            // serviceBuilder.withEnvironment( env );
-            DriverService service = serviceBuilder.build();
-            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-            capabilities.setCapability( "chrome.binary", binary.getAbsolutePath() );
-            // capabilities.setCapability("chrome.switches", Arrays.asList("--start-maximized"));
 
-            WebDriver browser = new ChromeDriver( (ChromeDriverService) service, capabilities );
+                // ImmutableMap<String, String> env = new ImmutableMap.Builder<String, String>().build();
+                ChromeDriverService.Builder serviceBuilder = new ChromeDriverService.Builder()
+                        .usingDriverExecutable( driver )
+                        .usingAnyFreePort();
 
-            browser.manage().timeouts().implicitlyWait( 1, TimeUnit.MINUTES );
+                // serviceBuilder.withEnvironment( env );
+                service = serviceBuilder.build();
+                DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+                capabilities.setCapability( "chrome.binary", binary.getAbsolutePath() );
+                // capabilities.setCapability("chrome.switches", Arrays.asList("--start-maximized"));
 
-            System.out.println( "The user: " + user.getId() + " is starting the browser (" + user.getBrowserWidth() + ", " + user.getBrowserHeight() + ")" );
-            browser.manage().window().setSize( new Dimension( user.getBrowserWidth(), user.getBrowserHeight() ) );
+                browser = new ChromeDriver( (ChromeDriverService) service, capabilities );
+            }
 
-            user.setDriverService( service );
-            user.setBrowser( browser );
-            user.setBrowserActive( true );
+            if( browser != null)
+            {
+
+                browser.manage().timeouts().implicitlyWait( 1, TimeUnit.MINUTES );
+
+                System.out.println( "The user: " + user.getId() + " is starting the browser (" + user.getBrowserWidth() + ", " + user.getBrowserHeight() + ")" );
+                browser.manage().window().setSize( new Dimension( user.getBrowserWidth(), user.getBrowserHeight() ) );
+                user.setBrowser( browser );
+                user.setBrowserActive( true );
+            }
+
+            if( service != null )
+            {
+                user.setDriverService( service );
+            }
         }
-    }
-
-    private static String getDriverPath( ApplicationManager manager )
-    {
-        return manager.getHome() + "/driver/" + ( OSHelper.isUnix()?"unix":"win") + "/chromedriver" + (!OSHelper.isUnix()?".exe":"");
     }
 
     public static class InstanciationError extends Throwable
     {
         public InstanciationError(String s, Throwable t)
         {
-            super(s, t);
+            this( s );
+            super.initCause( t.getCause() );
+        }
+
+        public InstanciationError(String s)
+        {
+            super( s );
+        }
+    }
+
+    private static enum BrowserType
+    {
+        Chrome, Firefox, IE;
+
+        public static BrowserType fromString(String browserType) throws InstanciationError
+        {
+            for(BrowserType browser : BrowserType.values())
+            {
+                if( String.valueOf( browser ).toLowerCase().contentEquals( browserType.trim().toLowerCase() ) )
+                {
+                    return browser;
+                }
+            }
+            throw new InstanciationError("Undefined browser type: '" + browserType + "'.");
         }
     }
 }
