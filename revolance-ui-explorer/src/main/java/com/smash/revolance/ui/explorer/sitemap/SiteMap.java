@@ -422,7 +422,7 @@ public class SiteMap
         {
             if( !page.getInstance().hasBeenExplored())
             {
-                for( ElementBean element : findPageByUrl( url ).getClickableContent())
+                for( ElementBean element : page.getClickableContent())
                 {
                     if( !element.isBroken()
                             && !element.hasBeenClicked()

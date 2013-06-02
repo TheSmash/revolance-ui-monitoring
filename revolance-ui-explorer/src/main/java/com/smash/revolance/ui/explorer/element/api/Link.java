@@ -47,6 +47,12 @@ public class Link extends Element
         super(bean.getPage(), bean);
     }
 
+    public Link()
+    {
+        super();
+        setTag( "a" );
+    }
+
     @Override
     public boolean equals(Element element) throws IOException
     {

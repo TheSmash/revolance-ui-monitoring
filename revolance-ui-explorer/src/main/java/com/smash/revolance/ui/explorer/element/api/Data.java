@@ -37,6 +37,11 @@ public class Data extends Element
         setImplementation( "Data" );
     }
 
+    public Data()
+    {
+        setTag( "div" );
+    }
+
     @Override
     public boolean equals(Element element)
     {
@@ -59,28 +64,6 @@ public class Data extends Element
         }
 
         return datas;
-    }
-
-    public static void prepareContentForAddition(List<Element> elements, Element elem)
-    {
-        List<Element> toBeRemoved = new ArrayList<Element>(  );
-
-        for(Element element : elements )
-        {
-            if( element instanceof Button
-                    || element instanceof Link
-                    || element instanceof Data )
-            {
-                if( element.isIncluded( elem )
-                        && elem.getContent().contentEquals( element.getContent() ) )
-                {
-                    // Replace the matched Data element by the Link or Button
-                    toBeRemoved.add( element );
-                }
-            }
-        }
-
-        elements.removeAll( toBeRemoved );
     }
 
 }

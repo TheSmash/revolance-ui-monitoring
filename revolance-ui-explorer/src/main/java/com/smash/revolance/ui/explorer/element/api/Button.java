@@ -47,6 +47,11 @@ public class Button extends Element
         super(bean.getPage(), bean);
     }
 
+    public Button()
+    {
+        setTag( "button" );
+    }
+
     public static boolean containsButton(List<Element> elements, Button element) throws Exception
     {
         for ( Element button : filterButtons( elements ) )

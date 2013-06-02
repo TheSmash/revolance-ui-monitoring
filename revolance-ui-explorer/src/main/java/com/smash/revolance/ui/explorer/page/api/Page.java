@@ -815,6 +815,6 @@ public class Page implements IPage
 
     public List<Element> getFields()
     {
-        return Field.filterFields( content );
+        return Input.filterFields( content );
     }
 }

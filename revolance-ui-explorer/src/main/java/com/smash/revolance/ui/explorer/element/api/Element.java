@@ -58,6 +58,11 @@ public class Element implements Comparable<Element>
         setId( element.getAttribute( "id" ) );
     }
 
+    public Element( )
+    {
+
+    }
+
     public void setAlt(String alt)
     {
         this.bean.setAlt( alt );
@@ -126,14 +131,17 @@ public class Element implements Comparable<Element>
         {
             return Link.class;
         }
-        else if ( ( tag.contentEquals( "input" ) && (type.contentEquals( "submit" ) || type.contentEquals( "button" ) ) )
+        else if ( ( tag.contentEquals( "input" )
+                        && (type.contentEquals( "submit" )
+                            || type.contentEquals( "button" ) ) )
                     || ( tag.contentEquals( "button" ) ) )
         {
             return Button.class;
         }
-        else if( tag.contentEquals( "input" ) && (!type.contentEquals( "submit" ) && !type.contentEquals( "button" )) )
+        else if( tag.contentEquals( "input" )
+                && (!type.contentEquals( "submit" ) && !type.contentEquals( "button" )) )
         {
-            return Field.class;
+            return Input.class;
         }
         else if ( !getBg( element ).isEmpty() && txt.isEmpty() )
         {
@@ -670,8 +678,12 @@ public class Element implements Comparable<Element>
     {
         List<Element> elements = new ArrayList<Element>(  );
 
-        for(WebElement element : BotHelper.getRawElements( page.getUser().getBot(), page ))
+        List<WebElement> webElements = BotHelper.getRawElements( page.getUser().getBot(), page );
+        int idx = 0;
+        int elementCount = webElements.size();
+        for(WebElement element : webElements)
         {
+            idx ++;
             try
             {
                 if(element.isDisplayed())
@@ -683,8 +695,7 @@ public class Element implements Comparable<Element>
 
                         if( elem.getArea()>0 )
                         {
-                            Data.prepareContentForAddition( elements, elem );
-                            elements.add( elem );
+                            Element.handleAddition( elements, elem );
                         }
                     }
                 }
@@ -693,9 +704,36 @@ public class Element implements Comparable<Element>
             {
                 System.err.println(e);
             }
+            System.out.print("\rRetrieving page element ( " + idx + "/" + elementCount + " )");
         }
-
+        System.out.println("\nRetrieving page elements [Done]");
         return elements;
+    }
+
+    public static void handleAddition(List<Element> elements, Element elem)
+    {
+        List<Element> toBeRemoved = new ArrayList<Element>(  );
+
+        if( elem instanceof Button
+                || elem instanceof Link
+                || elem instanceof Data )
+        {
+            for(Element element : elements )
+            {
+                if( element instanceof Data )
+                {
+                    if( element.isIncluded( elem )
+                            && elem.getContent().contentEquals( element.getContent() ) )
+                    {
+                        // Replace the matched Data element by the Link or Button
+                        toBeRemoved.add( element );
+                    }
+                }
+            }
+
+            elements.removeAll( toBeRemoved );
+        }
+        elements.add( elem );
     }
 
     private static boolean containsElement(List<Element> elements, Element elem)
@@ -741,4 +779,5 @@ public class Element implements Comparable<Element>
     {
         return bean.isDisabled();
     }
+
 }

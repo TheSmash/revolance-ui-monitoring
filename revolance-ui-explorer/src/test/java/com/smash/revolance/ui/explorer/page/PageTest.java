@@ -19,15 +19,21 @@ package com.smash.revolance.ui.explorer.page;
 
 import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
+import com.smash.revolance.ui.explorer.element.api.Data;
 import com.smash.revolance.ui.explorer.element.api.Element;
+import com.smash.revolance.ui.explorer.element.api.Link;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.UserExplorer;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -93,6 +99,8 @@ public class PageTest
 
         assertThat( page.getImages().size(), is( 1 ) );
     }
+
+
 
 
 }
