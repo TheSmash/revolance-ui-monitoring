@@ -324,7 +324,7 @@ function showNavigation()
 
 function showActions()
 {
-	var actions = '<input type="button" value="button-1" /><button value="button-2" />';
+	var actions = '<input type="button" value="button-1" /><button type="button" >button-2</button>';
 	var div = document.createElement("div");
 	div.innerHTML = actions;
 	getBody().appendChild(div);
@@ -343,22 +343,22 @@ function getBody()
 	return document.body;
 }
 
-function enforceContent(privillege)
+function enforceContent(privilege)
 {
-//	alert("enforcing page content for privillege " + privillege);
+//	alert("enforcing page content for privilege " + privilege);
 
 	showGreedings();
 
-	if(privillege === "all")
+	if(privilege === "all")
 	{
 		showNavigation();
 		showActions();
 	}
-	else if(privillege === "navigation")
+	else if(privilege === "navigation")
 	{
 		showNavigation();
 	}
-	else if(privillege === "action")
+	else if(privilege === "action")
 	{
 		showActions();
 	}

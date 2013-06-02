@@ -47,15 +47,6 @@ public class Button extends Element
         super(bean.getPage(), bean);
     }
 
-    public static boolean isButton(WebElement element)
-    {
-        String tag = element.getTagName();
-        String type = element.getAttribute( "type" );
-        return Element.isVisible( element )
-                && tag.contentEquals( "input" )
-                && ( type.contentEquals( "button" ) || type.contentEquals( "submit" ) );
-    }
-
     public static boolean containsButton(List<Element> elements, Button element) throws Exception
     {
         for ( Element button : filterButtons( elements ) )
@@ -72,11 +63,14 @@ public class Button extends Element
     {
         List<Element> buttons = new ArrayList<Element>(  );
 
-        for( Element element : elements )
+        if( elements != null )
         {
-            if( element instanceof Button )
+            for( Element element : elements )
             {
-                buttons.add( element );
+                if( element instanceof Button )
+                {
+                    buttons.add( element );
+                }
             }
         }
 
@@ -87,16 +81,15 @@ public class Button extends Element
     {
         List<Element> buttons = new ArrayList<Element>();
 
-        for(WebElement element : BotHelper.getRawButtons(page.getUser().getBot(), page))
+        for(WebElement element : BotHelper.getRawElements(page.getUser().getBot(), page))
         {
             try
             {
-                if(element.isDisplayed())
+                if(element.isDisplayed()
+                        && Element.getImplementation( element ).getClass().getName().contentEquals( Button.class.getName() ))
                 {
                     Button button = new Button( page, element );
-                    String type = button.getType();
-                    if(button.getArea()>0
-                            && (type.contentEquals( "submit" ) || type.contentEquals( "button" )) )
+                    if( button.getArea()>0 )
                     {
                         if(!Button.containsButton( buttons, button ))
                         {

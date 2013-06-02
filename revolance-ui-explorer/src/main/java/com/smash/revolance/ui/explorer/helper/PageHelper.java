@@ -17,15 +17,12 @@ package com.smash.revolance.ui.explorer.helper;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.element.api.Button;
-import com.smash.revolance.ui.explorer.element.api.Element;
-import com.smash.revolance.ui.explorer.element.api.ElementBean;
-import com.smash.revolance.ui.explorer.element.api.Link;
+import com.smash.revolance.ui.explorer.element.api.*;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
+import org.openqa.selenium.Point;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: wsmash
@@ -34,30 +31,103 @@ import java.util.List;
  */
 public class PageHelper
 {
-    public static void filterElementsIncludedInEachOthers(List<Element> elements)
+    public static void filterElementsIncludedInEachOthers(List<Element> content)
     {
-        List<Element> clickables = new ArrayList<Element>(  );
-
-        clickables.addAll( Link.filterLinks( elements ) );
-        clickables.addAll( Button.filterButtons( elements ) );
-
-        elements.removeAll( clickables );
-
-        List<Element> toBeRemoved = new ArrayList<Element>(  );
-
-        for(Element clickable : clickables)
+        Collections.sort( content, new Comparator<Element>()
         {
-            for(Element element : elements)
+            @Override
+            public int compare(Element o1, Element o2)
             {
-                if( clickable.isIncluded( element ) )
+                if( o1.getArea() > o2.getArea() )
                 {
-                    toBeRemoved.add( element );
+                    return -1;
                 }
+                else
+                {
+                    return 1;
+                }
+            }
+        } );
+
+        List<Element> hudgeBlocs = new ArrayList<Element>(  );
+
+        for(Element bloc : Data.filterData( content ) )
+        {
+            double area = (double) bloc.getPage().getArea();
+            if( bloc.getArea() >= 0.98*area )
+            {
+                content.remove( bloc );
+            }
+            else if( bloc.getArea() > area/8 )
+            {
+                hudgeBlocs.add( bloc );
             }
         }
 
-        elements.removeAll( toBeRemoved );
-        elements.addAll( clickables );
+        List<Element> contentToFilter = new ArrayList<Element>(  );
+        contentToFilter.addAll( content );
+
+        for(Element hudgeBloc : hudgeBlocs)
+        {
+            List<Element> matchingElements = new ArrayList<Element>(  );
+
+            // What are the elements included in the bloc?
+            for(Element element : contentToFilter)
+            {
+                if(element != hudgeBloc
+                        && element.getArea()<(hudgeBloc.getArea()*2/3))
+                {
+                    if( (hudgeBloc.isIncluded( element )
+                            && hudgeBloc.getContent().contains( element.getContent() ) ) )
+                    {
+                        matchingElements.add( element );
+                    }
+                }
+            }
+
+            // Does all those elements constitute the content of the bloc?
+            List<String> blocContent = buildListFromArray( hudgeBloc.getContent().split( "\\n" ) );
+            for(Element element : matchingElements)
+            {
+                if(!blocContent.isEmpty())
+                {
+                    List<String> matchingElementsContent = buildListFromArray( element.getContent().split( "\\n" ) );
+                    for( String matchingElementContent : matchingElementsContent )
+                    {
+                        if( blocContent.contains( matchingElementContent ) )
+                        {
+                            blocContent.remove( element.getContent() );
+                        }
+                    }
+                }
+            }
+
+            // When we can replace the bloc content by the smaller data content
+            if( blocContent.isEmpty() )
+            {
+                // Nothing to be done on the data. Hudgebloc has already been removed.
+            }
+            else
+            {
+                // We keep the biggest data bloc, but we remove the smalled ones
+                content.removeAll( Data.filterData( matchingElements ) );
+                content.add( hudgeBloc );
+            }
+
+        }
+
+    }
+
+    private static <T> List<T> buildListFromArray(T[] array)
+    {
+        List<T> list = new ArrayList<T>( );
+
+        for(T t : array)
+        {
+            list.add( t );
+        }
+
+        return list;
     }
 
     public static Element getBiggestElement(List<Element> elements)
@@ -83,17 +153,4 @@ public class PageHelper
         return pageElement;
     }
 
-    public static boolean contentHasBeenExplored(SiteMap sitemap, PageBean page) throws Exception
-    {
-        for(ElementBean element : page.getContent())
-        {
-            if( !element.isBroken()
-                    && element.getInstance().isClickable()
-                    && (!element.isDisabled() || !element.hasBeenClicked() || sitemap.hasBeenExplored( element.getHref() ) ) )
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 }

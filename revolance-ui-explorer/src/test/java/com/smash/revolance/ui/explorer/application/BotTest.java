@@ -25,6 +25,7 @@ import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.Bot;
+import com.smash.revolance.ui.explorer.UserExplorer;
 import org.apache.commons.exec.OS;
 import org.junit.*;
 import org.openqa.selenium.WebDriver;
@@ -92,13 +93,15 @@ public class BotTest
 
         user.enablePageScreenshot( false );
         user.enablePageElementScreenshot( false );
-        user.setFollowButtons( false );
+
+        user.setFollowButtons( true );
         user.setFollowLinks( true );
-        user.setExploreVariantsEnabled( false );
+        user.setExploreVariantsEnabled( true );
 
         user.setDomain( website );
         user.setHome( index );
-        user.explore();
+
+        new UserExplorer( user ).explore();
 
         bot = user.getBot();
         browser = bot.getBrowser();
@@ -163,11 +166,9 @@ public class BotTest
     public void botShouldDetectBrokenLinks() throws Exception
     {
         assertThat( sitemap.getBrokenPages().size(), is( 1 ) );
-        assertThat( sitemap.getBrokenPages().get(0).getUrl(), endsWith( BROKEN ));
-        assertThat( sitemap.getBrokenPages().get(0).getSource().isBroken(), is(true) );
-
-        assertThat( sitemap.getBrokenLinks().size(), is( 1 ) );
         assertThat( sitemap.getBrokenLinks().contains( "Broken" ), is( true ) );
+        assertThat( sitemap.getBrokenPages().get(0).getUrl(), endsWith( BROKEN ));
+        assertThat( sitemap.getBrokenPages().get(0).getSource().isBroken(), is(true) );;
     }
 
     @Test

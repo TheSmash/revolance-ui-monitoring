@@ -19,6 +19,7 @@ package com.smash.revolance.ui.explorer.application.secured;
 
 import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
+import com.smash.revolance.ui.explorer.ApplicationExplorer;
 import com.smash.revolance.ui.explorer.page.api.ElementNotFound;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
@@ -149,7 +150,7 @@ public class SecuredApplicationTest
     @Test
     public void testerShouldDetectEnforcementOnASecuredWebsite() throws Exception, BrowserFactory.InstanciationError, ElementNotFound
     {
-        app.explore();
+        new ApplicationExplorer( app ).explore( 60 );
 
         Page adminPage = administrator.getSiteMap().findPageByUrl( HOME ).getInstance();
 

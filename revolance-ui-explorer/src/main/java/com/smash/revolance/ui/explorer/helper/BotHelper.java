@@ -205,4 +205,16 @@ public class BotHelper
         }
     }
 
+    public static List<WebElement> getRawImages(Bot bot, Page page) throws Exception
+    {
+        UserHelper.browseTo(page);
+        WebDriver browser = bot.getBrowser();
+
+        List<WebElement> elements = new ArrayList<WebElement>();
+
+        By selector = By.xpath( "//body//*" );
+        elements.addAll( browser.findElements( selector) );
+
+        return elements;
+    }
 }

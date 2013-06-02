@@ -1,14 +1,14 @@
 package com.smash.revolance.ui.explorer.user;
 
 /*
-        This file is part of Revolance.
+        This file is part of Revolance UI Suite.
 
-        Revolance is free software: you can redistribute it and/or modify
+        Revolance UI Suite is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
         the Free Software Foundation, either version 3 of the License, or
         (at your option) any later version.
 
-        Revolance is distributed in the hope that it will be useful,
+        Revolance UI Suite is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
         GNU General Public License for more details.
@@ -17,7 +17,6 @@ package com.smash.revolance.ui.explorer.user;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.page.api.PageBean;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -38,20 +37,20 @@ public class UserBean
     @JsonIgnore
     private User instance;
 
-    private String id;
-    private String login;
+    private String id = "";
+    private String login = "";
 
 
-    private String  newPasswd;
-    private String  passwd;
+    private String  newPasswd = "";
+    private String  passwd = "";
     private boolean followButtonsEnabled;
     private boolean followLinksEnabled;
     private boolean pageScreenshot;
     private boolean pageElementScreenShot;
-    private String  domain;
-    private String  sitemapFolder;
-    private String  home;
-    private String  driverPath;
+    private String  domain = "";
+    private String  sitemapFolder = "";
+    private String  home = "";
+    private String  driverPath = "";
 
     @JsonDeserialize(contentAs = String.class, as = ArrayList.class)
     private List<String> excludedLinks = new ArrayList<String>();
@@ -61,9 +60,11 @@ public class UserBean
 
     private int     browserHeight;
     private int     browserWidth;
-    private String  browserBinary;
     private boolean exploreVariants;
-    private String  reportFolder;
+
+    private String  reportFolder  = "";
+    private String  browserType   = "";
+    private String  browserBinary = "";
 
     public UserBean(User instance)
     {
@@ -273,5 +274,15 @@ public class UserBean
     public boolean isExploreVariantsEnabled()
     {
         return exploreVariants;
+    }
+
+    public void setBrowserType(String browserType)
+    {
+        this.browserType = browserType;
+    }
+
+    public String getBrowserType()
+    {
+        return browserType;
     }
 }

@@ -18,8 +18,7 @@ package com.smash.revolance.ui.explorer.diff;
 */
 
 /**
- * Created with IntelliJ IDEA.
- * User: ebour
+ * User: wsmash
  * Date: 23/04/13
  * Time: 22:59
  */

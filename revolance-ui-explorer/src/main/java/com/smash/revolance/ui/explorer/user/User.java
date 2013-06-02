@@ -1,14 +1,14 @@
 package com.smash.revolance.ui.explorer.user;
 
 /*
-        This file is part of Revolance.
+        This file is part of Revolance UI Suite.
 
-        Revolance is free software: you can redistribute it and/or modify
+        Revolance UI Suite is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
         the Free Software Foundation, either version 3 of the License, or
         (at your option) any later version.
 
-        Revolance is distributed in the hope that it will be useful,
+        Revolance UI Suite is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
         GNU General Public License for more details.
@@ -17,24 +17,24 @@ package com.smash.revolance.ui.explorer.user;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import com.smash.revolance.ui.explorer.element.api.Element;
+import com.smash.revolance.ui.explorer.element.api.ElementBean;
 import com.smash.revolance.ui.explorer.helper.JsonHelper;
 import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationDifferencies;
+import com.smash.revolance.ui.explorer.helper.UserHelper;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.reporter.api.GraphReporter;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 import com.smash.revolance.ui.explorer.bot.Bot;
 import com.smash.revolance.ui.explorer.bot.BrowserFactory;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static com.smash.revolance.ui.explorer.helper.ArchiveHelper.buildArchive;
 
 /**
  * User: wsmash
@@ -48,21 +48,19 @@ public class User
 
     private SiteMap sitemap;
 
-    private File baseReportFolder;
-    private File reportFolder;
+    private File baseReportFolder = new File( "." );
+    private File reportFolder     = new File( "." );
 
     private boolean browserActive;
     private boolean explorationDone;
 
     private Application app;
 
-
     private DriverService driverService;
 
 
     private UserBean bean = new UserBean( this );
-
-    private String browserType;
+    private Page currentPage;
 
 
     public User()
@@ -70,11 +68,16 @@ public class User
         sitemap = new SiteMap( bean );
     }
 
-    public User(String id, String home, String login, String passwd, String newPasswd)
+    public User(String id, String home)
     {
         this();
         setId( id );
         setHome( home );
+    }
+
+    public User(String id, String home, String login, String passwd, String newPasswd)
+    {
+        this( id, home );
         setLogin( login );
         setPasswd( passwd );
         setNewPasswd( newPasswd );
@@ -93,6 +96,7 @@ public class User
     public void setApplication(Application app)
     {
         this.app = app;
+        setDomain( app.getDomain() );
     }
 
     public Bot getBot() throws Exception
@@ -161,7 +165,7 @@ public class User
 
     public File getReportFolder()
     {
-        if(bean.getReportFolder() == null)
+        if(bean.getReportFolder().isEmpty())
         {
             reportFolder = new File(getBaseReportFolder(), getId());
             if(!reportFolder.exists())
@@ -188,7 +192,7 @@ public class User
         return baseReportFolder;
     }
 
-    public void setBaseReportFolder(String folder) throws IOException
+    public void setBaseReportFolder(String folder)
     {
         baseReportFolder = new File(folder, getApplication().getId());
     }
@@ -223,19 +227,7 @@ public class User
         bean.setDomain( domain );
     }
 
-    public void explore() throws Exception
-    {
-        FileUtils.cleanDirectory( getReportFolder() );
-        long start = System.currentTimeMillis();
-        new Page(bean.getInstance(), bean.getHome()).explore( );
-        setExplorationDone(true);
-        stopBot();
-        System.out.println("\nDiconnecting user: " + getId());
-        long duration = System.currentTimeMillis()-start;
-        System.out.println("Exploration done in " + duration/60000 + "mn");
-    }
-
-    private void stopBot() throws Exception
+    public void stopBot() throws Exception
     {
         if (isBrowserActive())
         {
@@ -318,9 +310,11 @@ public class User
         return driverService;
     }
 
-    public void setBrowser(WebDriver browser)
+    public WebDriver setBrowser(WebDriver browser)
     {
+        WebDriver oldBrowser = this.browser;
         this.browser = browser;
+        return oldBrowser;
     }
 
     public int getBrowserHeight()
@@ -343,7 +337,7 @@ public class User
         this.bean.setBrowserWidth( width );
     }
 
-    public File doSitemapReport() throws Exception
+    public File doContentReport() throws Exception
     {
         File report = new File(getReportFolder(), "sitemap.json");
         JsonHelper.getInstance().map( report, getSiteMap() );
@@ -404,12 +398,12 @@ public class User
 
     public String getBrowserType()
     {
-        return browserType;
+        return bean.getBrowserType();
     }
 
     public void setBrowserType(String type)
     {
-        this.browserType = type;
+        this.bean.setBrowserType( type );
     }
 
     public void setFollowButtons(boolean followButtons)
@@ -472,4 +466,71 @@ public class User
             getExcludedLinks().add( link );
         }
     }
+
+    public boolean wantsGreedyExploration()
+    {
+        return true;
+    }
+
+    public User goTo(Page page)
+    {
+        UserHelper.browseTo( page );
+        setCurrentPage( page );
+        return this;
+    }
+
+    public Page getCurrentPage()
+    {
+        return currentPage;
+    }
+
+    public User awaitLoaded() throws Exception
+    {
+        return awaitLoaded( getCurrentPage() );
+    }
+
+    public void parse( ) throws Exception
+    {
+        parse( getCurrentPage() );
+    }
+
+    public User awaitLoaded(Page page) throws Exception
+    {
+        page.awaitLoaded( );
+        return this;
+    }
+
+    public void parse(Page page) throws Exception
+    {
+        page.parse( );
+    }
+
+    public void setCurrentPage(Page currentPage)
+    {
+        this.currentPage = currentPage;
+    }
+
+    public boolean canSee(String url, String impl, String txt) throws Exception
+    {
+        return !Element.filterElementsByText( filterContentByImpl( url, impl ), txt ).isEmpty();
+    }
+
+    public boolean cannotSee(String url, String impl, String txt) throws Exception
+    {
+        return !canSee( url, impl, txt );
+    }
+
+    public List<ElementBean> filterContentByImpl(String url, String... impl) throws Exception
+    {
+        PageBean page = getSiteMap().findPage( url );
+        if( page != null )
+        {
+            return Element.filterElementsByImpls( page.getContent(), impl );
+        }
+        else
+        {
+            return new ArrayList<ElementBean>(  );
+        }
+    }
+
 }

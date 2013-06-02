@@ -45,8 +45,6 @@ public interface IPage
 
     Element getSource();
 
-    void explore() throws Exception;
-
     boolean hasBeenExplored();
 
     boolean hasBeenParsed();

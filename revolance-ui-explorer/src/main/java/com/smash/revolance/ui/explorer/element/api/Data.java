@@ -17,9 +17,11 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: wsmash
@@ -39,6 +41,46 @@ public class Data extends Element
     public boolean equals(Element element)
     {
         return getContent().contentEquals( element.getContent() );
+    }
+
+    public static List<Element> filterData(List<Element> content)
+    {
+        List<Element> datas = new ArrayList<Element>(  );
+
+        if( content != null )
+        {
+            for(Element element : content)
+            {
+                if(element instanceof Data)
+                {
+                    datas.add( element );
+                }
+            }
+        }
+
+        return datas;
+    }
+
+    public static void prepareContentForAddition(List<Element> elements, Element elem)
+    {
+        List<Element> toBeRemoved = new ArrayList<Element>(  );
+
+        for(Element element : elements )
+        {
+            if( element instanceof Button
+                    || element instanceof Link
+                    || element instanceof Data )
+            {
+                if( element.isIncluded( elem )
+                        && elem.getContent().contentEquals( element.getContent() ) )
+                {
+                    // Replace the matched Data element by the Link or Button
+                    toBeRemoved.add( element );
+                }
+            }
+        }
+
+        elements.removeAll( toBeRemoved );
     }
 
 }

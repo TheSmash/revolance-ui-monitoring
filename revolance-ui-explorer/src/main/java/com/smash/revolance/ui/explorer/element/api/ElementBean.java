@@ -41,24 +41,32 @@ import java.util.List;
                 isGetterVisibility= JsonAutoDetect.Visibility.NONE)
 public class ElementBean implements Comparable<ElementBean>
 {
-    // Area of the element
+    private String internalId     = "";
+
+    // Location & Area of the element
     private int x, y, w, h;
 
     // UI look of the element
     private String caption = "";
-
     // HTML description of the element
-    private String tag            = "";
-    private String id             = "";
-    private String clz            = "";
-    private String txt            = "";
-    private String type           = "";
-    private String href           = "";
-    private String value          = "";
-    private String target         = "";
-    private String implementation = "";
+    private String tag     = "";
+    private String id      = "";
+    private String clz     = "";
+    private String txt     = "";
+    private String type    = "";
+    private String href    = "";
+    private String value   = "";
+    private String target  = "";
 
-    private String internalId = "";
+    // What king of element is this?
+    // Can be anyone of 'Link', 'Button', 'Input', 'Data' or an 'Image'
+    private String impl = "";
+
+    // The background file of the element
+    private String bg  = "";
+
+    // Alternative content rendered when the 'Image' cannot be displayed
+    private String alt = "";
 
     // bot functional data
     private boolean clicked = false;
@@ -67,26 +75,27 @@ public class ElementBean implements Comparable<ElementBean>
     private boolean broken = false;
 
     // Clicking on an element, we should see a change (url or dynamic content udpate)
-    private boolean disabled = true;
+    private boolean disabled = false;
 
     // URLs are relative but those outside the user's domain are absolute
     private boolean external = false;
 
     @JsonIgnore
     private PageBean page;
-
     @JsonIgnore
-    private Element instance;
+    private Element  instance;
+
 
 //+ Constructors
 
     public ElementBean()
     {
-
+        setInternalId( UUID.randomUUID().toString() );
     }
 
     public ElementBean(Element instance)
     {
+        this();
         setInstance( instance );
     }
 
@@ -223,15 +232,15 @@ public class ElementBean implements Comparable<ElementBean>
         return caption;
     }
 
-    public void setImplementation(String implementation)
+    public void setImpl(String impl)
     {
-        if( implementation != null )
-            this.implementation = implementation;
+        if( impl != null )
+            this.impl = impl;
     }
 
-    public String getImplementation()
+    public String getImpl()
     {
-        return implementation;
+        return impl;
     }
 
     public void setTarget(String target)
@@ -299,6 +308,26 @@ public class ElementBean implements Comparable<ElementBean>
         return instance;
     }
 
+    public void setBg(String bg)
+    {
+        this.bg = bg;
+    }
+
+    public String getBg()
+    {
+        return bg;
+    }
+
+    public void setAlt(String alt)
+    {
+        this.alt = alt;
+    }
+
+    public String getAlt()
+    {
+        return alt;
+    }
+
 //- Getters / Setters
 
 // + Comparison methods
@@ -325,7 +354,7 @@ public class ElementBean implements Comparable<ElementBean>
 
     public boolean equalsByType(ElementBean bean)
     {
-        return bean.getImplementation().contentEquals( getImplementation() );
+        return bean.getImpl().contentEquals( getImpl() );
     }
 
     public boolean equalsByLook(ElementBean bean)
@@ -455,7 +484,7 @@ public class ElementBean implements Comparable<ElementBean>
      */
     public boolean isIncluded(ElementBean element)
     {
-        return element.getText().contains( getText() )
+        return element.getContent().contains( getContent() )
                 && element.getLocation().contains( getLocation() );
     }
 
@@ -480,22 +509,47 @@ public class ElementBean implements Comparable<ElementBean>
     @Override
     public int compareTo(ElementBean element)
     {
-        Point elementCenter = element.getCenter();
-        if ( elementCenter.getY() > getCenter().getY() )
+        if( isLeft( element ) && isAbove( element ) )
         {
             return -1;
         }
+        else if( isLeft( element ) && isBelow( element ))
+        {
+            return 1;
+        }
+        else if( isRight( element ) && isAbove( element ) )
+        {
+            return -1;
+        }
+        else if( isRight( element ) && isBelow( element ))
+        {
+            return 1;
+        }
         else
         {
-            if( element.getPos().getX() < this.getPos().getX() )
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
+            return 0;
         }
+
+    }
+
+    public boolean isLeft(ElementBean element)
+    {
+        return getCenter().getX() < element.getCenter().getX();
+    }
+
+    public boolean isRight(ElementBean element)
+    {
+        return !isLeft( element );
+    }
+
+    public boolean isAbove(ElementBean element)
+    {
+        return getCenter().getY() < element.getCenter().getY();
+    }
+
+    public boolean isBelow(ElementBean element)
+    {
+        return !isAbove( element );
     }
 
     /**
@@ -530,6 +584,18 @@ public class ElementBean implements Comparable<ElementBean>
     public static List<ElementBean> filterButtons(List<ElementBean> content)
     {
         return filterByImpl( content, "Button" );
+    }
+
+    /**
+     * Keep only the images contained in the content.
+     *
+     * @param content
+     *
+     * @return a list of the images in the content
+     */
+    public static List<ElementBean> filterImages(List<ElementBean> content)
+    {
+        return filterByImpl( content, "Image" );
     }
 
 
@@ -609,7 +675,7 @@ public class ElementBean implements Comparable<ElementBean>
 
         for( ElementBean element : content )
         {
-            if( element.getImplementation().contentEquals( implementation ) )
+            if( element.getImpl().contentEquals( implementation ) )
             {
                 elements.add( element );
             }
@@ -617,6 +683,7 @@ public class ElementBean implements Comparable<ElementBean>
 
         return elements;
     }
+
 
 //- Private methods
 

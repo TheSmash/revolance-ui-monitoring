@@ -20,7 +20,6 @@ package com.smash.revolance.ui.explorer.element.api;
 import com.smash.revolance.ui.explorer.helper.BotHelper;
 import com.smash.revolance.ui.explorer.helper.ImageHelper;
 import com.smash.revolance.ui.explorer.helper.UserHelper;
-import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.user.User;
@@ -34,34 +33,120 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.smash.revolance.ui.explorer.helper.BotHelper.findMatchingElement;
 import static com.smash.revolance.ui.explorer.helper.UserHelper.browseTo;
-import static com.smash.revolance.ui.explorer.helper.UserHelper.hasBeenExplored;
 
 /**
  * User: wsmash
  * Date: 26/01/13
  * Time: 23:59
  */
-public abstract class Element implements Comparable<Element>
+public class Element implements Comparable<Element>
 {
     private ElementBean bean = new ElementBean( this );
     private BufferedImage img;
 
     public Element(Page page, WebElement element)
     {
-        setInternalId( UUID.randomUUID().toString() );
         setPage( page );
-        setText( element.getText() );
+        setText( element.getText().trim() );
         setTag( element.getTagName() );
         setDim( element.getSize() );
         setPos( element.getLocation() );
         setClz( element.getAttribute( "class" ) );
         setId( element.getAttribute( "id" ) );
-        setValue( element.getAttribute( "value" ) );
-        setTarget( element.getAttribute( "target" ) );
+    }
+
+    public void setAlt(String alt)
+    {
+        this.bean.setAlt( alt );
+    }
+
+    public void setBackground(String img)
+    {
+        bean.setBg( img );
+    }
+
+    public static String getBg(WebElement element)
+    {
+        String bg = "";
+        if ( !element.getTagName().contentEquals( "img" ) )
+        {
+            bg = element.getCssValue( "background-image" );
+            if ( bg.contentEquals( "none" ) )
+            {
+                bg = element.getCssValue( "background-url" );
+            }
+        }
+        else
+        {
+            bg = element.getAttribute( "src" );
+        }
+        if ( bg.contentEquals( "none" ) )
+        {
+            bg = "";
+        }
+        if( !bg.isEmpty() )
+        {
+            //TODO: use standard image format instead of css/uri
+            if(!bg.contains( "url" )
+                    && !bg.contains( "http" )
+                    && !bg.contains( ImageHelper.BASE64_IMAGE_PNG ) )
+            {
+                bg = "";
+            }
+        }
+        return bg;
+    }
+
+    public static Class<? extends Element> getImplementation(WebElement element)
+    {
+        String tag = element.getTagName();
+        if( tag == null )
+        {
+            tag = "";
+        }
+        String href = element.getAttribute( "href" );
+        if( href == null )
+        {
+            href = "";
+        }
+        String type = element.getAttribute( "type" );
+        if( type == null )
+        {
+            type = "";
+        }
+        String txt = element.getText();
+        if( txt == null )
+        {
+            txt = "";
+        }
+        if ( tag.contentEquals( "a" ) && !href.isEmpty() )
+        {
+            return Link.class;
+        }
+        else if ( ( tag.contentEquals( "input" ) && (type.contentEquals( "submit" ) || type.contentEquals( "button" ) ) )
+                    || ( tag.contentEquals( "button" ) ) )
+        {
+            return Button.class;
+        }
+        else if( tag.contentEquals( "input" ) && (!type.contentEquals( "submit" ) && !type.contentEquals( "button" )) )
+        {
+            return Field.class;
+        }
+        else if ( !getBg( element ).isEmpty() && txt.isEmpty() )
+        {
+            return Image.class;
+        }
+        else if( !txt.isEmpty() )
+        {
+            return Data.class;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public Element(PageBean pageBean, ElementBean bean)
@@ -70,12 +155,12 @@ public abstract class Element implements Comparable<Element>
         setPage( new Page( pageBean ) );
     }
 
-    protected void setImplementation( String implementation )
+    protected void setImplementation(String implementation)
     {
-        this.bean.setImplementation( implementation );
+        this.bean.setImpl( implementation );
     }
 
-    public void click() throws Exception
+    public boolean click() throws Exception
     {
         if ( isClickable()  )
         {
@@ -94,6 +179,8 @@ public abstract class Element implements Comparable<Element>
                 logException( e );
             }
         }
+
+        return hasBeenClicked();
     }
 
     private void _click(Bot bot) throws Exception
@@ -108,7 +195,7 @@ public abstract class Element implements Comparable<Element>
                 if ( disabled == null )
                 {
                     element.click(); // Can thow an ex
-                    BotHelper.sleep( 1 );
+
                 }
             }
             catch (UnhandledAlertException e)
@@ -123,8 +210,6 @@ public abstract class Element implements Comparable<Element>
     {
         System.err.println("Element could not be found:\n" + e.getMessage());
     }
-
-
 
     public boolean isIncluded(Element element)
     {
@@ -327,7 +412,7 @@ public abstract class Element implements Comparable<Element>
 
     public boolean isClickable()
     {
-        if ( bean.getImplementation().contentEquals( "Link" ) )
+        if ( bean.getImpl().contentEquals( "Link" ) )
         {
             if( !getUser().wantsToFollowLinks() )
             {
@@ -335,10 +420,10 @@ public abstract class Element implements Comparable<Element>
             }
             else
             {
-                return !getUser().getExcludedLinks().contains( getText() );
+                return !getUser().getExcludedLinks().contains( getContent() );
             }
         }
-        else if ( bean.getImplementation().contentEquals( "Button" ) )
+        else if ( bean.getImpl().contentEquals( "Button" ) )
         {
             if( !getUser().wantsToFollowButtons() )
             {
@@ -346,7 +431,7 @@ public abstract class Element implements Comparable<Element>
             }
             else
             {
-                return !getUser().getExcludedButtons().contains( getText().isEmpty()?getValue():getText() );
+                return !getUser().getExcludedButtons().contains( getContent() );
             }
         }
         else
@@ -445,6 +530,75 @@ public abstract class Element implements Comparable<Element>
         throw new Exception( "Unable to find element with text/value matching '" + text + "'." );
     }
 
+    public static ElementBean filterElementByText(List<ElementBean> elements, String text) throws Exception
+    {
+        for( ElementBean element : elements )
+        {
+            if( element.getContent().contentEquals( text ) )
+            {
+                return element;
+            }
+        }
+        return null;
+    }
+
+    public static List<ElementBean> filterElementsByText(List<ElementBean> elements, String... textList) throws Exception
+    {
+        List<ElementBean> matchingElements = new ArrayList<ElementBean>(  );
+
+        for( ElementBean element : elements )
+        {
+            for(String txt : textList)
+            {
+                if( element.getContent().contentEquals( txt ) )
+                {
+                    matchingElements.add( element );
+                    break;
+                }
+            }
+        }
+
+        return matchingElements;
+    }
+
+    public static List<ElementBean> filterElementsByImpls(List<ElementBean> elements, String... implementations)
+    {
+        List<ElementBean> matchingElements = new ArrayList<ElementBean>(  );
+
+        for( ElementBean element : elements )
+        {
+            for(String implementation : implementations)
+            {
+                if( element.getImpl().contentEquals( implementation ) )
+                {
+                    matchingElements.add( element );
+                    break;
+                }
+            }
+        }
+
+        return matchingElements;
+    }
+
+    public static List<ElementBean> filterElementsByLocations(List<ElementBean> elements, Rectangle... locations)
+    {
+        List<ElementBean> matchingElements = new ArrayList<ElementBean>(  );
+
+        for( ElementBean element : elements )
+        {
+            for(Rectangle location : locations)
+            {
+                if( element.getLocation().contains( location ) )
+                {
+                    matchingElements.add( element );
+                    break;
+                }
+            }
+        }
+
+        return matchingElements;
+    }
+
     public static WebElement filterElementByLocation(List<WebElement> elements, Rectangle rectangle) throws Exception
     {
         for(WebElement element : elements)
@@ -496,19 +650,95 @@ public abstract class Element implements Comparable<Element>
     public static Element buildElement(ElementBean elementBean)
     {
         Element element = null;
-        if( elementBean.getImplementation().contentEquals( "Link" ) )
+        if( elementBean.getImpl().contentEquals( "Link" ) )
         {
             element = new Link( elementBean );
         }
-        else if( elementBean.getImplementation().contentEquals( "Button" ) )
+        else if( elementBean.getImpl().contentEquals( "Button" ) )
         {
             element = new Button( elementBean );
         }
         return element;
     }
 
-    public boolean equals(Element element) throws Exception
+    public boolean equals(Element element) throws IOException
     {
         return getBean().equals( element.getBean() );
+    }
+
+    public static List<Element> getElements(Page page) throws Exception
+    {
+        List<Element> elements = new ArrayList<Element>(  );
+
+        for(WebElement element : BotHelper.getRawElements( page.getUser().getBot(), page ))
+        {
+            try
+            {
+                if(element.isDisplayed())
+                {
+                    Class<? extends Element> elemImpl = Element.getImplementation( element );
+                    if(elemImpl != null)
+                    {
+                        Element elem = elemImpl.getConstructor( Page.class, WebElement.class ).newInstance( page, element );
+
+                        if( elem.getArea()>0 )
+                        {
+                            Data.prepareContentForAddition( elements, elem );
+                            elements.add( elem );
+                        }
+                    }
+                }
+            }
+            catch (StaleElementReferenceException e)
+            {
+                System.err.println(e);
+            }
+        }
+
+        return elements;
+    }
+
+    private static boolean containsElement(List<Element> elements, Element elem)
+    {
+        for(Element element : elements)
+        {
+            if(elem.isIncluded( element )
+                    && element.getClass().toString().contentEquals( elem.getClass().toString() ))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<Element> filterImages(List<Element> elements)
+    {
+        List<Element> images = new ArrayList<Element>(  );
+
+        for( Element element : elements )
+        {
+            if( element instanceof Image )
+            {
+                images.add( element );
+            }
+        }
+
+        return images;
+    }
+
+
+    public String getBackground()
+    {
+        return bean.getBg();
+    }
+
+    public Point getCenter()
+    {
+        return bean.getCenter();
+    }
+
+    public boolean isDisabled()
+    {
+        return bean.isDisabled();
     }
 }

@@ -21,7 +21,6 @@ import com.smash.revolance.ui.explorer.diff.DiffType;
 import com.smash.revolance.ui.explorer.diff.ElementDiffType;
 import com.smash.revolance.ui.explorer.diff.PageDiffType;
 import com.smash.revolance.ui.explorer.element.api.ElementBean;
-import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.user.UserBean;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -72,8 +71,11 @@ public class PageBean
     private UserBean user;
 
     @JsonIgnore
-    private Page                            instance;
+    private Page                             instance;
     private Map<DiffType, List<ElementBean>> variations;
+    private ElementBean[]                    clickableContent;
+    private String                           scrollY;
+    private String scrollX;
 
     public PageBean()
     {
@@ -86,17 +88,6 @@ public class PageBean
         setInstance( instance );
     }
 
-    public List<ElementBean> getLinks()
-    {
-        return ElementBean.filterLinks( getContent() );
-    }
-
-    public void setLinks(ArrayList<ElementBean> links)
-    {
-        this.content.addAll( links );
-        Collections.sort( content );
-    }
-
     public void setTitle(String title)
     {
         this.title = title;
@@ -107,20 +98,42 @@ public class PageBean
         return title;
     }
 
+    public void setLinks(ArrayList<ElementBean> links)
+    {
+        this.content.addAll( links );
+        Collections.sort( content );
+    }
+
+    public List<ElementBean> getLinks()
+    {
+        return ElementBean.filterLinks( getContent() );
+    }
+
+    public void setButtons(ArrayList<ElementBean> buttons)
+    {
+        this.content.addAll( buttons );
+        Collections.sort( content );
+    }
+
     public List<ElementBean> getButtons()
     {
         return ElementBean.filterButtons( getContent() );
     }
 
-    public void setButtons(ArrayList<ElementBean> buttons)
-    {
-        Collections.sort( content );
-        this.content.addAll( buttons );
-    }
-
     public void setUrl(String url)
     {
         this.url = url;
+    }
+
+    public void setImages(List<ElementBean> images)
+    {
+        this.content.addAll( images );
+        Collections.sort( content );
+    }
+
+    public List<ElementBean> getImages()
+    {
+        return ElementBean.filterImages( getContent() );
     }
 
     public String getUrl()
@@ -700,7 +713,7 @@ public class PageBean
     {
         for(ElementBean element : content)
         {
-            if(element.getValue().contentEquals( txt ) && element.getImplementation().contentEquals( impl ) && element.isDisabled() != active)
+            if(element.getValue().contentEquals( txt ) && element.getImpl().contentEquals( impl ) && element.isDisabled() != active)
             {
                 return element;
             }
@@ -721,5 +734,48 @@ public class PageBean
     public void setExternal(boolean external)
     {
         this.external = external;
+    }
+
+    public int getWidth()
+    {
+        return w;
+    }
+
+    public List<ElementBean> getClickableContent()
+    {
+        List<ElementBean> clickables = new ArrayList<ElementBean>(  );
+
+        String impl = "";
+        for(ElementBean element : getContent())
+        {
+            impl = element.getImpl();
+            if( impl.contentEquals( "Link" )
+                    || impl.contains( "Button" ))
+            {
+                clickables.add( element );
+            }
+        }
+
+        return clickables;
+    }
+
+    public void setScrollY(String scrollY)
+    {
+        this.scrollY = scrollY;
+    }
+
+    public String getScrollY()
+    {
+        return scrollY;
+    }
+
+    public void setScrollX(String scrollX)
+    {
+        this.scrollX = scrollX;
+    }
+
+    public String getScrollX()
+    {
+        return scrollX;
     }
 }

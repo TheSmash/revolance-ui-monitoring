@@ -136,35 +136,20 @@ public class XMLHelper
 
                     user.setFollowButtons( application.isFollowButtonsEnabled() );
                     user.setFollowLinks( application.isFollowLinksEnabled() );
+                    user.setExploreVariantsEnabled( application.isExploreVariantsEnabled() );
+
                     user.setBaseReportFolder( application.getReportFolder() );
                     user.setPageScreenshotEnabled( application.isPageScreenshotEnabled() );
                     user.setPageElementScreenshotEnabled( application.isPageElementScreenshotEnabled() );
-                    user.setExploreVariantsEnabled( application.isExploreVariantsEnabled() );
-                    user.setBrowserWidth( application.getBrowserWidth() );
-                    user.setBrowserHeight( application.getBrowserHeight() );
+
+                    user.setBrowserWidth  ( application.getBrowserWidth()  );
+                    user.setBrowserHeight ( application.getBrowserHeight() );
+
+                    user.setExcludedButtons ( application.getExcludedButtons() );
+                    user.setExcludedLinks   ( application.getExcludedLinks()   );
 
                     users.add( user );
 
-                }
-                catch (ClassNotFoundException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                catch (IllegalAccessException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                catch (InstantiationException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                catch (NoSuchMethodException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                catch (InvocationTargetException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
                 catch (Exception e)
                 {
@@ -311,7 +296,6 @@ public class XMLHelper
 
         setup.setPageScreenshotEnabled( takePageScreenshot );
         setup.setPageElementScreenshotEnabled( takePageElementScreenshot );
-
         setup.setReportFolder( reportFolder );
 
         setup.setBrowserHeight(browserHeight);
@@ -319,6 +303,9 @@ public class XMLHelper
         setup.setBrowserBinary( browserBinary );
         setup.setDriverPath( driverPath );
         setup.setBrowserType( browserType );
+
+        setup.setExcludedButtons( getExcludedButtons( appCfg ) );
+        setup.setExcludedLinks( getExcludedLinks( appCfg ) );
 
         return setup;
     }

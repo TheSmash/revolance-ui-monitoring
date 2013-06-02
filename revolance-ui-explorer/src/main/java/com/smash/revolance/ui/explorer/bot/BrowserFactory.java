@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -71,6 +72,10 @@ public class BrowserFactory
 
                 browser = new ChromeDriver( (ChromeDriverService) service, capabilities );
             }
+            else if( browserType == BrowserType.HtmlUnit )
+            {
+                browser = new HtmlUnitDriver( true );
+            }
 
             if( browser != null)
             {
@@ -106,7 +111,7 @@ public class BrowserFactory
 
     private static enum BrowserType
     {
-        Chrome, Firefox, IE;
+        Chrome, Firefox, IE, HtmlUnit;
 
         public static BrowserType fromString(String browserType) throws InstanciationError
         {

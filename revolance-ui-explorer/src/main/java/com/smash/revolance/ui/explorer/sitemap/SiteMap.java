@@ -19,7 +19,6 @@ package com.smash.revolance.ui.explorer.sitemap;
 
 import com.smash.revolance.ui.explorer.helper.JsonHelper;
 import com.smash.revolance.ui.explorer.element.api.ElementBean;
-import com.smash.revolance.ui.explorer.helper.PageHelper;
 import com.smash.revolance.ui.explorer.helper.UrlHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.Page;
@@ -151,22 +150,22 @@ public class SiteMap
 
     public PageBean findPageByUrl(String url)
     {
-        PageBean page = null;
         if(sitemap.isEmpty())
         {
             return null;
         }
         else
         {
-            page = getPage(url);
-            if(UrlHelper.containsHash(url))
+            PageBean page = getPage(url);
+            if( page != null)
             {
-                return page.getInstance().findVariantByHash(UrlHelper.getHash(url)).getBean();
+                if(UrlHelper.containsHash(url))
+                {
+                    String hash = UrlHelper.getHash(url);
+                    return page.getInstance().findVariantByHash(hash);
+                }
             }
-            else
-            {
-                return page;
-            }
+            return page;
         }
     }
 
@@ -417,11 +416,37 @@ public class SiteMap
 
     public boolean hasBeenExplored(String url) throws Exception
     {
+        PageBean page = findPage( url );
+
+        if( page != null )
+        {
+            if( !page.getInstance().hasBeenExplored())
+            {
+                for( ElementBean element : findPageByUrl( url ).getClickableContent())
+                {
+                    if( !element.isBroken()
+                            && !element.hasBeenClicked()
+                            && element.getInstance().isClickable()  )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public PageBean findPage(String url) throws Exception
+    {
         PageBean page;
 
         if(url.isEmpty())
         {
-            return false;
+            return null;
         }
         else if(!UrlHelper.containsHash(url))
         {
@@ -430,14 +455,40 @@ public class SiteMap
         else
         {
             url = UrlHelper.removeHash(url);
-            page= findPageByUrl(url);
-            if( page == null )
+            page = findPageByUrl(url);
+            if( page != null )
             {
-                page = page.getInstance().getVariant( null, UrlHelper.getHash( url ), false ).getBean();
+                page = page.getInstance().findVariantByHash( UrlHelper.getHash( url ) );
             }
         }
 
-        return ( page != null ? PageHelper.contentHasBeenExplored( this, page ) : false );
+        return page;
+    }
+
+    public ElementBean getFirstUnexploredElement(String url) throws Exception
+    {
+        PageBean page = findPage( url );
+
+        if( page == null )
+        {
+            return null;
+        }
+        else
+        {
+            if( !page.getInstance().hasBeenExplored())
+            {
+                for( ElementBean element : page.getClickableContent())
+                {
+                    if( !element.isBroken()
+                            && !element.hasBeenClicked()
+                            && element.getInstance().isClickable()  )
+                    {
+                        return element;
+                    }
+                }
+            }
+            return null;
+        }
     }
 
     public void delPage(IPage page)

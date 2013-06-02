@@ -19,11 +19,10 @@ package com.smash.revolance.ui.explorer.page;
 
 import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
-import com.smash.revolance.ui.explorer.element.api.Button;
 import com.smash.revolance.ui.explorer.element.api.Element;
-import com.smash.revolance.ui.explorer.element.api.Link;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
+import com.smash.revolance.ui.explorer.UserExplorer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import java.io.File;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -69,17 +69,30 @@ public class PageTest
     }
 
     @Test
-    public void filteringElementIncludedInEachOthersShouldConserveClickableElementsInsteadOfData() throws Exception
+    public void botShouldGrabAllPageContent() throws Exception
     {
         Page page = new Page( user, index );
-        page.explore();
+        new UserExplorer( user ).explore( page );
 
         List<Element> content = page.getContent();
 
-        assertThat( content.size(), is( 3 ) );
-        assertThat( Link.containsLink( content, "link_1" ), is( true ) );
-        assertThat( Button.containsButton( content, "button_1" ), is( true ) );
-        assertThat( Button.containsButton( content, "button_2" ), is( true ) );
+        assertThat( content.size(), is( 15 ) );
 
+        assertThat( page.getLink( "link_1" ), notNullValue() );
+        assertThat( page.getLink( "link_2" ), notNullValue() );
+
+        assertThat( page.getButton( "button_1" ), notNullValue() );
+        assertThat( page.getButton( "button_2" ), notNullValue() );
+
+        assertThat( page.getData( "h1 content" ), notNullValue() );
+        assertThat( page.getData( "h2 content" ), notNullValue() );
+        assertThat( page.getData( "h3 content" ), notNullValue() );
+        assertThat( page.getData( "p content" ), notNullValue() );
+
+        assertThat( page.getFields().size(), is( 2 ) );
+
+        assertThat( page.getImages().size(), is( 1 ) );
     }
+
+
 }

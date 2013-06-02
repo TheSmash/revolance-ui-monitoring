@@ -18,7 +18,6 @@ package com.smash.revolance.ui.explorer.application;
 */
 
 import com.smash.revolance.ui.explorer.page.IPage;
-import com.smash.revolance.ui.explorer.user.Tester;
 import com.smash.revolance.ui.explorer.user.User;
 import org.openqa.selenium.Alert;
 
@@ -35,7 +34,7 @@ public abstract class Application
 {
     private List<User> users = new ArrayList<User>();
 
-    private ApplicationConfiguration bean = new ApplicationConfiguration();
+    private ApplicationConfiguration bean            = new ApplicationConfiguration();
 
     public Application()
     {
@@ -63,7 +62,7 @@ public abstract class Application
         return users;
     }
 
-    public void addUser(User user) throws Exception
+    public void addUser(User user)
     {
         if ( !users.contains( user ) )
         {
@@ -72,7 +71,7 @@ public abstract class Application
         }
     }
 
-    public void reloadUsers() throws Exception
+    public void reloadUsers()
     {
         for ( User user : getUsers() )
         {
@@ -80,7 +79,7 @@ public abstract class Application
         }
     }
 
-    public int getUserCount() throws Exception
+    public int getUserCount()
     {
         return getUsers().size();
     }
@@ -92,9 +91,9 @@ public abstract class Application
 
     public User getUser(String id) throws Exception
     {
-        for(User user : getUsers())
+        for ( User user : getUsers() )
         {
-            if(user.getId().contentEquals(id))
+            if ( user.getId().contentEquals(id))
             {
                 return user;
             }
@@ -116,7 +115,7 @@ public abstract class Application
         }
     }
 
-    public void setDomain(String domain) throws Exception
+    public void setDomain(String domain)
     {
         bean.setDomain( domain );
         for(User user : getUsers())
@@ -154,55 +153,7 @@ public abstract class Application
         return bean.getDomain();
     }
 
-    public void explore() throws Exception
-    {
-        for(User user : getUsers())
-        {
-            Tester tester = new Tester( user );
-            new Thread( tester ).start();
-        }
 
-        awaitExplorationComplete(getUsers());
-    }
-
-    private void awaitExplorationComplete(List<User> users)
-    {
-        List<User> remainingUsers = new ArrayList<User>(  );
-        remainingUsers.addAll( users );
-
-        while ( !remainingUsers.isEmpty() )
-        {
-            await( 15 );
-            List<User> usersToRemove = new ArrayList<User>(  );
-            for(User user : users)
-            {
-                if( user.isExplorationDone() )
-                {
-                    usersToRemove.add( user );
-                }
-            }
-
-            remainingUsers.removeAll( usersToRemove );
-        }
-    }
-
-    private void await(int duration)
-    {
-        int i = 0;
-        while(i<duration)
-        {
-            try
-            {
-                Thread.sleep( 1000 );
-                i++;
-
-            }
-            catch (InterruptedException e)
-            {
-                // Ignore gently
-            }
-        }
-    }
 
     public abstract void handleAlert(Alert alert);
 
@@ -253,5 +204,33 @@ public abstract class Application
     public boolean isFollowButtonsEnabled()
     {
         return bean.isFollowButtonsEnabled();
+    }
+
+    public void stopBrowsers()
+    {
+        for(User user : getUsers())
+        {
+            if(user.isBrowserActive())
+            {
+                try
+                {
+                    user.getBrowser().quit();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public List<String> getExcludedLinks()
+    {
+        return bean.getExcludedLinks();
+    }
+
+    public List<String> getExcludedButtons()
+    {
+        return bean.getExcludedButtons();
     }
 }

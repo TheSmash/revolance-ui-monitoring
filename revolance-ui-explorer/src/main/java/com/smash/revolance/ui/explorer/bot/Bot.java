@@ -21,6 +21,7 @@ import com.smash.revolance.ui.explorer.helper.UserHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.PageBean;
 import com.smash.revolance.ui.explorer.user.User;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -57,22 +58,6 @@ public class Bot
         return user;
     }
 
-    public IPage explore(String url) throws Exception
-    {
-        PageBean page = getUser().getSiteMap().getPage(url, true);
-        if(!page.hasBeenBrowsed() && !getUser().isExplorationDone())
-        {
-            page.getInstance().explore( );
-            if(getUser().isExplorationDone())
-            {
-                getUser().getBrowser().quit();
-                getUser().setBrowserActive(false);
-            }
-            getUser().setExplorationDone(true);
-        }
-        return page.getInstance();
-    }
-
     public String getCurrentUrl() throws Exception
     {
         UserHelper.handleAlert(getUser());
@@ -95,4 +80,9 @@ public class Bot
         return xScale;
     }
 
+    public Object runJS(String script) throws Exception
+    {
+        JavascriptExecutor js = (JavascriptExecutor) getBrowser();
+        return js.executeScript( script );
+    }
 }

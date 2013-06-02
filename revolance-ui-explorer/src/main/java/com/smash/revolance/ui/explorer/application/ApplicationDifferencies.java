@@ -86,9 +86,10 @@ public class ApplicationDifferencies
                 // Detect variant variations from the original content
                 if(page.isOriginal())
                 {
+                    /*
                     for(PageBean variant : page.getVariants())
                     {
-                        PageBean refVariant = refPage.getInstance().getVariant( variant.getSource(), false ).getBean();
+                        PageBean refVariant = refPage.getInstance().getVariants( variant.getSource(), false ).getBean();
                         pageDifferencies = new PageDifferencies( page, refPage );
                         pageDifferencies.setDiffType( DiffType.BASE );
                         pageDifferencies.setPageDiffTypes( getPageDiffTypes( page, refVariant ) );
@@ -96,6 +97,7 @@ public class ApplicationDifferencies
 
                         differencies.add( pageDifferencies );
                     }
+                    */
                 }
             }
             else

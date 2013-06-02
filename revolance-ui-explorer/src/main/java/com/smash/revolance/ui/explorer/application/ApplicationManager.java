@@ -62,12 +62,4 @@ public class ApplicationManager
         return Arrays.asList( apps.values().toArray( new Application[apps.size()] ) );
     }
 
-    public void explore() throws Exception
-    {
-        for(Application application : getApplications())
-        {
-            application.explore();
-        }
-    }
-
 }

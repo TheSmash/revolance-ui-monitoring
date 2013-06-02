@@ -17,8 +17,10 @@ package com.smash.revolance.ui.explorer.cmdline;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import com.smash.revolance.ui.explorer.application.Application;
 import com.smash.revolance.ui.explorer.application.ApplicationDifferencies;
 import com.smash.revolance.ui.explorer.application.ApplicationManager;
+import com.smash.revolance.ui.explorer.ApplicationExplorer;
 import com.smash.revolance.ui.explorer.sitemap.SiteMap;
 
 import java.io.File;
@@ -135,6 +137,9 @@ public enum Commands
         }
 
         ApplicationManager manager = new ApplicationManager(appCfg);
-        manager.explore();
+        for(Application app : manager.getApplications())
+        {
+            new ApplicationExplorer( app ).explore( 60 );
+        }
     }
 }

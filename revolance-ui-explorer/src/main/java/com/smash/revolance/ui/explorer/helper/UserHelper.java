@@ -17,7 +17,6 @@ package com.smash.revolance.ui.explorer.helper;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.Page;
 import com.smash.revolance.ui.explorer.user.User;
 import com.smash.revolance.ui.explorer.bot.Bot;
@@ -44,7 +43,6 @@ public class UserHelper
             try
             {
                 final User user = page.getUser();
-                //TODO: mark the time so that we know how long it took to load the page
 
                 if( browseTo( user, url, force ) )
                 {
@@ -57,62 +55,15 @@ public class UserHelper
                     System.out.println( user.getId() + " is browsing page: " + page.getTitle() );
                     user.getSiteMap().addPage(page);
 
-                    awaitPageLoaded( page );
                 }
+
+
             }
             catch (Exception e)
             {
                 System.err.println(e);
                 System.err.println("Page: " + url + " is broken.");
             }
-        }
-    }
-
-    public static void awaitPageLoaded(Page page) throws Exception
-    {
-        page.getApplication().awaitPageLoaded( page );
-    }
-
-    public static void browseAndParseContent(Page page) throws Exception
-    {
-        browseTo(page);
-        parseContent(page);
-    }
-
-    public static void parseContent(Page page) throws Exception
-    {
-        if( ! page.hasBeenParsed() )
-        {
-            User user = page.getUser();
-
-            if ( user.getApplication().isPageBroken( page ) )
-            {
-                page.setBroken( true );
-            }
-            else if ( !user.getApplication().isAuthorized( page ) )
-            {
-                page.setAuthorized( false );
-            }
-
-            if ( user.isPageScreenshotEnabled() && page.getCaption().isEmpty() )
-            {
-                page.takeScreenShot();
-            }
-
-            if(!page.isBroken() && !page.isExternal())
-            {
-                page.getContent();
-            }
-            else if ( page.isExternal() )
-            {
-                System.out.println( "Url: " + page.getUrl() + " is out of the domain: " + page.getSiteMap().getDomain() );
-            }
-            else
-            {
-                System.out.println( "Url: " + page.getUrl() + " is broken." );
-            }
-
-            page.setParsed( true );
         }
     }
 
@@ -166,11 +117,6 @@ public class UserHelper
             UserHelper.handleAlert( user );
             return browser.getCurrentUrl();
         }
-    }
-
-    public static boolean hasBeenExplored(User user, String url) throws Exception
-    {
-        return user.getSiteMap().hasBeenExplored( url );
     }
 
     public static void handleAlert(User user) throws Exception

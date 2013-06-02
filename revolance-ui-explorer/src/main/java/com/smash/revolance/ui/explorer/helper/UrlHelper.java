@@ -28,6 +28,7 @@ public class UrlHelper
     {
         url1 = removeTrailingSlash( url1 );
         url2 = removeTrailingSlash( url2 );
+
         return url1.contentEquals( url2 );
     }
 

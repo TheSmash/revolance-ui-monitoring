@@ -17,9 +17,16 @@ package com.smash.revolance.ui.explorer.element.api;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import com.smash.revolance.ui.explorer.helper.BotHelper;
 import com.smash.revolance.ui.explorer.page.IPage;
 import com.smash.revolance.ui.explorer.page.api.Page;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * User: wsmash
@@ -32,13 +39,52 @@ public class Image extends Element
     {
         super( page, element );
         setImplementation( "Image" );
-        // setImg( element.getCssValue( "background" ) );
+        setBackground( getBg( element ) );
+        setAlt( element.getAttribute( "alt" ) );
     }
 
-    public static boolean isImage(WebElement element)
+    public static List<Element> getImages(Page page) throws Exception
     {
-        return Element.isVisible( element ) &&
-                ( !element.getCssValue( "background-image" ).isEmpty() || element.getTagName().contentEquals( "img" ) );
+        List<Element> images = new ArrayList<Element>();
+
+        for(WebElement element : BotHelper.getRawImages( page.getUser().getBot(), page ))
+        {
+            try
+            {
+                if(element.isDisplayed()
+                        && Element.getImplementation( element ).getClass().getName().contentEquals( Image.class.getName() ))
+                {
+                    Image image = new Image( page, element );
+                    if( image.getArea()>0 )
+                    {
+                        if(!Image.containsImage( images, image ))
+                        {
+                            images.add( image );
+                        }
+                    }
+                }
+            }
+            catch (StaleElementReferenceException e)
+            {
+                System.err.println(e);
+            }
+        }
+
+        return images;
     }
+
+    private static boolean containsImage(List<Element> images, Image image)
+    {
+        for(Element element : images)
+        {
+            if( element.getLocation().contains( image.getLocation() ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 }

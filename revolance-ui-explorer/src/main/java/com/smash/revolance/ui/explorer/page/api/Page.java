@@ -32,8 +32,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
-import static com.smash.revolance.ui.explorer.helper.UserHelper.*;
-
 /**
  * User: wsmash
  * Date: 30/11/12
@@ -46,14 +44,12 @@ public class Page implements IPage
     private boolean screenshotTaken;
 
     @JsonIgnore
-    private List<Element> links;
+    private List<Element> content;
 
-    @JsonIgnore
-    private List<Element> buttons;
-    private BufferedImage  image;
+    private BufferedImage image;
 
-    private boolean        explored;
-    private boolean        parsed;
+    private boolean            explored;
+    private boolean            parsed;
 
     private Page()
     {
@@ -95,12 +91,11 @@ public class Page implements IPage
     @Override
     public String getUrl()
     {
-        if( !isExternal() )
+        if ( !isExternal() )
         {
             // The url is relative to the domain
             return getUser().getDomain() + bean.getUrl();
-        }
-        else
+        } else
         {
             return bean.getUrl();
         }
@@ -108,7 +103,7 @@ public class Page implements IPage
 
     public void setUrl(String url)
     {
-        if( url.startsWith( getUser().getDomain() ) )
+        if ( BotHelper.rightDomain( getUser(), url ) )
         {
             url = url.substring( getUser().getDomain().length() );
             bean.setUrl( url );
@@ -125,215 +120,62 @@ public class Page implements IPage
         this.bean.setUserBean( user.getBean() );
     }
 
-    @Override
-    public void explore() throws Exception
+    public void awaitLoaded() throws Exception
     {
-        if ( !hasBeenExplored() )
+        System.out.println( "Awaiting page: '" + getTitle() + "' to be loaded" );
+        long mark = System.currentTimeMillis();
+
+        getApplication().awaitPageLoaded( this );
+
+        long duration = (System.currentTimeMillis() - mark)/1000;
+        System.out.println( "Awaiting page: '" + getTitle() + "' to be loaded [Done] [Duration: " + duration + " sec]" );
+    }
+
+    public void parse( ) throws Exception
+    {
+        if( !hasBeenParsed() )
         {
-            browseAndParseContent( this );
-            if(!isExternal() && !isBroken())
+            if(getUser().getCurrentPage() != this)
             {
-                _explore();
-                setExplored( true );
+                getUser().goTo( this ).awaitLoaded();
             }
-            else if(isBroken())
+
+            setWidth(  Integer.parseInt( String.valueOf( (Long) getUser().getBot().runJS( "return document.body.clientWidth"  ) ) ) );
+            setHeight( Integer.parseInt( String.valueOf( (Long) getUser().getBot().runJS( "return document.body.clientHeight" ) ) ) );
+
+            if ( getApplication().isPageBroken( this ) )
             {
-                bean.getSource().setBroken( true );
+                setBroken( true );
             }
-        }
-    }
-
-    private void _explore() throws Exception
-    {
-        handleUserAccountLogic();
-        System.out.println("Exploring page: " + getTitle());
-        if ( isOriginal() )
-        {
-            exploreOriginal();
-            System.out.println("Exploring page: " + getTitle() + " [Done]");
-        }
-        else
-        {
-            exploreVariant();
-            System.out.println("Exploring variant [Done]");
-        }
-    }
-
-    private void exploreVariant() throws Exception
-    {
-        if( bean.hasVariations() )
-        {
-            System.out.println("New content has been found in this variant. Exploration will begin...");
-            explore( getClickableVariations() );
-            System.out.println("New content has been found in this variant. Exploration [Done]");
-        }
-        else
-        {
-            System.out.println("No variation has been found. Deleting variant and associated content...");
-            delete(); // Remove itself
-            System.out.println("No variation has been found. Deletion [Done]");
-        }
-    }
-
-    private void explore( List<Element> clickables ) throws Exception
-    {
-        for ( Element clickable : clickables )
-        {
-            if( getSiteMap().hasBeenExplored( clickable.getHref() ) || clickable.hasBeenClicked() )
+            if ( !getApplication().isAuthorized( this ) )
             {
-                clickable.setClicked( true );
+                setAuthorized( false );
+            }
+
+            if ( getUser().isPageScreenshotEnabled()
+                    && getCaption().isEmpty() )
+            {
+                takeScreenShot();
+            }
+
+            if(!isBroken() && !isExternal())
+            {
+                getContent();
+            }
+            else if ( isExternal() )
+            {
+                System.out.println( "Page with url: '" + getUrl() + "' is out of the domain: '" + getApplication().getDomain() + "'." );
             }
             else
             {
-                boolean towardCurrentUrl = UrlHelper.areEquivalent( clickable.getHref(), getUrl() );
-                if( !towardCurrentUrl && clickable.isClickable() )
-                {
-                    clickable.click();
-                    if(clickable.hasBeenClicked())
-                    {
-                        String currentUrl = getBrowser().getCurrentUrl();
-                        if ( !UrlHelper.areEquivalent( currentUrl, getUrl() ) )
-                        {
-                            handleUrlChange(clickable, currentUrl);
-                        }
-                        else // url are equivalent (without hash) so we've to check if this is a dynamic change in the content
-                        {
-                            if(getUser().isPageScreenshotEnabled())
-                            {
-                                handleDynamicChange( clickable );
-                            }
-                        }
-                    }
-                }
-                clickable.setClicked( !towardCurrentUrl );
-            }
-        }
-    }
-
-    private void handleDynamicChange(Element source) throws Exception
-    {
-        String id = UUID.randomUUID().toString();
-        String caption = BotHelper.pageContentHasChanged(getBot(), bean.getCaption());
-        if ( !caption.contentEquals( bean.getCaption() ) )
-        {
-            // Create new page and inject data to speed up the computations
-
-            // Checking if there is already a variant with that checksum
-            Page variant = findVariantByCaption( caption );
-
-            // otherwise we've to create one from scratch
-            if( variant == null )
-            {
-                variant = findVariantBySource( source.getBean() );
+                System.out.println( "Page with url: '" + getUrl() + "' is broken." );
             }
 
-            if( variant == null )
-            {
-                variant = _buildVariant( source, false );
-                variant.setId( id );
-
-                variant.setCaption( caption );
-                variant.setImage( ImageHelper.decodeToImage( caption ) );
-
-                addVariant( variant );
-
-                // Parse the new content. But does not explore added clickable elements
-                UserHelper.parseContent( variant );
-                variant.removeBaseContent();
-                variant.setParsed( true );
-
-                if(getUser().wantsToExploreVariants())
-                {
-                    variant.explore();
-                }
-            }
-
-            source.setDisabled( false );
-        }
-    }
-
-    public void removeBaseContent() throws Exception
-    {
-        List<Element> content = getContent();
-        List<Element> contentToRemove = new ArrayList<Element>(  );
-
-        for(Element element : content)
-        {
-            if( getOriginal().getBean().contains( element.getBean() ) )
-            {
-                contentToRemove.add( element );
-            }
-        }
-
-        getContent().removeAll( contentToRemove );
-    }
-
-    private void handleUrlChange(Element clickable, String currentUrl) throws Exception
-    {
-        clickable.setDisabled( false );
-        if(UrlHelper.containsHash(currentUrl))
-        {
-            String hash = UrlHelper.getHash(currentUrl);
-            Page variant = getVariant( clickable, hash, true );
-            if(!variant.hasBeenExplored() && getUser().wantsToExploreVariants())
-            {
-                variant.explore();
-            }
-            else
-            {
-                browseAndParseContent( getOriginal() ); // return to the original page
-            }
-        }
-        else // Real change of page
-        {
-            Page page = getUserSitemap().getPage(currentUrl, true).getInstance();
-            if( !page.hasBeenExplored() )
-            {
-                page.setSource(clickable);
-                page.explore();
-            }
+            setParsed( true );
         }
     }
 
 
-
-    public void exploreOriginal() throws Exception
-    {
-        if(!isBroken())
-        {
-            System.out.println("Exploring the original version of the page: " + getTitle());
-
-            explore( getClickableContent() );
-        }
-    }
-
-    private void handleUserAccountLogic() throws Exception
-    {
-        if(getApplication() != null)
-        {
-            if(getApplication().isSecured())
-            {
-                if( logIn() )
-                {
-                    return;
-                }
-                else if( changePasswd() )
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-    private boolean changePasswd() throws Exception
-    {
-        return getApplication().enterNewPassword( getUser(), this );
-    }
-
-    private boolean logIn() throws Exception
-    {
-        return getApplication().enterLogin( getUser(), this );
-    }
 
     @Override
     public boolean hasBeenExplored()
@@ -377,17 +219,7 @@ public class Page implements IPage
         bean = null;
     }
 
-    private Page _buildVariant(Element source, boolean takeScreenshot) throws Exception
-    {
-        Page variant = new Page( getUser(), getUrl() );
-        variant.setOriginal( getOriginal() );
-        variant.setSource( source );
-        if(takeScreenshot)
-        {
-            variant.takeScreenShot();
-        }
-        return variant;
-    }
+
 
     public boolean hasBeenBrowsed()
     {
@@ -399,22 +231,28 @@ public class Page implements IPage
         Bot bot = getUser().getBot();
         if(bean.getCaption().isEmpty())
         {
-            if(getTitle().isEmpty())
+//            if(getTitle().isEmpty())
+//            {
+//                setTitle( getBot().getCurrentTitle() );
+//            }
+
+            if(!screenshotTaken
+                    && getUser().isPageScreenshotEnabled())
             {
-                setTitle( getBot().getCurrentTitle() );
-            }
-            if(!screenshotTaken && getUser().isPageScreenshotEnabled())
-            {
-                System.out.print("\rTaking page snapshot: " + getTitle());
+                System.out.print("\rTaking page snapshot: '" + getTitle() + "'");
+                long mark = System.currentTimeMillis();
+
                 String img = BotHelper.takeScreenshot( bot );
 
                 if(img != null)
                 {
+                    // update the image and the caption
                     setImage( ImageHelper.decodeToImage( img ) );
-                    setCaption( img );
                     screenshotTaken = true;
                 }
-                System.out.println("\rTaking page snapshot: " + getTitle() + " [Done]");
+
+                long duration = (System.currentTimeMillis()-mark)/1000;
+                System.out.println("\rTaking page snapshot: '" + getTitle() + "' [Done] [Duration: " + duration + " sec]");
             }
 
         }
@@ -425,6 +263,7 @@ public class Page implements IPage
     @Override
     public List<Element> getLinks() throws Exception
     {
+        /*
         if( links == null )
         {
             links = new ArrayList<Element>(  );
@@ -449,6 +288,8 @@ public class Page implements IPage
             }
         }
         return links;
+        */
+        return Link.filterLinks( content );
     }
 
     @Override
@@ -496,6 +337,10 @@ public class Page implements IPage
     public void setBroken(boolean b)
     {
         bean.setBroken( b );
+        if( getSource() != null )
+        {
+            getSource().setBroken( b );
+        }
     }
 
     public void setTitle(String title)
@@ -536,10 +381,10 @@ public class Page implements IPage
             for ( Element pageElement : content )
             {
                 contentIdx ++;
-                System.out.print(String.format("\rTaking element screenshot ( %d / %d )", contentIdx, content.size()));
+                System.out.print(String.format("\rTaking element screenshots ( %d / %d )", contentIdx, content.size()));
                 pageElement.takeScreenShot();
             }
-            System.out.println(String.format("\rTaking elements screenshot ( %d ) [Done]", contentIdx));
+            System.out.println(String.format("\rTaking elements screenshots ( %d ) [Done]", contentIdx));
         }
     }
 
@@ -562,6 +407,7 @@ public class Page implements IPage
     @Override
     public List<Element> getButtons() throws Exception
     {
+        /*
         if( buttons == null )
         {
             buttons = new ArrayList<Element>(  );
@@ -587,6 +433,8 @@ public class Page implements IPage
             }
         }
         return buttons;
+        */
+        return Button.filterButtons( content );
     }
 
     public List<Page> getVariants()
@@ -617,20 +465,7 @@ public class Page implements IPage
         return bean.isOriginal();
     }
 
-    public Page getVariant(Element source, String hash, boolean generate) throws Exception
-    {
-        Page page = findVariantByHash(hash);
-        if(page == null)
-        {
-            if(generate)
-            {
-                page = buildHashVariant(source, hash);
-            }
-        }
-        return page;
-    }
-
-    public Page findVariantByHash(String hash)
+    public PageBean findVariantByHash(String hash)
     {
         if(!hash.isEmpty())
         {
@@ -638,7 +473,7 @@ public class Page implements IPage
             {
                 if( UrlHelper.getHash(getUrl()).contentEquals(hash) )
                 {
-                    return variant;
+                    return variant.getBean();
                 }
             }
         }
@@ -655,53 +490,6 @@ public class Page implements IPage
             }
         }
         return null;
-    }
-
-    private Page buildHashVariant(Element source, String hash) throws Exception
-    {
-        Page variant = _buildVariant( source, getUser().isPageScreenshotEnabled() );
-        variant.setUrl(variant.getUrl() + "#" + hash);
-        return variant;
-    }
-
-    /**
-     * Retrieve a variant given the source element of the page
-     * Build the variant if not existing.
-     *
-     * @param source
-     * @return
-     * @throws Exception
-     */
-    public Page getVariant(ElementBean source, boolean generate) throws Exception
-    {
-        Page page = findVariantBySource(source);
-        if(page != null)
-        {
-            return page;
-        }
-        else
-        {
-            if(generate)
-            {
-                return _buildVariant( source.getInstance(), getUser().isPageScreenshotEnabled() );
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-
-    /**
-     * Retrieve a variant given the source element of the page. Do not generate it if not found.
-     *
-     * @param source
-     * @return
-     * @throws Exception
-     */
-    public Page getVariant(ElementBean source) throws Exception
-    {
-        return getVariant( source, false );
     }
 
     /**
@@ -841,17 +629,44 @@ public class Page implements IPage
     @Override
     public List<Element> getContent() throws Exception
     {
-        System.out.println( "Parsing page content" );
-
-        List<Element> content = new ArrayList<Element>();
-        if ( !isExternal() && !isBroken() )
+        if ( content == null )
         {
-            content.addAll( getClickableContent() );
+            System.out.println( "Parsing elements" );
+            long mark = System.currentTimeMillis();
+
+            content = _getContent();
+
+            System.out.println("Clickable content found: ");
+            for( Element element : Element.filterClickableElements( bean.getClickableContent() ) )
+            {
+                System.out.println( "--|  " + element.getContent() );
+            }
+
+            long duration = (System.currentTimeMillis()-mark)/1000;
+            System.out.println( "Parsing elements [Done] [Duration: " + duration + " sec]" );
+        }
+
+        return content;
+    }
+
+    private List<Element> _getContent() throws Exception
+    {
+        List<Element> content = new ArrayList<Element>();
+
+        if( !isExternal() && !isBroken() )
+        {
+            content = Element.getElements( this );
+            PageHelper.filterElementsIncludedInEachOthers( content );
+
+            setContent( content );
+
+            System.out.println( bean.getContent().size() + " elements found" );
+
+            takeScreenshots( content );
 
             Collections.sort( content );
         }
 
-        System.out.println( "Parsing page content [Done]" );
         return content;
     }
 
@@ -885,9 +700,6 @@ public class Page implements IPage
 
     public void setImage(BufferedImage img) throws Exception
     {
-        setWidth( img.getWidth()  );
-        setHeight( img.getHeight() );
-
         setCaption( ImageHelper.encodeToString( img ) );
         image = img;
     }
@@ -919,5 +731,90 @@ public class Page implements IPage
             }
         }
         return null;
+    }
+
+    public List<Element> getImages() throws Exception
+    {
+        /*
+        if( images == null )
+        {
+            images = new ArrayList<Element>(  );
+
+            if(!getUser().isExplorationDone())
+            {
+                if(!isExternal() && !isBroken() )
+                {
+                    System.out.print("Retrieving images");
+                    images.addAll( Image.getImages( this ) );
+                    ArrayList<ElementBean> beanImages = new ArrayList<ElementBean>(  );
+
+                    for(Element image : images)
+                    {
+                        beanImages.add( image.getBean() );
+                    }
+
+                    bean.setImages( beanImages );
+                    System.out.println("\r" + bean.getImages().size() + " images found");
+
+                    takeScreenshots( images );
+                }
+            }
+        }
+        return images;
+        */
+        return Image.filterImages( content );
+    }
+
+    public Element getData(String data)
+    {
+        for(Element elem : Data.filterData( content ))
+        {
+            if( elem.getContent().contentEquals( data ) )
+            {
+                return elem;
+            }
+        }
+        return null;
+    }
+
+    public int getArea()
+    {
+        return getHeight() * getWidth();
+    }
+
+    public int getWidth()
+    {
+        return bean.getWidth();
+    }
+
+    public int getHeight()
+    {
+        return bean.getWidth();
+    }
+
+    public void setScrollY(String scrollY)
+    {
+        this.bean.setScrollY( scrollY );
+    }
+
+    public void setScrollX(String scrollX)
+    {
+        this.bean.setScrollX( scrollX );
+    }
+
+    public void setContent(List<Element> content)
+    {
+        ArrayList<ElementBean> beanElements = new ArrayList<ElementBean>(  );
+        for(Element element : content)
+        {
+            beanElements.add( element.getBean() );
+        }
+        bean.setContent( beanElements );
+        this.content = content;
+    }
+
+    public List<Element> getFields()
+    {
+        return Field.filterFields( content );
     }
 }

@@ -39,6 +39,7 @@ public class Link extends Element
         super( source, element );
         setImplementation( "Link" );
         setHref( element.getAttribute( "href" ) );
+        setTarget( element.getAttribute( "target" ) );
     }
 
     public Link(ElementBean bean)
@@ -54,12 +55,6 @@ public class Link extends Element
             return false;
         }
         return getBean().equals( element.getBean() );
-    }
-
-    public static boolean isLink(WebElement element)
-    {
-        String tag = element.getTagName();
-        return Element.isVisible( element ) && tag.contentEquals( "a" );
     }
 
     public static boolean containsLink(List<Element> elements, Link link)
@@ -79,11 +74,14 @@ public class Link extends Element
     {
         List<Element> links = new ArrayList<Element>(  );
 
-        for( Element element : elements )
+        if(elements != null)
         {
-            if( element instanceof Link )
+            for( Element element : elements )
             {
-                links.add( element );
+                if( element instanceof Link )
+                {
+                    links.add( element );
+                }
             }
         }
 
@@ -98,11 +96,11 @@ public class Link extends Element
         {
             try
             {
-                if(element.isDisplayed())
+                if(element.isDisplayed()
+                    && Element.getImplementation( element ).getClass().getName().contentEquals( Link.class.getName() ))
                 {
                     Link link = new Link( page, element );
-
-                    if(link.getArea()>0 && !link.getHref().isEmpty())
+                    if( link.getArea()>0 )
                     {
                         if(!containsLink(links, link.getContent()))
                         {
