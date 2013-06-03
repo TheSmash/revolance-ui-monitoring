@@ -74,9 +74,10 @@ public class ApplicationFactory
             {
                 JarFile jar = new JarFile( file );
                 Manifest manifest = jar.getManifest();
-                Attributes attributes = manifest.getAttributes( "revolance.ui.explorer.application" );
-                String implAttr = attributes.getValue( "impl" );
-                String versionAttr = attributes.getValue( "version" );
+                Attributes attributes = manifest.getMainAttributes();
+
+                String implAttr = attributes.getValue( "revolance-ui-explorer-applicationImpl" );
+                String versionAttr =  attributes.getValue( "revolance-ui-explorer-applicationVersion" );
 
                 if( implAttr.contentEquals( impl ) && (versionAttr.contentEquals( version ) || version == null) )
                 {

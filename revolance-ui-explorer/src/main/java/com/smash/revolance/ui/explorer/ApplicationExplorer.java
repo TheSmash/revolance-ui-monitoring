@@ -45,6 +45,11 @@ public class ApplicationExplorer
         }
 
         awaitExplorationComplete(application.getUsers(), timeout*60000);
+
+        for(User user : application.getUsers())
+        {
+            user.doContentReport();
+        }
     }
 
     private void awaitExplorationComplete(List<User> users, long timeout)
