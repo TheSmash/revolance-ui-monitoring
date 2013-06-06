@@ -65,7 +65,7 @@ A Page has:
   - a width 
   - a height
   - a screenshot (base64 encoded)
-  - some content (for now the links & buttons)
+  - some content (links / buttons / inputs / datas / images)
   - some variants 
 
 The page content is:
@@ -93,5 +93,5 @@ An element has:
   - a textual value
   - a state (broken / not broken)
   - an href
-  - an impl (Link or Button)
+  - an impl (Link / Button / Input / Data / Image)
       
