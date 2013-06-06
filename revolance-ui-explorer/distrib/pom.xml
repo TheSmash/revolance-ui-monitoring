@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 	
     <parent>
-	    <groupId>com.smash.revolance</groupId>
-	    <artifactId>ui-explorer</artifactId>
+        <groupId>com.smash.revolance</groupId>
+        <artifactId>ui-explorer</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>com.smash.revolance</groupId>
             <artifactId>ui-explorer-library</artifactId>
-	        <version>${project.version}</version>
+	    <version>${project.version}</version>
         </dependency>
 
     </dependencies>
