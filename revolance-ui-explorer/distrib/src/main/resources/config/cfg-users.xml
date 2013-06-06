@@ -7,6 +7,7 @@
             <id>googler</id>
             <appId>google</appId>
             <home>http://www.google.fr</home>
+            <browserType>Firefox</browserType>
         </user>
 
         <!-- A user profile to be used to explore the appplication {user.appId}
@@ -17,6 +18,7 @@
             <password>pwd</password> (optional)
             <newPassword>newPwd</newPassword> (optional)
             <home> </home>
+            <browserType>Firefox</browserType> (Chrome or Firefox)
         </user>
         -->
 

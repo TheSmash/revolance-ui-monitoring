@@ -10,6 +10,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <fileSets>
+
         <fileSet>
             <directory>src/main/assembly</directory>
             <outputDirectory>/apps</outputDirectory>
@@ -25,7 +26,20 @@
                 <include>**/*</include>
                 <include>apps/*</include>
             </includes>
+            <excludes>
+                <exclude>**/*.sh</exclude>
+            </excludes>
             <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/src/main/resources</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>**/*.sh</include>
+            </includes>
+            <filtered>true</filtered>
+            <fileMode>0777</fileMode>
         </fileSet>
 
     </fileSets>
