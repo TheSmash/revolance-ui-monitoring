@@ -1,0 +1,24 @@
+package ets.bour.revolance.reporter.api;
+
+import ets.bour.revolance.application.Application;
+import ets.bour.revolance.reporter.Reporter;
+
+import java.io.File;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: ebour
+ * Date: 20/02/13
+ * Time: 10:47
+ */
+public abstract class BaseReporter implements Reporter
+{
+    private final Application application;
+
+    public BaseReporter(Application application)
+    {
+        this.application = application;
+    }
+
+    public abstract void doReport(File file) throws Exception;
+}
