@@ -1,4 +1,3 @@
-
 Revolance UI
 ============
 
@@ -31,8 +30,7 @@ Components:
 
 
 A bot (revolance-ui-explorer) explores all the pages of a web app and then produces a JSon report.
-  - At the moment the generated report only contains page, link and buttons parsed.
-  - The retrieved data are a collection of pages.
+  - The report is the list of the application pages with their associated content
   
 A plugin that aggregate a user defined application and produces a ready to use distribution.
   - Usefull for an execution of the bot through the command line interface
