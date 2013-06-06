@@ -13,7 +13,7 @@
     <properties>
 
 	    <junit.version>4.11</junit.version>
-        <selenium.version>2.33.0</selenium.version>
+            <selenium.version>2.33.0</selenium.version>
 	    <graphviz.version>1.1</graphviz.version>
 
     </properties>
