@@ -15,12 +15,12 @@ The process is to validate once and for all pages of the app:
   
 What is a change in the content?
 Well there are a lot of UI automation tool out there. Some rely on the UI while some others don't.
-This project is trying to mix the two approch. Thus validating an element of the content should not be too strongly 
+This project is trying to mix the two approches. Thus validating an element of the content should not be too strongly 
 linked to his appearance neither to his position. But it should be at first about his textual value and his href.
 Functionally the most important thing is that the link is there in the content and properly working. 
 Your user is expecting to get redirected toward the appropriate href. And secondly it's also about
 having a nice page where the layout is ok. We do want our users to have a good UX through our ui, right?
-Well I think this project can help us to reach it!
+Well I think this project can help us to fill that purpose!
 
 That's it for the speech guys and now let's have some more technical insight.
 
@@ -29,14 +29,22 @@ Components:
 ===========
 
 
-A bot (revolance-ui-explorer) explores all the pages of a web app and then produces a JSon report.
-  - The report is the list of the application pages with their associated content
+an Explorer (ui-explorer):
+  - Parse and explore all the pages of a web app and then produces a JSon report.
   
-A plugin that aggregate a user defined application and produces a ready to use distribution.
-  - Usefull for an execution of the bot through the command line interface
+a Comparator (ui-comparator): 
+  - Compare two exploration report files. The output of this comparison says what are the differencies.
+  
+a Database (ui-database):
+  - Store and retrieve the reports.
       
-A gui (revolance-ui-merger) allow the user to load two reports to compare them. 
-  - Useful to compare regression or content enforcement given some user rights.
+a Server (ui-server) provide a set of Rest APIs to:
+        - store and retrieve reports
+        - compare pages
+        - accept (or not) a change on a page content
+        - start / cancel an exploration
+
+The server also provide an html5/css3 UI over the Rest APIs 
 
 Data Model:
 ===========
@@ -48,8 +56,8 @@ A Page has:
   - a width 
   - a height
   - a screenshot (base64 encoded)
-  - some content (links / buttons / inputs / datas / images)
-  - some variants 
+  - some content (links / buttons / input fields / texts / images)
+  - some variants
 
 The page content is:
   - a list of elements
@@ -65,6 +73,9 @@ the added content by comparison with the original page.
 An element is:
   - a button
   - a link
+  - some text
+  - a field
+  - an image
       
 An element has:
   - an internal id
