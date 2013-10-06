@@ -39,10 +39,10 @@ a Database (ui-database):
   - Store and retrieve the reports.
       
 a Server (ui-server) provide a set of Rest APIs to:
-        - store and retrieve reports
-        - compare pages
-        - accept (or not) a change on a page content
-        - start / cancel an exploration
+  - store and retrieve reports
+  - compare pages
+  - accept (or not) a change on a page content
+  - start / cancel an exploration
 
 The server also provide an html5/css3 UI over the Rest APIs 
 
