@@ -11,6 +11,12 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ui-explorer" />
     <orderEntry type="module" module-name="ui-model" />
+    <orderEntry type="module" module-name="ui-cmdline" />
+    <orderEntry type="module" module-name="ui-comparator" />
+    <orderEntry type="module" module-name="ui-database" />
+    <orderEntry type="module" module-name="ui-server" />
+    <orderEntry type="module" module-name="ui-explorer" />
+    <orderEntry type="module" module-name="ui-model" />
     <orderEntry type="module" module-name="ui-materials-mock-webdriver-service" />
     <orderEntry type="module" module-name="ui-materials-mock-webdriver-commons" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-api:2.35.0" level="project" />
