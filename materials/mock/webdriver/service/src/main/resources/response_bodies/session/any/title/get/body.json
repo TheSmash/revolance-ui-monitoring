@@ -1,0 +1,6 @@
+{
+    "name": "getTitle",
+    "sessionId": "${sessionId}",
+    "status": 0,
+    "value": "${title}"
+}

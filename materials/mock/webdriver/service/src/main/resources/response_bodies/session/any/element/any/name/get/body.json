@@ -1,0 +1,6 @@
+{
+    "name": "getElementTagName",
+    "sessionId": "${sessionId}",
+    "status": 0,
+    "value": "${elementTagName}"
+}

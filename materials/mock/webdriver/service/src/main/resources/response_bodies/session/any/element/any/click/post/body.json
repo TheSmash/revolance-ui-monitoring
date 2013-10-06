@@ -1,0 +1,6 @@
+{
+    "name":"clickElement",
+    "sessionId":"${sessionId}",
+    "status":0,
+    "value": "${elementClicked}"
+}

@@ -1,0 +1,8 @@
+{
+    "name": "getAlertText",
+    "sessionId": "${sessionId}",
+    "status": ${alertStatusCode},
+    "value": {
+        "message": "${alertMessage}"
+    }
+}

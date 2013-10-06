@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<!--
+
+    This file is part of Revolance UI Suite.
+
+    Revolance UI Suite is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Revolance UI Suite is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<html lang="en">
+<head>
+
+    <meta charset="utf-8"/>
+    <title>Page_B</title>
+    <script type="text/javascript" src="../js/features.js"></script>
+    <script type="text/javascript">
+        function addLinks()
+        {
+        var link = "<a href=\"./page_C.html\">page_C</a>";
+        var div = document.createElement("div");
+        div.innerHTML = link;
+        getBody().appendChild(div);
+
+        var link = "<a href=\"./page_D.html\">page_D</a>";
+        var div = document.createElement("div");
+        div.innerHTML = link;
+        getBody().appendChild(div);
+        }
+
+        function goToIndex()
+        {
+        redirectTo( "index.html" );
+        }
+    </script>
+
+</head>
+<body>
+
+<a href="./index.html">index</a>
+<a href="./page_A.html">page_A</a>
+<a href="./help.html">help</a>
+
+<input type="button" value="button" onclick="addLinks();"/>
+<input type="button" value="index" onclick="goToIndex();"/>
+
+</body>
+</html>

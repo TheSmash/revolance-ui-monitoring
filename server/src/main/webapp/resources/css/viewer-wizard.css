@@ -1,0 +1,19 @@
+.file-drop-zone
+{
+    margin: 4% 5%;
+    width: 185px;
+    padding: 6% 10%;
+    font: 20pt bold 'Vollkorn';
+    text-align: center;
+    color: #bbb;
+    border-radius: 15px;
+    border: 2px dashed gray;
+    float: left;
+}
+
+.file-drop-zone.dropped
+{
+    border: 2px dashed green;
+    border-radius: 131px;
+    color: green;
+}
