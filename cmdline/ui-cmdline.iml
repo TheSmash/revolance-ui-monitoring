@@ -71,8 +71,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.2" level="project" />
     <orderEntry type="module" module-name="ui-comparator" />
     <orderEntry type="module" module-name="ui-database" />
-    <orderEntry type="library" name="Maven: com.smash.revolance:ui-server-services:war:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: com.smash.revolance:ui-server-ui:war:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="ui-server" />
   </component>
 </module>
 
