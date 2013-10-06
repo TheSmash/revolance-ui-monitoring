@@ -1,4 +1,7 @@
-Revolance UI http://travis-ci.org/TheSmash/revolance-ui.png
+
+"!http://travis-ci.org/TheSmash/revolance-ui.png!":http://travis-ci.org/TheSmash/revolance-ui
+
+Revolance UI 
 ============
 
 
