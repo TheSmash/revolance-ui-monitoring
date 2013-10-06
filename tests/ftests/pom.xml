@@ -19,6 +19,7 @@
             <artifactId>ui-distrib</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -33,19 +34,11 @@
                         <id>unpack</id>
                         <phase>process-test-resources</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>ui-distrib</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/distrib</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
+                            <type>zip</type>
+                            <outputDirectory>target/distrib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
