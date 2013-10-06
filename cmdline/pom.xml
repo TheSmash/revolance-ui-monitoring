@@ -10,36 +10,31 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <name>Revolance-UI-Cmdline</name>
     <artifactId>ui-cmdline</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-explorer</artifactId>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-materials-commons</artifactId>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-comparator</artifactId>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-database</artifactId>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-server</artifactId>
             <type>war</type>
         </dependency>
-
     </dependencies>
 
     <build>

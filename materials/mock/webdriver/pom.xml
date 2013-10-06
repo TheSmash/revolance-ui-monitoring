@@ -12,6 +12,7 @@
 
     <packaging>pom</packaging>
 
+    <name>Revolance-UI-Materials-Mock-Webdriver</name>
     <artifactId>ui-materials-mock-webdriver</artifactId>
 
     <modules>

@@ -60,6 +60,7 @@ public class ApplicationController
     IApplicationComparator sitemapComparator = new ApplicationComparator();
 
     IPageComparator pageComparator = new PageComparator();
+    private List<Exploration> explorations;
 
     @RequestMapping(value = "/application", method = RequestMethod.POST)
     public ModelAndView addContent(@Valid Application application, BindingResult result) throws IOException, StorageException
@@ -73,6 +74,12 @@ public class ApplicationController
             return new ModelAndView( "ApplicationList", "contentList", getApplications() );
         }
 
+    }
+
+    @RequestMapping(value = "/exploration", method = RequestMethod.GET)
+    public ModelAndView startExploration(@Valid Exploration exploration)
+    {
+        return new ModelAndView( "ExplorationList", "explorationList", getExplorations() );
     }
 
     private List<Application> getApplications() throws StorageException, IOException
@@ -264,4 +271,8 @@ public class ApplicationController
         return new ModelAndView( "PageMerger", model );
     }
 
+    public List<Exploration> getExplorations()
+    {
+        return explorations;
+    }
 }

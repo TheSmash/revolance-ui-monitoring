@@ -10,6 +10,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <name>Revolance-UI-Materials-Resources-Page-New-Url</name>
     <artifactId>ui-materials-resources-page-new-url</artifactId>
 
     <build>

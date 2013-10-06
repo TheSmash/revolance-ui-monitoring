@@ -10,9 +10,16 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <name>Revolance-UI-Model</name>
     <artifactId>ui-model</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-materials-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-materials-mock-webdriver-service</artifactId>

@@ -11,6 +11,8 @@
     </parent>
 
     <packaging>pom</packaging>
+
+    <name>Revolance-UI-Materials</name>
     <artifactId>ui-materials</artifactId>
 
     <modules>

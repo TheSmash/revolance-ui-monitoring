@@ -12,6 +12,7 @@
 
     <packaging>pom</packaging>
 
+    <name>Revolance-UI-Materials-Mock</name>
     <artifactId>ui-materials-mock</artifactId>
 
     <modules>

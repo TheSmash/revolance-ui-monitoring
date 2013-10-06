@@ -194,6 +194,8 @@ public class XMLHelper
         boolean takePageScreenshot = false;
         boolean takePageElementScreenshot = false;
 
+        boolean exploreVariants = false;
+
         int browserHeight = 0;
         int browserWidth = 0;
 
@@ -215,47 +217,63 @@ public class XMLHelper
                     if ( elementChildName.contentEquals( "applicationImpl" ) )
                     {
                         applicationImpl = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "applicationVersion" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "applicationVersion" ) )
                     {
                         applicationVersion = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "applicationDir" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "applicationDir" ) )
                     {
                         applicationDir = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "usersCfgFile" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "usersCfgFile" ) )
                     {
                         usersCfgFile = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "reportFolder" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "reportFolder" ) )
                     {
                         reportFolder = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "followLinks" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "followLinks" ) )
                     {
                         followLinks = Boolean.valueOf( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "followButtons" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "followButtons" ) )
                     {
                         followButtons = Boolean.valueOf( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "takePageScreenshot" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "takePageScreenshot" ) )
                     {
                         takePageScreenshot = Boolean.valueOf( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "takePageElementScreenshot" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "takePageElementScreenshot" ) )
                     {
                         takePageElementScreenshot = Boolean.valueOf( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "driverPath" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "driverPath" ) )
                     {
                         driverPath = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "browserType" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "browserType" ) )
                     {
                         browserType = elementChildData.getNodeValue();
-                    } else if ( elementChildName.contentEquals( "browserWidth" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "browserWidth" ) )
                     {
                         browserWidth = Integer.parseInt( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "browserHeight" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "browserHeight" ) )
                     {
                         browserHeight = Integer.parseInt( elementChildData.getNodeValue() );
-                    } else if ( elementChildName.contentEquals( "browserBinary" ) )
+                    }
+                    else if ( elementChildName.contentEquals( "browserBinary" ) )
                     {
                         browserBinary = elementChildData.getNodeValue();
                     }
-
+                    else if ( elementChildName.contentEquals( "exploreVariants" ) )
+                    {
+                        exploreVariants = Boolean.parseBoolean( elementChildData.getNodeValue() );
+                    }
                 }
             }
         }
@@ -283,6 +301,7 @@ public class XMLHelper
         setup.setBrowserBinary( browserBinary );
         setup.setDriverPath( driverPath );
         setup.setBrowserType( browserType );
+        setup.setExploreVariantsEnabled( exploreVariants );
 
         setup.setExcludedButtons( getExcludedButtons( appCfg ) );
         setup.setExcludedLinks( getExcludedLinks( appCfg ) );

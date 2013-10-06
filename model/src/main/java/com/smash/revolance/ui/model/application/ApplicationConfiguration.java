@@ -17,6 +17,10 @@ package com.smash.revolance.ui.model.application;
         along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import com.smash.revolance.ui.model.element.api.ElementBean;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -25,6 +29,9 @@ import java.util.ArrayList;
  * Date: 26/01/13
  * Time: 16:03
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
+                getterVisibility = JsonAutoDetect.Visibility.NONE,
+                isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ApplicationConfiguration
 {
     private boolean followLinks;
