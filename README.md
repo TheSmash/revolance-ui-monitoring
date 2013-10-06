@@ -1,6 +1,6 @@
-"!http://travis-ci.org/TheSmash/revolance-ui.png!"
 
-Revolance UI 
+
+revolance-ui [![Build Status](http://travis-ci.org/TheSmash/revolance-ui.png?branch=master)](http://travis-ci.org/TheSmash/revolance-ui)
 ============
 
 
