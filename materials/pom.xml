@@ -15,8 +15,8 @@
 
     <modules>
         <!--<module>config</module>
-        <module>driver</module>-->
-        <module>resources</module>
+        <module>driver</module>
+        <module>resources</module>-->
         <module>mock</module>
         <module>commons</module>
     </modules>
