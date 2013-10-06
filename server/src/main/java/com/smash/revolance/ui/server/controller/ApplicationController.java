@@ -26,6 +26,7 @@ import com.smash.revolance.ui.comparator.page.PageComparison;
 import com.smash.revolance.ui.database.FileSystemStorage;
 import com.smash.revolance.ui.database.IStorage;
 import com.smash.revolance.ui.database.StorageException;
+import com.smash.revolance.ui.model.application.ApplicationConfiguration;
 import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
@@ -60,7 +61,6 @@ public class ApplicationController
     IApplicationComparator sitemapComparator = new ApplicationComparator();
 
     IPageComparator pageComparator = new PageComparator();
-    private List<Exploration> explorations;
 
     @RequestMapping(value = "/application", method = RequestMethod.POST)
     public ModelAndView addContent(@Valid Application application, BindingResult result) throws IOException, StorageException
@@ -77,7 +77,7 @@ public class ApplicationController
     }
 
     @RequestMapping(value = "/exploration", method = RequestMethod.GET)
-    public ModelAndView startExploration(@Valid Exploration exploration)
+    public ModelAndView startExploration(@Valid ApplicationConfiguration exploration)
     {
         return new ModelAndView( "ExplorationList", "explorationList", getExplorations() );
     }
@@ -271,8 +271,8 @@ public class ApplicationController
         return new ModelAndView( "PageMerger", model );
     }
 
-    public List<Exploration> getExplorations()
+    public List<ApplicationConfiguration> getExplorations()
     {
-        return explorations;
+        return null;
     }
 }
