@@ -16,7 +16,7 @@
 
     <modules>
         <module>service</module>
-        <module>resources</module>
+        <!--<module>resources</module>-->
         <module>commons</module>
     </modules>
 
