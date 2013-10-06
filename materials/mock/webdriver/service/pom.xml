@@ -16,6 +16,11 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-materials-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ui-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -43,6 +48,10 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
 
         <!-- Test dependencies -->

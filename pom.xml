@@ -141,7 +141,6 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>ui-materials-commons</artifactId>
                 <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <!-- Testing libs -->
