@@ -31,6 +31,13 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ui-materials-commons</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -70,19 +77,11 @@
                         <id>unpack</id>
                         <phase>process-test-resources</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>ui-materials-mock-webdriver-commons</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/materials</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
+                            <includeTypes>zip</includeTypes>
+                            <outputDirectory>target/materials</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
