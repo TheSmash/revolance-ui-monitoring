@@ -1,11 +1,9 @@
-
 Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui.png)](https://travis-ci.org/TheSmash/revolance-ui)
 ============
 
 
-This is the repository where the reign of manual QA shorten on the UI testing part.
-QA have their value on automation, explorating testing of assembled components and 
-certainly not on repeting manual UI regression tests as if they were monkeys.
+Testers prove their value on automation, explorating testing and not on repeting
+clicks on buttons to look for broken links.
 
 The process is to validate once and for all pages of the app:
   - the content
@@ -15,7 +13,8 @@ The process is to validate once and for all pages of the app:
   - the url
   
 What is a change in the content?
-Well there are a lot of UI automation tool out there. Some rely on the UI while some others don't.
+Well there are a lot of UI automation tools out there. Some rely on the UI while some others don't.
+
 This project is trying to mix the two approches. Thus validating an element of the content should not be too strongly 
 linked to his appearance neither to his position. But it should be at first about his textual value and his href.
 Functionally the most important thing is that the link is there in the content and properly working. 
