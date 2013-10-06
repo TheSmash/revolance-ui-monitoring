@@ -1,6 +1,5 @@
-[![Build Status](http://travis-ci.org/TheSmash/revolance-ui.png)](http://travis-ci.org/TheSmash/revolance-ui)
-# reveal.js [![Build Status](https://travis-ci.org/hakimel/reveal.js.png?branch=master)](https://travis-ci.org/hakimel/reveal.js)
-Revolance UI 
+
+Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui.png)](https://travis-ci.org/TheSmash/revolance-ui)
 ============
 
 
