@@ -44,7 +44,7 @@ a Server (ui-server) provide a set of Rest APIs to:
   - accept (or not) a change on a page content
   - start / cancel an exploration
 
-The server also provide an html5/css3 UI over the Rest APIs 
+The server also provide an HTML5/CSS3 UI over the Rest APIs 
 
 Data Model:
 ===========
