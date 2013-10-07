@@ -17,7 +17,7 @@ h2 { font-size: 1.2em; }
 h3 { font-size: 1.2em; background: #B00A0A url(../images/redbg.gif) repeat-x left bottom; padding: 6px 0px; color: #fff; font-weight: normal; margin: 0 0 15px; float: left; }
 h4 { margin: 0 0 15px; color: #555; font-weight: normal; font-size: 1.6em; font-weight: normal; }
 h5 { margin: 0 0 8px; color: #888; font-size: 1.2em;}
-.two-third h4{ padding-left: 25px; padding-bottom:10px; border-bottom: 1px #B00A0A  solid; }
+.two-third h4{ padding-left: 25px; border-bottom: 2px solid #9E9E9E; }
 p { clear: both; line-height: 1.64em; margin: 0 0 15px; }
 .line { clear: both; border-bottom: 1px inset #555; margin: 0 0 45px; }
 .clear { clear: both; }
@@ -26,6 +26,8 @@ p { clear: both; line-height: 1.64em; margin: 0 0 15px; }
 .date .month { text-transform: uppercase; font-size: 28px;}
 .date .year {display: block; position: absolute; right: -5px; top: 10px; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);}
 .announcement {float: left; clear: none;}
+input[type=text], input[type=email]{ width: 150px; }
+label{ width: 150px; }
 input[type=Button] {font-size: 13px;
 font-weight: bold;
 color: #333;
@@ -40,9 +42,8 @@ border-bottom-color: #c5c5c5;
 box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 vertical-align: middle; padding: 5px 0; margin: 3px 0;}
 a {text-decoration: none}
-.header { margin-bottom: 10px}
-.header * {width: 970px; clear: both; position: relative;}
-.header h3 { text-align: center; font-size: 1.8em; }
+.header { margin-bottom: 10px;}
+.header h3 {  width: 100%; text-align: center; font-size: 1.9em; color: #9090A0; background-image: url("../images/redbg.gif"); background-repeat: repeat-x; background-size: auto auto; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);}
 #content { width: 970px; margin: 0 auto; }
     #top { color: #ccc; padding: 6px 20px 0; font-size: .84em; text-align: right; }
     #logo { float: left; background-image: url(../images/redbg.gif); background-size: auto; background-repeat: repeat-x; padding-top: 50px; margin-top: -48px; margin-bottom: 10px; padding-top: 80px; padding-bottom: 5px; border-radius: 0 15px 15px; -webkit-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); -moz-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); box-shadow: 0px 1px 5px rgba(0,0,0,0.5); }
@@ -59,12 +60,13 @@ a {text-decoration: none}
     .left { float: left; width: 250px; }
     .right { float: right; width: 630px; margin: 0 0 20px; }
         .right h3 { background: #808080; font-size: .84em; }
-    .third { float: left; width: 290px; margin: 0 30px 20px 0; }
+    .third { float: left; width: 300px; }
         .last { margin-right: 0; }
-    .two-third { float: right; margin: 2px 30px 20px 0; width: 580px; }
+    .two-third { border-left: 1px dashed #AEAEAE; float: left; margin: 0; margin-left: 35px; padding-left: 30px; width: 580px; }
     .third h5 {width: 100%; font-size: 0.85em; text-transform: uppercase; border-bottom: 1px solid #A0A090; margin: 5px 0; padding: 3px 0;}
     .third * { width: 88%; margin-left: auto; margin-right: auto; text-align: center;}
     .third p { margin-left: 0px; text-align: justified;}
+    .third .header {width: 100%;}
     .two-third ul {margin-left: 25px}
     #footer { clear: both; font-size: .84em; border-top: 1px solid #ddd; padding: 20px 0 0; width: 100%;}
         #footer li { display: inline; padding: 0 10px 20px 10px}, #footer li a {float: left; padding: 0 0 5px; margin: 0 0 0 55px;}
