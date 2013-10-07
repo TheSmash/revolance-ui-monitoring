@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Revolance-ui by TheSmash</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/TheSmash/revolance-ui">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/TheSmash/revolance-ui/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/TheSmash/revolance-ui/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Revolance-ui</h1>
+          <p></p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/TheSmash">TheSmash</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="revolance-ui" class="anchor" href="#revolance-ui"><span class="octicon octicon-link"></span></a>Revolance UI</h1>
+
+<p>This is the repository where the reign of manual QA shorten on the UI testing part.
+QA have their value on automation, explorating testing of assembled components and 
+certainly not on repeting manual UI regression tests as if they were monkeys.</p>
+
+<p>The process is to validate once and for all pages of the app:</p>
+
+<ul>
+<li>the content</li>
+<li>the layout</li>
+<li>the title</li>
+<li>the look</li>
+<li>the url</li>
+</ul><p>What is a change in the content?
+Well there are a lot of UI automation tool out there. Some rely on the UI while some others don't.
+This project is trying to mix the two approches. Thus validating an element of the content should not be too strongly 
+linked to his appearance neither to his position. But it should be at first about his textual value and his href.
+Functionally the most important thing is that the link is there in the content and properly working. 
+Your user is expecting to get redirected toward the appropriate href. And secondly it's also about
+having a nice page where the layout is ok. We do want our users to have a good UX through our ui, right?
+Well I think this project can help us to fill that purpose!</p>
+
+<p>That's it for the speech guys and now let's have some more technical insight.</p>
+
+<h1>
+<a name="components" class="anchor" href="#components"><span class="octicon octicon-link"></span></a>Components:</h1>
+
+<p>an Explorer (ui-explorer):</p>
+
+<ul>
+<li>Parse and explore all the pages of a web app and then produces a JSon report.</li>
+</ul><p>a Comparator (ui-comparator): </p>
+
+<ul>
+<li>Compare two exploration report files. The output of this comparison says what are the differencies.</li>
+</ul><p>a Database (ui-database):</p>
+
+<ul>
+<li>Store and retrieve the reports.</li>
+</ul><p>a Server (ui-server) provide a set of Rest APIs to:</p>
+
+<ul>
+<li>store and retrieve reports</li>
+<li>compare pages</li>
+<li>accept (or not) a change on a page content</li>
+<li>start / cancel an exploration</li>
+</ul><p>The server also provide an HTML5/CSS3 UI over the Rest APIs </p>
+
+<h1>
+<a name="data-model" class="anchor" href="#data-model"><span class="octicon octicon-link"></span></a>Data Model:</h1>
+
+<p>A Page has:</p>
+
+<ul>
+<li>an internal id</li>
+<li>a url</li>
+<li>a title</li>
+<li>a width </li>
+<li>a height</li>
+<li>a screenshot (base64 encoded)</li>
+<li>some content (links / buttons / input fields / texts / images)</li>
+<li>some variants</li>
+</ul><p>The page content is:</p>
+
+<ul>
+<li>a list of elements</li>
+</ul><p>A Page variant is:</p>
+
+<ul>
+<li>a url+hash page of an original url page</li>
+<li>a popup menu dynamically drawn when clicking on a link or button of the original page.</li>
+</ul><p>The variant content is linked to another page (called the original). Therefore the variant content is only
+the added content by comparison with the original page.</p>
+
+<p>An element is:</p>
+
+<ul>
+<li>a button</li>
+<li>a link</li>
+<li>some text</li>
+<li>a field</li>
+<li>an image</li>
+</ul><p>An element has:</p>
+
+<ul>
+<li>an internal id</li>
+<li>an x coordinate</li>
+<li>an y coordinate</li>
+<li>a width</li>
+<li>a height</li>
+<li>a screenshot (base64 encoded)</li>
+<li>a textual value</li>
+<li>a state (broken / not broken)</li>
+<li>an href</li>
+<li>an impl (Link / Button / Input / Data / Image)</li>
+</ul><h1>
+<a name="licence--author" class="anchor" href="#licence--author"><span class="octicon octicon-link"></span></a>Licence &amp; Author</h1>
+
+<pre><code>Copyright [2012] [smash william / bethesmash@gmail.com]
+</code></pre>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at</p>
+
+<pre><code>   http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>
+
+<p>Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
