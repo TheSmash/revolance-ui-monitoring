@@ -1,6 +1,0 @@
-{
-    "name": "isElementDisplayed",
-    "sessionId": "${sessionId}",
-    "status":0,
-    "value": ${isElementDisplayed}
-}

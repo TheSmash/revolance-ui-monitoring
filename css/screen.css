@@ -1,0 +1,71 @@
+/*
+    =====================================
+    project: Distinctive
+    author:  Luka Cvrk (www.solucija.com)
+    -------------------------------------
+    2009. Solucija
+    =====================================
+*/
+
+*{margin:0;padding:0}:focus,:active {outline:0}img{border: 0}
+ul li{margin-left: 20px; padding-left: 10px}
+body { font: 0.9em Arial, Tahoma, Verdana; background: url(../images/bg.gif) repeat-x; color: #444; }
+a { text-decoration: underlined; color: #B20F0F; }
+h1 { font-size: 1.4em; font-weight: normal; }
+    h1 a { color: #fff; font-size: 1.6em; }
+h2 { font-size: 1.2em; }
+h3 { font-size: 1.2em; background: #B00A0A url(../images/redbg.gif) repeat-x left bottom; padding: 6px 0px; color: #fff; font-weight: normal; margin: 0 0 15px; float: left; }
+h4 { margin: 0 0 15px; color: #555; font-weight: normal; font-size: 1.6em; font-weight: normal; }
+h5 { margin: 0 0 8px; color: #888; font-size: 1.2em;}
+.two-third h4{ padding-left: 25px; padding-bottom:10px; border-bottom: 1px #B00A0A  solid; }
+p { clear: both; line-height: 1.64em; margin: 0 0 15px; }
+.line { clear: both; border-bottom: 1px inset #555; margin: 0 0 45px; }
+.clear { clear: both; }
+.date { background-color: #50b77e; float: left; position: relative; padding: 30px 3px 0px;}
+.date .day { font-size: 36px; line-height: 38px; position: absolute; left: 3px; top: 0px;}
+.date .month { text-transform: uppercase; font-size: 28px;}
+.date .year {display: block; position: absolute; right: -5px; top: 10px; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);}
+.announcement {float: left; clear: none;}
+input[type=Button] {font-size: 13px;
+font-weight: bold;
+color: #333;
+text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+white-space: nowrap;
+background-color: #eaeaea;
+background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+background-image: linear-gradient(#fafafa, #eaeaea);
+border-radius: 25px;
+border: 1px solid #ccc;
+border-bottom-color: #c5c5c5;
+box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+vertical-align: middle; padding: 5px 0; margin: 3px 0;}
+a {text-decoration: none}
+.header { margin-bottom: 10px}
+.header * {width: 970px; clear: both; position: relative;}
+.header h3 { text-align: center; font-size: 1.8em; }
+#content { width: 970px; margin: 0 auto; }
+    #top { color: #ccc; padding: 6px 20px 0; font-size: .84em; text-align: right; }
+    #logo { float: left; background-image: url(../images/redbg.gif); background-size: auto; background-repeat: repeat-x; padding-top: 50px; margin-top: -48px; margin-bottom: 10px; padding-top: 80px; padding-bottom: 5px; border-radius: 0 15px 15px; -webkit-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); -moz-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); box-shadow: 0px 1px 5px rgba(0,0,0,0.5); }
+        #logo .inside {background-image: url(../images/logo.png); background-size: 66px 66px; background-position: 10px 60px; background-repeat: no-repeat; margin-top: -105px; margin-bottom: 10px; padding: 78px 18px 4px 19px;}
+        #logo .inside h1 { text-shadow: 1px 1px 1px #7E0E0E; color: #00517e; font-size: 28px; text-align: center; font-family: Georgia; text-shadow: 1px 1px -1px #A0A090;}
+        #logo .inside h2 { text-shadow: 1px 1px 1px #7E0E0E; color: #e86024; font-size: 12px; text-align: center;}
+    #menu { float: right; margin: 50px 0 15px; }
+        #menu li { display: inline; font-size: 1.2em; }
+            #menu li a { float: left; color: #9090a0; padding: 0 0 5px; margin: 0 0 0 55px; text-transform: uppercase}
+            #menu li a:hover, #menu li.current a, #menu li a:focus { color: #1E90FF; border-bottom: 1px dashed #777; text-transform: uppercase}
+    #pitch { background: url(../images/test.png) no-repeat 90% top; background-size: 22%; padding: 30px 350px 0 0; border-bottom: 1px solid #ddd; height: 270px; margin: 0 0 30px; }
+        #pitch h1 { margin: 25px 0 20px; font-size: 2.6em; color: #000; }
+        #pitch h2 { line-height: 1.5em; }
+    .left { float: left; width: 250px; }
+    .right { float: right; width: 630px; margin: 0 0 20px; }
+        .right h3 { background: #808080; font-size: .84em; }
+    .third { float: left; width: 290px; margin: 0 30px 20px 0; }
+        .last { margin-right: 0; }
+    .two-third { float: right; margin: 2px 30px 20px 0; width: 580px; }
+    .third h5 {width: 100%; font-size: 0.85em; text-transform: uppercase; border-bottom: 1px solid #A0A090; margin: 5px 0; padding: 3px 0;}
+    .third * { width: 88%; margin-left: auto; margin-right: auto; text-align: center;}
+    .third p { margin-left: 0px; text-align: justified;}
+    .two-third ul {margin-left: 25px}
+    #footer { clear: both; font-size: .84em; border-top: 1px solid #ddd; padding: 20px 0 0; width: 100%;}
+        #footer li { display: inline; padding: 0 10px 20px 10px}, #footer li a {float: left; padding: 0 0 5px; margin: 0 0 0 55px;}
+        #footer p{position: relative; margin-left:auto; margin-right: auto;}

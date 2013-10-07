@@ -1,6 +1,0 @@
-{
-    "name":"executeScript",
-    "sessionId":"${sessionId}",
-    "status":0,
-    "value":${value}
-}

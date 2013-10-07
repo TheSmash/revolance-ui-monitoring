@@ -1,6 +1,0 @@
-{
-    "name": "getElementValueOfCssProperty",
-    "sessionId": "${sessionId}",
-    "status":0,
-    "value": "${elementCssAttributeValue}"
-}

@@ -1,9 +1,0 @@
-{
-    "name": "getElementLocation",
-    "sessionId": "${sessionId}",
-    "status": 0,
-    "value": {
-            "x": ${elementX},
-            "y": ${elementY}
-    }
-}
