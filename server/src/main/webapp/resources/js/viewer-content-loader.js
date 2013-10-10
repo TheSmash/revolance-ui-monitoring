@@ -1,5 +1,5 @@
 (function($,W,D){
-
+/*
     $.getPageById = function( pageId, ref )
     {
         if(ref)
@@ -119,5 +119,5 @@
     $(document).ready(function( ) {
 
     });
-
+*/
 })(jQuery, window, document);

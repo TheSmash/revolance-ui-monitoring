@@ -24,7 +24,7 @@ public class ReferenceElementRenderable extends ContextualRenderable
     public ReferenceElementRenderable(String pageId, ElementComparison elementComparison)
     {
         this.comparison = elementComparison;
-        if ( elementComparison.getReference() != null && elementComparison.getReference().getId().contentEquals( pageId ) )
+        if ( elementComparison.getReference() != null && elementComparison.getReference().getPage().getId().contentEquals( pageId ) )
         {
             this.element = elementComparison.getReference();
         }
@@ -45,27 +45,27 @@ public class ReferenceElementRenderable extends ContextualRenderable
                               .data( "diff-type", comparison.getDiffType().toString() )
                               .data( "match-element-id", comparison.getReference() != null ? comparison.getReference().getInternalId() : element.getInternalId() ) )
                     .div( class_( "comparisons" ) );
-            if ( comparison.getElementDifferencies().contains( ElementDifferency.POS ) )
-            {
-                html.div( class_( "pos-comparison" ) )._div();
-            }
-            if ( comparison.getElementDifferencies().contains( ElementDifferency.LOOK ) )
-            {
-                html.div( class_( "look-comparison" ) )._div();
-            }
-            if ( comparison.getElementDifferencies().contains( ElementDifferency.IMPL ) )
-            {
-                html.div( class_( "look-comparison" ) )._div();
-            }
-            if ( comparison.getElementDifferencies().contains( ElementDifferency.VALUE ) )
-            {
-                html.div( class_( "value-comparison" ) )._div();
-            }
-            if ( element.getImpl().contentEquals( "Button" ) || element.getImpl().contentEquals( "Link" ) && comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) )
-            {
-                html.div( class_( "target-comparison" ).data( "changed", comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) ? "true" : "false" ) )._div();
-            }
-            html._div();
+                        if ( comparison.getElementDifferencies().contains( ElementDifferency.POS ) )
+                        {
+                            html.div( class_( "pos-comparison" ) )._div();
+                        }
+                        if ( comparison.getElementDifferencies().contains( ElementDifferency.LOOK ) )
+                        {
+                            html.div( class_( "look-comparison" ) )._div();
+                        }
+                        if ( comparison.getElementDifferencies().contains( ElementDifferency.IMPL ) )
+                        {
+                            html.div( class_( "look-comparison" ) )._div();
+                        }
+                        if ( comparison.getElementDifferencies().contains( ElementDifferency.VALUE ) )
+                        {
+                            html.div( class_( "value-comparison" ) )._div();
+                        }
+                        if ( element.getImpl().contentEquals( "Button" ) || element.getImpl().contentEquals( "Link" ) && comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) )
+                        {
+                            html.div( class_( "target-comparison" ).data( "changed", comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) ? "true" : "false" ) )._div();
+                        }
+                    html._div();
             html._div();
         }
     }

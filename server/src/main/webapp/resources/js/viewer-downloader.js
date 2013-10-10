@@ -1,5 +1,6 @@
 (function($)
 {
+/*
     const MIME_TYPE = 'text/plain';
 
     var downloadFile = function( fName, content )
@@ -34,5 +35,5 @@
             downloadFile( 'sitemap.json', $('#official-sitemap-report').val() );
         });
     });
-
+*/
 })(jQuery);

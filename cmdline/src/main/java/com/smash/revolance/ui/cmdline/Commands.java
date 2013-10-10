@@ -24,9 +24,21 @@ import com.smash.revolance.ui.materials.JsonHelper;
 import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import sun.net.www.http.HttpClient;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * User: wsmash
@@ -36,11 +48,11 @@ import java.io.FileNotFoundException;
 public enum Commands
 {
     EXPLORE( "explore", "appCfg.xml", "out.txt" ),
-    START_SERVER( "startServer" ),
-    STOP_SERVER( "stopServer" ),
-    STATUS( "status" );
+    START_SERVER( "startServer", "httpPort" ),
+    STOP_SERVER( "stopServer", "httpPort" ),
+    STATUS( "status", "httpPort" );
 
-    private final String[] opts;
+    private String[] opts = new String[]{};
     private final String   cmd;
 
     private Commands(String cmd, String... opts)
@@ -56,7 +68,7 @@ public enum Commands
 
     public int getOptsCount()
     {
-        return opts == null ? 0 : opts.length;
+        return this.opts == null ? 0 : this.opts.length;
     }
 
     private String getOpts()
@@ -96,8 +108,10 @@ public enum Commands
         return null;
     }
 
-    public void exec(String... opts) throws Exception
+    public int exec(String... opts) throws Exception
     {
+        int execStatus = -1;
+
         if ( getOptsCount() == opts.length )
         {
             File workingDir = new File( "." ).getAbsoluteFile();
@@ -105,23 +119,104 @@ public enum Commands
             {
                 case EXPLORE:
 
-                    execExploreCmd( workingDir, opts );
+                    execStatus = execExploreCmd( workingDir, opts );
                     break;
 
                 case START_SERVER:
 
-                    execStartServerCmd( workingDir, opts );
+                    execStatus = execStartServerCmd( workingDir, opts );
+                    break;
+
+                case STOP_SERVER:
+
+                    execStatus = execStopServerCmd( workingDir, opts );
+                    break;
+
+                case STATUS:
+
+                    execStatus = execStatusCmd( workingDir, opts );
                     break;
             }
         }
+
+        return execStatus;
     }
 
-    private void execStartServerCmd(File workingDir, String[] opts)
+    private int execStatusCmd(File workingDir, String[] opts)
     {
-        // Start Jetty
-        // Load rest services war
-        // Load ui war
-        // Log Url
+        try
+        {
+            System.out.println( "Retrieving server status" );
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet("http://localhost:"+opts[0]+"/ping");
+            HttpResponse response = client.execute(request);
+            if(response.getStatusLine().getStatusCode() == 200)
+            {
+                System.out.println("server is running");
+                return 0;
+            }
+            else
+            {
+                System.err.println( "server is stopped" );
+                return -1;
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println( "server is stopped" );
+            return -1;
+        }
+    }
+
+    private int execStopServerCmd(File workingDir, String[] opts)
+    {
+        try
+        {
+            System.out.println( "Stopping server" );
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet("http://localhost:"+opts[0]+"/shutdown");
+            HttpResponse response = client.execute(request);
+            if(response.getStatusLine().getStatusCode() == 200)
+            {
+                System.out.println("Stopping server [Done]");
+                return 0;
+            }
+            else
+            {
+                System.err.println( "Stopping server [Failed]" );
+                return -1;
+            }
+        }
+        catch (IOException e)
+        {
+            return -1;
+        }
+    }
+
+    private int execStartServerCmd(File workingDir, String[] opts)
+    {
+        ServletContainer container = new ServletContainer();
+        ServletHolder h = new ServletHolder( container );
+
+        h.setInitParameter( "com.sun.jersey.config.property.packages", "com.smash.revolance.ui.server" );
+        h.setInitParameter( "com.sun.jersey.api.json.POJOMappingFeature", "com.sun.jersey.api.json.POJOMappingFeature" );
+
+        Server server = new Server( Integer.parseInt( opts[0] ) );
+        ServletContextHandler context = new ServletContextHandler( ServletContextHandler.SESSIONS );
+        context.setContextPath( "/" );
+        server.setHandler( context );
+
+        context.addServlet( h, "/*" );
+        try
+        {
+            server.start();
+            return 0;
+        }
+        catch (Exception e)
+        {
+            return -1;
+        }
+
     }
 
     private void execCompareCmd(File workingDir, String[] opts) throws Exception
@@ -132,7 +227,7 @@ public enum Commands
             throw new FileNotFoundException( "Missing sitemap file: " + sitemapFile );
         }
 
-        File sitemapRefFile = new File( workingDir, opts[1] );
+        File sitemapRefFile = new File( workingDir, opts[0] );
         if ( !sitemapRefFile.exists() )
         {
             throw new FileNotFoundException( "Missing sitemapRef file: " + sitemapRefFile );
@@ -144,11 +239,11 @@ public enum Commands
 
         ApplicationComparison comparison = diffMaker.compare( sitemap, sitemapRef );
 
-        File regression = new File( opts[2] );
+        File regression = new File( opts[1] );
         JsonHelper.getInstance().map( regression, comparison );
     }
 
-    private void execExploreCmd(File workingDir, String[] opts) throws Exception
+    private int execExploreCmd(File workingDir, String[] opts) throws Exception
     {
         File appCfg = new File( workingDir, opts[0] );
         if ( !appCfg.exists() )
@@ -161,6 +256,8 @@ public enum Commands
         {
             new ApplicationExplorer( app ).explore( 60 );
         }
+
+        return 0;
     }
 
 }

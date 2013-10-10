@@ -1,7 +1,7 @@
 (function($,W,D){
 
     $.wip = false;
-
+    /*
     $.getPageDecoratorWidth = function()
     {
         return $("#page-decorator-width").val();
@@ -176,6 +176,6 @@
             $.renderReports( );
         });
     });
-
+    */
 })(jQuery, window, document);
 

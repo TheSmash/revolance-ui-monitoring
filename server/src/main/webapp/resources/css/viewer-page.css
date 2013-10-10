@@ -99,7 +99,7 @@
 
 .page-element[data-diff-type=DELETED]
 {
-    border: orange 1px red;
+    border: red 1px dashed;
 }
 
 .page-element[data-diff-type=BASE]

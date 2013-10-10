@@ -52,7 +52,7 @@ public class ReferencePageRenderable extends ContextualRenderable
                                   .data( "caption", page.getCaption() ) );
             for ( ElementComparison elementComparison : comparison.getElementComparisons() )
             {
-                html.render( new ReferenceElementRenderable( page.getId(), elementComparison ) );
+                new ReferenceElementRenderable( page.getId(), elementComparison ).renderOn( html );
             }
             html._div()._div();
         }

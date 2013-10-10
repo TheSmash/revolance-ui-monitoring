@@ -29,7 +29,7 @@ public class MergeElementRenderable implements Renderable
     {
         if ( comparison.getReference() != null )
         {
-            ElementBean element = comparison.getReference();
+            ElementBean element = comparison.getMatch();
             html.div( class_( "page-element" )
                               .data( "id", element.getInternalId() )
                               .data( "w", String.valueOf( element.getWidth() ) )
@@ -37,7 +37,8 @@ public class MergeElementRenderable implements Renderable
                               .data( "x", element.getX() )
                               .data( "y", element.getY() )
                               .data( "caption", element.getCaption() )
-                              .data( "diff-type", comparison.getDiffType().toString() ) )
+                              .data( "diff-type", comparison.getDiffType().toString() )
+                              .data( "match-element-id", comparison.getReference().getId() ) )
                     .div( class_( "comparisons" ) );
 
             if ( comparison.getElementDifferencies().contains( ElementDifferency.POS ) )

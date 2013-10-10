@@ -258,11 +258,12 @@ public class ApplicationController
         PageBean newPage = SiteMap.fromJson( repository.retrieve( contentTagNew ) ).findPageByInternalId( pageNewId );
 
         HtmlCanvas canvas = new HtmlCanvas();
-        if ( refPage != null || newPage != null )
+        if ( refPage != null && newPage != null )
         {
             PageComparison comparison = pageComparator.compare( newPage, refPage );
             new MergerRenderable( comparison ).renderOn( canvas );
-        } else
+        }
+        else
         {
             canvas.h1().content( "Oups an Internal error occured. Unable to do this comparison." )._h1();
         }

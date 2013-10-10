@@ -66,7 +66,7 @@
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="#">UI Viewer</a>
+                    <a class="brand" href="#">RevoLance UI Server</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="${pageContext.request.contextPath}/application">Applications</a></li>

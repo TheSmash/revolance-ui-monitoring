@@ -106,7 +106,7 @@
             return '<span class="smallipopHint">' + tooltip + '</span>';
         }
     };
-
+/*
     var buildElementWithContent = function(elem, content, tooltip, refElementId, newElementId)
     {
         if(elem === undefined)
@@ -303,7 +303,7 @@
 
         return row;
     };
-
+*/
     $.previousVariant = function( element )
     {
         var tr = $(element).parent().parent().parent();
@@ -366,7 +366,7 @@
     {
         return buildPage( variant, "variant", "", "", "" );
     }
-
+/*
     var buildMetaInf = function( refPage, page, pageDiffTypes )
     {
         // page meta-data
@@ -501,7 +501,7 @@
     {
         return '<a href="#" onclick="$.activeSaveMode( this );"><i class="icon-pencil icon-white"></i> [edit]</a>';
     };
-
+*/
     $.activeSaveMode = function( link )
     {
         var saveButton = '<a href="#" onclick="$.activeEditMode( this );"><i class="icon-ok icon-white"></i> [save]</a>';
@@ -545,7 +545,7 @@
         return txtArea;
         // definePageElementTooltip( element );
     };
-
+/*
     var buildBadge = function( extraClass, label, state )
     {
         if(state)
@@ -583,7 +583,7 @@
         definePageDecoratorBehavior( );
         defineTooltipBehavior( );
     };
-
+*/
     var defineSearchTags = function( )
     {
         var options = '';
@@ -628,7 +628,7 @@
     {
         return $('.page-decorator[data-id="' + pageId + '"] > .page ').get( 0 );
     };
-
+/*
     $.buildDialog = function( val )
     {
         $(val).smallipop('hide');
@@ -892,7 +892,7 @@
 
         return commonContent;
     };
-
+*/
     $.revertChanges = function( button )
     {
         askForConfirmation( 'Work in progress will be permanently lost! Do you want to continue?' );
@@ -1007,7 +1007,7 @@
             alert('There is no current changes to be commited');
         }
     };
-
+/*
     var buildComparisonReportContent = function( pageContentComparison )
     {
         var content = "";
@@ -1024,7 +1024,7 @@
         var tooltip = buildElementTooltip( comparison.refPage, comparison.refElement, comparison.page, comparison.element, comparison.diffTypes, comparison.pageElementDiffTypes);
         return buildElementWithContent( comparison.refElement, tooltip, tooltip );
     }
-
+*/
     var del = function(item, array)
     {
         var idx = array.indexOf( item );
@@ -1046,7 +1046,7 @@
 
         $.end = true;
         $(elementDropped).removeClass("hover");
-        $(".page-element[data-id="+$(this).attr("data-match-element-id")+"]").removeClass("hover");
+        $(".page-element[data-id="+$(elementDropped).attr("data-match-element-id")+"]").removeClass("hover");
 
         $(elementDropped).remove( );
         $(page).find(".page").append( elementDropped );
@@ -1106,7 +1106,7 @@
         {
             $(this).parent().css("float", "left");
 
-            var w = ((screen.width)/3)-100;
+            var w = ((screen.width)/3)-18;
             var wReal = $(this).find(".page").attr("data-w");
 
             var xScale = w / wReal;

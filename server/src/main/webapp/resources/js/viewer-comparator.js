@@ -1,5 +1,5 @@
 (function($,W,D){
-
+/*
     $.compareSitemapToJSON = function( sitemap, refSitemap )
     {
         var comparison = $.compareSitemap( sitemap, refSitemap )
@@ -653,7 +653,7 @@
     {
         return element.impl;
     }
-
+*/
 })(jQuery, window, document);
 
 

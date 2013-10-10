@@ -59,10 +59,12 @@ public class PageComparator implements IPageComparator
         if ( page == null )
         {
             comparison.setDiffType( DiffType.DELETED );
-        } else if ( reference == null )
+        }
+        else if ( reference == null )
         {
             comparison.setDiffType( DiffType.ADDED );
-        } else
+        }
+        else
         {
             comparison.setDiffType( DiffType.BASE );
 

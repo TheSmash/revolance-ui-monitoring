@@ -24,7 +24,7 @@ public class NewElementRenderable extends ContextualRenderable
     public NewElementRenderable(String pageId, ElementComparison elementComparison)
     {
         this.comparison = elementComparison;
-        if ( elementComparison.getMatch() != null && elementComparison.getMatch().getId().contentEquals( pageId ) )
+        if ( elementComparison.getMatch() != null && elementComparison.getMatch().getPage().getId().contentEquals( pageId ) )
         {
             this.element = elementComparison.getMatch();
         }

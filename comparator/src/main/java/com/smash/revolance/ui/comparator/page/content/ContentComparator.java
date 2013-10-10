@@ -41,9 +41,9 @@ public class ContentComparator implements IContentComparator
     @Override
     public Collection<ElementComparison> compare(Collection<ElementBean> content, Collection<ElementBean> reference)
     {
-        List<ElementComparison> comparisons = new ArrayList<ElementComparison>();
+        List<ElementComparison> comparisons = new ArrayList();
 
-        List<ElementBean> addedElements = new ArrayList<ElementBean>( content );
+        List<ElementBean> addedElements = new ArrayList( content );
         for ( ElementBean element : content )
         {
             ElementComparison comparison = null;

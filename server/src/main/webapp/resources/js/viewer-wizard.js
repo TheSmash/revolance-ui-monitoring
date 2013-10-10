@@ -1,5 +1,5 @@
 (function($,W,D){
-
+/*
     $(document).ready(function(){
         // Smart Wizard
         $('#wizard').smartWizard({
@@ -82,5 +82,5 @@
         dropZone.addEventListener('drop', handleNewSitemapDrop, false);
 
     });
-
+*/
 })(jQuery, window, document);

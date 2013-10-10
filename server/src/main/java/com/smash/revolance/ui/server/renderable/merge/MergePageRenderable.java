@@ -53,8 +53,7 @@ public class MergePageRenderable extends ContextualRenderable
         //.data( "caption", page.getCaption() ) );
         for ( ElementComparison elementComparison : comparison.getElementComparisons() )
         {
-            if ( elementComparison.getDiffType() == DiffType.BASE
-                    && elementComparison.getElementDifferencies().isEmpty() )
+            if ( elementComparison.getDiffType() == DiffType.BASE )
             {
                 html.render( new MergeElementRenderable( elementComparison ) );
             }

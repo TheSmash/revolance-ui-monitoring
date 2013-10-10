@@ -86,6 +86,7 @@
             </div>
         </div>
 
+        <!--
         <div class="container">
             <div class="span10">
 
@@ -96,6 +97,7 @@
 
             </div>
         </div>
+        -->
 
         ${content}
 
@@ -105,6 +107,6 @@
 
     </body>
 
-    <footer> &#169; 2012-2013 Revo Lance. <br /> Revo Lance logo or brand are trademarks. </footer>
+    <!--<footer> &#169; 2012-2013 Revo Lance. <br /> Revo Lance logo or brand are trademarks. </footer>-->
 
 </html>
