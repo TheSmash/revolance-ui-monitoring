@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Reveal.js 3 Slide Demo</title>
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+    <!--Add support for earlier versions of Internet Explorer -->
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Wrap the entire slide show in a div using the "reveal" class. -->
+    <div class="reveal">
+        <!-- Wrap all slides in a single "slides" class -->
+        <div class="slides">
+
+            <!-- ALL SLIDES GO HERE -->
+            <!-- Each section element contains an individual slide -->
+            <section>
+                <h2>Agenda</h2>
+                <ul>
+                    <li>What's UI testing?</li>
+                    <li>Managing UI changes</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>testing in a nutshell</h3>
+                <br />
+                <br />
+                <div style="float:left; width: 50%" >
+                    <ul>
+                        <li><p>unit</p></li>
+                        <li><p>component</p></li>
+                        <li><p>functional</p></li>
+                        <li><p>integration</p></li>
+                        <li><p>E2E</p></li>
+                    </ul>
+                </div>
+                <div style="float:right; width: 50%" >
+                    <ul>
+                        <li><p>ux</p></li>
+                        <li><p>ui</p></li>
+                        <li><p>workload</p></li>
+                        <li><p>manual</p></li>
+                        <li><p>and even more!</p></li>
+                    </ul>
+                </div>
+                <br />
+                <br />
+                <small>A bit confusing right?</small>
+            </section>
+            <section>
+                <h3>UI testing should not</h3>
+                <br />
+                <br />
+                <p>Be a way to implement the server APIs test!</p>
+                <br />
+                <small>If there is a change in the API and in the UI at the same time, troubleshooting becomes complex</small>
+            </section>
+            <section>
+                <h3>UI testing should not</h3>
+                <br />
+                <br />
+                <p>Rely on one's memories</p>
+                <br />
+                <small>The expected result of a UI test cannot be based on a memory</small>
+            </section>
+            <section>
+                <h3>UI testing should be</h3>
+                <br />
+                <br />
+                <p>A way to discover UI problems</p>
+                <br />
+                <small>Detecting broken links, wrong button position or even bad phone numbers!</small>
+            </section>
+            <section>
+                <h3>UI testing should be</h3>
+                <br />
+                <br />
+                <p>Automated</p>
+                <br />
+                <small>Checking all links and buttons styles, text and positions is not impossible!</small>
+            </section>
+            <section>
+                <h3>UI testing should be</h3>
+                <br />
+                <br />
+                <p>Executed before testers download the product</p>
+                <br />
+                <small>Testers you have to prove your brain's value by doing things that cannot be automated!</small>
+            </section>
+            <section>
+                <h3>Managing Changes</h3>
+                <br />
+                <br />
+                <p>Instead of validating everything as you never tested the software</p>
+                <p>managing the changes allow you to be focused on what has changed </p>
+                <p>and the implication on the software behavior</p>
+                <br />
+            </section>
+            <section>
+                <h3>Revolance UI</h3>
+                <br />
+                <br />
+                <p>Revolance UI is a tool that reveal the changes visible in the UI</p>
+                <small>Let's give a try on your memory</small>
+            </section>
+            <section>
+                <small>v1.0-M1</small>
+                <br />
+                <img src="img/reference.png" />
+            </section>
+            <section>
+                <small>v1.0-M2 (layout modifications)</small>
+                <br />
+                <img src="img/layoutChange.png" />
+            </section>
+            <section>
+                <small>v1.0-M3 (content modifications)</small>
+                <br />
+                <img src="img/contentChange.png" />
+            </section>
+            <section>
+                <small>v1.0-M4 (look modifications)</small>
+                <br />
+                <img src="img/lookChange.png" />
+            </section>
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+        // Required, even if empty.
+        Reveal.initialize({
+        });
+    </script>
+</body>
+</html>
