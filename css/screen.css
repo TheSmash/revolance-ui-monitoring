@@ -9,19 +9,19 @@
 
 *{margin:0;padding:0}:focus,:active {outline:0}img{border: 0}
 ul li{margin-left: 20px; padding-left: 10px}
-body { font: 0.9em Arial, Tahoma, Verdana; background: url(../images/bg.gif) repeat-x; color: #444; }
-a { text-decoration: underlined; color: #B20F0F; }
+body { font: 0.9em Arial, Tahoma, Verdana; color: #333; background-color: #ddd; }
+a { text-decoration: underlined; color: #e06666; }
 h1 { font-size: 1.4em; font-weight: normal; }
     h1 a { color: #fff; font-size: 1.6em; }
 h2 { font-size: 1.2em; }
-h3 { font-size: 1.2em; background: #B00A0A url(../images/redbg.gif) repeat-x left bottom; padding: 6px 0px; color: #fff; font-weight: normal; margin: 0 0 15px; float: left; }
+h3 { font-size: 1.2em; background: #222; padding: 6px 0px; color: #da823b; border: #888 1px solid; font-weight: normal; margin: 0 0 15px; float: left; }
 h4 { margin: 0 0 15px; color: #555; font-weight: normal; font-size: 1.6em; font-weight: normal; }
 h5 { margin: 0 0 8px; color: #888; font-size: 1.2em;}
 .two-third h4{ padding-left: 25px; border-bottom: 2px solid #9E9E9E; }
-p { clear: both; line-height: 1.64em; margin: 0 0 15px; }
-.line { clear: both; border-bottom: 1px inset #555; margin: 0 0 45px; }
+p { line-height: 1.64em; margin: 4px 0 15px; }
+.line { clear: both; border-top: 1px solid #444; margin: 0 0 45px; -webkit-box-shadow: 0px 1px 1px #777; -moz-box-shadow: 0px 1px 1px #777; box-shadow: 0px 1px 1px #777;}
 .clear { clear: both; }
-.date { background-color: #50b77e; float: left; position: relative; padding: 30px 3px 0px;}
+.date { background-color: #50b77e; float: left; position: relative; padding: 30px 3px 0px; margin-right: 18px; }
 .date .day { font-size: 36px; line-height: 38px; position: absolute; left: 3px; top: 0px;}
 .date .month { text-transform: uppercase; font-size: 28px;}
 .date .year {display: block; position: absolute; right: -5px; top: 10px; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);}
@@ -42,19 +42,21 @@ border-bottom-color: #c5c5c5;
 box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 vertical-align: middle; padding: 5px 0; margin: 3px 0;}
 a {text-decoration: none}
-.header { margin-bottom: 10px;}
-.header h3 {  width: 100%; text-align: center; font-size: 1.9em; color: #9090A0; background-image: url("../images/redbg.gif"); background-repeat: repeat-x; background-size: auto auto; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);}
-#content { width: 970px; margin: 0 auto; }
+.header { margin-bottom: 10px; font-size: 1.2em;  }
+.header h3 { width: 100%; font-size: 1.8em;}
+#brand {float: left; text-align: center; margin: 48px 0px 0px 100px; font-family: cursive; font-size: 1.8em;}
+.content { width: 970px; margin: 0 auto; }
     #top { color: #ccc; padding: 6px 20px 0; font-size: .84em; text-align: right; }
-    #logo { float: left; background-image: url(../images/redbg.gif); background-size: auto; background-repeat: repeat-x; padding-top: 50px; margin-top: -48px; margin-bottom: 10px; padding-top: 80px; padding-bottom: 5px; border-radius: 0 15px 15px; -webkit-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); -moz-box-shadow: 0px 1px 5px rgba(0,0,0,0.5); box-shadow: 0px 1px 5px rgba(0,0,0,0.5); }
-        #logo .inside {background-image: url(../images/logo.png); background-size: 66px 66px; background-position: 10px 60px; background-repeat: no-repeat; margin-top: -105px; margin-bottom: 10px; padding: 78px 18px 4px 19px;}
+    #logo { width: 140px; height: 110px; float: left; background-repeat: no-repeat; background-image: url(../images/logo-cutted.png);  background-size: 90% 90%; background-position: center bottom; }
+        #logo .inside {background-image: url(../images/logo-cutted.png); background-size: 66px 66px; background-position: 10px 60px; background-repeat: no-repeat; margin-top: -105px; margin-bottom: 10px; padding: 78px 18px 4px 19px;}
         #logo .inside h1 { text-shadow: 1px 1px 1px #7E0E0E; color: #00517e; font-size: 28px; text-align: center; font-family: Georgia; text-shadow: 1px 1px -1px #A0A090;}
         #logo .inside h2 { text-shadow: 1px 1px 1px #7E0E0E; color: #e86024; font-size: 12px; text-align: center;}
-    #menu { float: right; margin: 50px 0 15px; }
+    #menu { float: right; padding: 75px 0 5px;}
+        #menu ul { width: 500px; }
         #menu li { display: inline; font-size: 1.2em; }
-            #menu li a { float: left; color: #9090a0; padding: 0 0 5px; margin: 0 0 0 55px; text-transform: uppercase}
-            #menu li a:hover, #menu li.current a, #menu li a:focus { color: #1E90FF; border-bottom: 1px dashed #777; text-transform: uppercase}
-    #pitch { background: url(../images/test.png) no-repeat 90% top; background-size: 22%; padding: 30px 350px 0 0; border-bottom: 1px solid #ddd; height: 270px; margin: 0 0 30px; }
+            #menu li a { float: left; color: #aaa; padding: 0 0 5px; margin: 0 0 0 55px; text-transform: uppercase}
+            #menu li a:hover, #menu li.current a, #menu li a:focus { color: #333; border-bottom: 3px solid #333; text-transform: uppercase}
+    #pitch { background: url(../images/test.png) no-repeat 90% top; background-size: 22%; padding: 10px 350px 0 0; border-bottom: 1px solid #ddd; height: 270px; margin: 0 0 30px; }
         #pitch h1 { margin: 25px 0 20px; font-size: 2.6em; color: #000; }
         #pitch h2 { line-height: 1.5em; }
     .left { float: left; width: 250px; }
@@ -62,7 +64,7 @@ a {text-decoration: none}
         .right h3 { background: #808080; font-size: .84em; }
     .third { float: left; width: 300px; }
         .last { margin-right: 0; }
-    .two-third { border-left: 1px dashed #AEAEAE; float: left; margin: 0; margin-left: 35px; padding-left: 30px; width: 580px; }
+    .two-third { border-left: 2px dashed #888; float: left; margin: 0; margin-left: 35px; padding-left: 30px; width: 580px; }
     .third h5 {width: 100%; font-size: 0.85em; text-transform: uppercase; border-bottom: 1px solid #A0A090; margin: 5px 0; padding: 3px 0;}
     .third * { width: 88%; margin-left: auto; margin-right: auto; text-align: center;}
     .third p { margin-left: 0px; text-align: justified;}
@@ -70,4 +72,4 @@ a {text-decoration: none}
     .two-third ul {margin-left: 25px}
     #footer { clear: both; font-size: .84em; border-top: 1px solid #ddd; padding: 20px 0 0; width: 100%;}
         #footer li { display: inline; padding: 0 10px 20px 10px}, #footer li a {float: left; padding: 0 0 5px; margin: 0 0 0 55px;}
-        #footer p{position: relative; margin-left:auto; margin-right: auto;}
+        #footer p{position: relative; margin-left:auto; margin-right: auto; text-align: center}
