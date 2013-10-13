@@ -9,7 +9,7 @@
 
 *{margin:0;padding:0}:focus,:active {outline:0}img{border: 0}
 ul li{margin-left: 20px; padding-left: 10px}
-body { font: 0.9em Arial, Tahoma, Verdana; color: #333; background-color: #ddd; }
+body { font: 0.9em Arial, Tahoma, Verdana; color: #333; }
 a { text-decoration: underlined; color: #e06666; }
 h1 { font-size: 1.4em; font-weight: normal; }
     h1 a { color: #fff; font-size: 1.6em; }
