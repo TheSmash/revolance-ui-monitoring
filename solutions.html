@@ -41,7 +41,7 @@
                 </div>
                 <div class="collapse navbar-collapse pull-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="home.html">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <li class="dropdown">
                             <a href="solutions.html" class="dropdown-toggle" data-toggle="dropdown">
                                 Solutions
@@ -51,26 +51,29 @@
                                 <li><a href="solutions.html#revolance-ui" class="active">UI Change Management</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Join us</a></li>
+                        <li><a data-toggle="modal" href="#myModal">Join us</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
         </div>
     </div>
+
     <!-- Jumbotron -->
     <div class="jumbotron">
         <div class="centered"><div id="logo"></div></div>
         <h1>RevoLance</h1>
         <h2>innovative solutions</h2>
+        <a name="revolance-ui"></a>
         <br />
         <p class="lead"><u>RevoLance UI Change Management Solutions</u></p>
     </div>
+
     <div class="container">
         <div class="row">
             <div class="col-lg-1">
                 <a href="https://docs.google.com/file/d/0B3pthz-F_pRteXUxZmZrd3VoNGc/edit?usp=sharing"><img src="images/software.png" style="float: left; height: 40px; margin: 0 10px;"></a>
             </div>
-            <div class="col-lg-3"><p class="solution">Revolance UI Suite<a name="revolance-ui"></a></p></div>
+            <div class="col-lg-3"><p class="solution">Revolance UI Suite</p></div>
             <div style="margin-top: 5px">
                 <button type="button" class="btn btn-default col-mg-3"><a href="https://github.com/TheSmash/revolance-ui/issues">Open an issue</a></button>
                 <button type="button" class="btn btn-default col-mg-3"><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Licence</a></button>
@@ -137,8 +140,8 @@
             <div class="col-lg-3 well pull-right">
                 <h4>Contributors</h4>
                 <div class="contributors">
-                    <div class="col-lg-1"></div><span class="glyphicon glyphicon-user"></span> bethesmash@gmail.com <br/>
-                    <div class="col-lg-1"></div><span class="glyphicon glyphicon-user"></span> mcbed87@gmail.com
+                    <div class="col-lg-1"></div><span class="glyphicon glyphicon-user"></span> bethesmash[at]gmail[dot]com <br/>
+                    <div class="col-lg-1"></div><span class="glyphicon glyphicon-user"></span> mcbed87[at]gmail[dot]com
                 </div>
             </div>
         </div>
@@ -152,7 +155,7 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="item active">
-                        <img src="/images/solutions/ui/step1.jpg" data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:First slide" alt="First slide" style="height: 500px; width: 100%; display: block;">
+                        <img src="images/solutions/ui/step0.png" alt="First slide" style="height: 650px; width: 100%; display: block;">
                         <div class="container">
                             <div class="carousel-caption">
                                 <h1>The Change review board</h1>
@@ -162,23 +165,23 @@
                         </div>
                     </div>
                     <div class="item">
-                        <img src="/images/solutions/ui/step1.jpg" data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:First slide" alt="First slide" style="height: 500px; width: 100%; display: block;">
+                        <img src="images/solutions/ui/step1.png" alt="Second slide" style="height: 650px; width: 100%; display: block;">
                         <div class="container">
                             <div class="carousel-caption">
-                                <h1>Automatic merge of unchanged content</h1>
+                                <h1>Automatic review</h1>
                                 <p>The content that has not been changed (look, position, content, size, target url) <br />
                                 is automatically taken care of (in the centered page). </p>
                             </div>
                         </div>
                     </div>
                     <div class="item">
-                        <img src="/images/solutions/ui/step2.jpg" data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:Third slide" alt="Second slide" style="height: 500px; width: 100%; display: block;">
+                        <img src="images/solutions/ui/step2.png" alt="Third slide" style="height: 650px; width: 100%; display: block;">
                         <div class="container">
                             <div class="carousel-caption">
                                 <h1>Highlight of changed content</h1>
-                                <p>If an element disapeared from the reference, then it's marked in red<br />
+                                <p>If an element disappeared from the reference, then it's marked in red<br />
                                 If an element appeared in the new reference, then it's marked in gold<br />
-                                You'll have to merge it manually with drags and drops to the middle page and then commit your changes</p>
+                                You'll have to merge it manually (review process) by dragging and dropping elements to the middle page</p>
                             </div>
                         </div>
                     </div>
@@ -188,12 +191,47 @@
             </div>
         </div>
 
-        <!-- Site footer -->
-        <div class="footer">
-            <p>&copy; RevoLance 2011-2013. <br/> bethewsmash[at]gmail[dot].com</p>
-        </div>
+    </div> <!-- /container -->
 
+    <!-- Site footer -->
+    <div class="container">
+        <div class="footer">
+            <p><a href="#" class="pull-left up"><i class="glyphicon glyphicon-chevron-up"></i></a>&copy; RevoLance 2011-2013. <a href="#" class="pull-right up"><i class="glyphicon glyphicon-chevron-up"></i></a><br> bethesmash[at]gmail[dot].com</p>
+        </div>
     </div>
+
+      <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Welcome on board!</h4>
+        </div>
+        <div class="modal-body">
+            <p>You can email me at: bethesmash[at]gmail[dot]com, </p>
+            <div class="centered"><h4>we would love to work with you!</h4></div>
+            <p>Please include:</p>
+            <div class="col-lg-1"></div><p>your first name and last name</p>
+            <div class="col-lg-1"></div><p>a funny description of you with your motivations</p>
+            <div class="col-lg-1"></div><p>the role that you would like to have in our community amoung these:</p>
+            <div class="container">
+                <div class="row">
+                <div class="col-lg-3 tool">Repairer</div>
+                <div class="col-lg-3 tool">Planner</div>
+                <div class="col-lg-3 tool">Reviewer</div>
+                <div class="col-lg-3 tool">Commiter</div>
+                <div class="col-lg-3 tool">Contributor</div>
+                <div class="col-lg-3 tool">Doc Writer</div>
+                <div class="col-lg-3 tool">Presenter</div>
+                </div>
+            </div>
+            <br />
+            <div class="col-lg-9"></div><p style="color: #333; font-size: 1.2em;">Talk to you soon!</p>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -201,11 +239,6 @@
     <script src="libs/jquery/js/jquery.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/bootstrap/js/holder.js"></script>
-     <script>
-      $(document).ready(function(){
-        $('.carousel').carousel();
-      });
-    </script>
 
 </body>
 </html>
