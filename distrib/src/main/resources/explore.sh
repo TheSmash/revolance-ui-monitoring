@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar bin/ui-cmdline-${project.version}.jar explore config/cfg-app.xml
+java -jar lib/ui-cmdline-${project.version}.jar explore config/cfg-app.xml

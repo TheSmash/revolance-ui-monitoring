@@ -1,7 +1,5 @@
 package com.smash.revolance.ui.materials;
 
-import org.apache.commons.exec.OS;
-
 import java.io.File;
 
 /**
@@ -68,8 +66,15 @@ public class TestConstants
     public static String APP_CFG  = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-app.xml" ).getAbsolutePath();
     public static String USER_CFG = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-users.xml" ).getAbsolutePath();
 
-    public static String CHROME_DRIVER = new File( new File( "" ).getAbsoluteFile(), "src/test/driver/" + ( OS.isFamilyUnix() ? "unix" : "win" ) + "/chromedriver" + ( OS.isFamilyUnix() ? "" : ".exe" ) ).getAbsolutePath();
+    public static String CHROME_DRIVER = new File( new File( "" ).getAbsoluteFile(), "src/test/" + getTestDriverPath() ).getAbsolutePath();
 
+    // Distrib scripts
+    public static File   DISTRIB_DIR   = new File(TARGET, "distrib");
+    public static String STATUS_SCRIPT = (OSHelper.isUnix()?"./":"") + "status" + OSHelper.getScriptExtension();
+    public static String START_SCRIPT  = (OSHelper.isUnix()?"./":"") + "start" + OSHelper.getScriptExtension();
+    public static String STOP_SCRIPT   = (OSHelper.isUnix()?"./":"") + "stop" + OSHelper.getScriptExtension();
+
+    public static String[] KILL_SERVER_CMD = new String[]{"ps", "-ef", "|", "grep", "ui-server", "|", "grep", "-v", "grep"};
 
     public static File getMockedPage(String url) throws Exception
     {
@@ -95,4 +100,10 @@ public class TestConstants
         }
         throw new Exception( "Unable to find any mock resourse matching url: "+ url );
     }
+
+    private static String getTestDriverPath()
+    {
+        return String.format("driver/%s/chromedriver%s",  ( OSHelper.isUnix() ? "unix" : "win" ), ( OSHelper.isUnix() ? "" : ".exe" ) );
+    }
+
 }

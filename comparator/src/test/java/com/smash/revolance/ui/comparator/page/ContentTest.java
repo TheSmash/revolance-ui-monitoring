@@ -9,8 +9,6 @@ import com.smash.revolance.ui.model.sitemap.SiteMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -20,8 +18,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
  * Date: 17/09/13
  * Time: 20:03
  */
-public class
-        ContentTest extends TestConstants
+public class ContentTest extends TestConstants
 {
     private PageBean newPage;
     private PageBean refPage;

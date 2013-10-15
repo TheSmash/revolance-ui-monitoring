@@ -23,8 +23,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -52,9 +50,6 @@ public class ParserTest extends BaseTests
         sitemap = user.getSiteMap();
 
         page = sitemap.findPage( REF_PAGE_HOME ).getInstance();
-
-        user.doContentReport( new File( "target/sitemap.json" ) );
-
     }
 
     @After

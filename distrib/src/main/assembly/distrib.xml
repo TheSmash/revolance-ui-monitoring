@@ -13,34 +13,39 @@
     <fileSets>
 
         <fileSet>
-            <directory>src/main/assembly</directory>
-            <outputDirectory>/apps</outputDirectory>
-            <excludes>
-                <exclude>*</exclude>
-            </excludes>
+            <directory>${basedir}/src/main/resources</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>config/*</include>
+            </includes>
         </fileSet>
 
         <fileSet>
             <directory>${basedir}/src/main/resources</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>**/*</include>
-                <include>apps/*</include>
+                <include>**/*.sh</include>
             </includes>
-            <excludes>
-                <exclude>**/*.sh</exclude>
-            </excludes>
             <filtered>true</filtered>
+            <fileMode>0777</fileMode>
         </fileSet>
 
         <fileSet>
             <directory>${basedir}/src/main/resources</directory>
             <outputDirectory>/bin</outputDirectory>
             <includes>
-                <include>**/*.sh</include>
+                <include>driver/*</include>
             </includes>
             <filtered>true</filtered>
             <fileMode>0777</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/src/main/resources</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>samples/*</include>
+            </includes>
         </fileSet>
 
     </fileSets>
@@ -49,12 +54,10 @@
         <dependencySet>
             <outputDirectory>/lib</outputDirectory>
             <includes>
-                <include>${project.groupId}:ui-model</include>
                 <include>${project.groupId}:ui-explorer</include>
-                <include>${project.groupId}:ui-database</include>
-                <include>${project.groupId}:ui-comparator</include>
                 <include>${project.groupId}:ui-server</include>
                 <include>${project.groupId}:ui-cmdline</include>
+                <include>org.mortbay.jetty:jetty-runner</include>
             </includes>
         </dependencySet>
     </dependencySets>

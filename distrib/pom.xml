@@ -24,18 +24,13 @@
             <artifactId>ui-cmdline</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-comparator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-database</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-runner</artifactId>
+            <version>${jetty-runner.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-server</artifactId>
-            <version>${project.version}</version>
             <type>war</type>
         </dependency>
 
@@ -45,7 +40,6 @@
         <plugins>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
@@ -64,9 +58,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>zip</includeTypes>
+                            <outputDirectory>target/materials</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
-    </build>
-
+    </build>  
 
 </project> 

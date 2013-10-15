@@ -15,8 +15,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>ftests</module>
-        <module>ptests</module>
+        <module>smoke</module>
+        <!--<module>ftests</module>-->
+        <!--<module>ptests</module>-->
     </modules>
 
 

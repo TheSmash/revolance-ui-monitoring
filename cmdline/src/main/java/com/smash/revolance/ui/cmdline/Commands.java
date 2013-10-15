@@ -24,21 +24,13 @@ import com.smash.revolance.ui.materials.JsonHelper;
 import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import sun.net.www.http.HttpClient;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * User: wsmash
@@ -48,8 +40,7 @@ import java.net.URL;
 public enum Commands
 {
     EXPLORE( "explore", "appCfg.xml", "out.txt" ),
-    START_SERVER( "startServer", "httpPort" ),
-    STOP_SERVER( "stopServer", "httpPort" ),
+    STOP_SERVER( "stop", "httpPort" ),
     STATUS( "status", "httpPort" );
 
     private String[] opts = new String[]{};
@@ -122,11 +113,6 @@ public enum Commands
                     execStatus = execExploreCmd( workingDir, opts );
                     break;
 
-                case START_SERVER:
-
-                    execStatus = execStartServerCmd( workingDir, opts );
-                    break;
-
                 case STOP_SERVER:
 
                     execStatus = execStopServerCmd( workingDir, opts );
@@ -152,19 +138,19 @@ public enum Commands
             HttpResponse response = client.execute(request);
             if(response.getStatusLine().getStatusCode() == 200)
             {
-                System.out.println("server is running");
+                System.out.println("server is started");
                 return 0;
             }
             else
             {
-                System.err.println( "server is stopped" );
-                return -1;
+                System.out.println( "server is started" );
+                return 0;
             }
         }
         catch (IOException e)
         {
-            System.err.println( "server is stopped" );
-            return -1;
+            System.out.println( "server is stopped" );
+            return 0;
         }
     }
 
@@ -176,7 +162,7 @@ public enum Commands
             DefaultHttpClient client = new DefaultHttpClient();
             HttpGet request = new HttpGet("http://localhost:"+opts[0]+"/shutdown");
             HttpResponse response = client.execute(request);
-            if(response.getStatusLine().getStatusCode() == 200)
+            if(response.getStatusLine().getStatusCode() != 200)
             {
                 System.out.println("Stopping server [Done]");
                 return 0;
@@ -189,34 +175,8 @@ public enum Commands
         }
         catch (IOException e)
         {
-            return -1;
-        }
-    }
-
-    private int execStartServerCmd(File workingDir, String[] opts)
-    {
-        ServletContainer container = new ServletContainer();
-        ServletHolder h = new ServletHolder( container );
-
-        h.setInitParameter( "com.sun.jersey.config.property.packages", "com.smash.revolance.ui.server" );
-        h.setInitParameter( "com.sun.jersey.api.json.POJOMappingFeature", "com.sun.jersey.api.json.POJOMappingFeature" );
-
-        Server server = new Server( Integer.parseInt( opts[0] ) );
-        ServletContextHandler context = new ServletContextHandler( ServletContextHandler.SESSIONS );
-        context.setContextPath( "/" );
-        server.setHandler( context );
-
-        context.addServlet( h, "/*" );
-        try
-        {
-            server.start();
             return 0;
         }
-        catch (Exception e)
-        {
-            return -1;
-        }
-
     }
 
     private void execCompareCmd(File workingDir, String[] opts) throws Exception
