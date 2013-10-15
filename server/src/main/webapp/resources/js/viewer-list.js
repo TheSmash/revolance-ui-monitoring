@@ -1,32 +1,23 @@
 (function($,W,D){
 
-    $.selectCount = 0;
-    $.checkboxes = Array();
-
-    var del = function(item, array)
-    {
-        var idx = array.indexOf( item );
-        if(idx != -1)
-        {
-            array.splice(idx, 1);
-        }
-    };
-
     $(document).ready(function( )
     {
         $("#application-del").click(function()
         {
             event.preventDefault();
-            $.each($.checkboxes, function(idx, item)
-            {
-                $.ajax({
-                    type: "DELETE",
-                    url: "application/" + $(item).parent().parent().find(".tag").text(),
-                    success: function(result)
-                    {
-                        $(item).parent().parent().remove();
-                    }
-                });
+            $.each($("input[type=checkbox]"), function(idx, checkbox) {
+
+                if($(checkbox).is(':checked'))
+                {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "application/" + $(item).parent().parent().find(".tag").text(),
+                        success: function(result)
+                        {
+                            $(item).parent().parent().remove();
+                        }
+                    });
+                }
             });
 
         });
@@ -37,16 +28,19 @@
                 event.preventDefault();
                 var refApp;
                 var app;
-                $.each($.checkboxes, function(idx, item)
-                {
-                    if( refApp === undefined )
+                $.each($("input[type=checkbox]"), function(idx, checkbox) {
+
+                    if($(checkbox).is(':checked'))
                     {
-                        refApp = $(item).parent().parent().find(".tag").text();
-                    }
-                    else
-                    {
-                        app = $(item).parent().parent().find(".tag").text();
-                        return false;
+                        if( refApp === undefined )
+                        {
+                            refApp = $(checkbox).parent().parent().find(".tag").text();
+                        }
+                        else
+                        {
+                            app = $(checkbox).parent().parent().find(".tag").text();
+                            return false;
+                        }
                     }
                 });
 
@@ -56,18 +50,9 @@
         });
         $("input[type=checkbox]").change(function()
         {
-            if($(this).is(':checked'))
-            {
-                $.checkboxes.push( $(this) );
-                $.selectCount += 1;
-            }
-            else
-            {
-                del($(this), $.checkbox);
-                $.selectCount -= 1;
-            }
+            var checkedBoxCount = $("input[type=checkbox]:checked").size();
 
-            if($.selectCount > 0)
+            if(checkedBoxCount > 0)
             {
                 $("#application-del").attr("disabled", null);
             }
@@ -76,13 +61,27 @@
                 $("#application-del").attr("disabled", "true");
             }
 
-            if( $.selectCount == 2 )
+            if(checkedBoxCount == 2)
             {
                 $("#application-compare").attr("disabled", null);
+                $.each($("input[type=checkbox]"), function(idx, checkbox) {
+
+                    if(!$(checkbox).is(':checked'))
+                    {
+                        $(checkbox).attr('disabled', 'true')
+                    }
+                });
             }
             else
             {
                 $("#application-compare").attr("disabled", "true");
+                $.each($("input[type=checkbox]"), function(idx, checkbox) {
+
+                    if(!$(checkbox).is(':checked'))
+                    {
+                        $(checkbox).attr('disabled', null)
+                    }
+                });
             }
         });
     });
