@@ -1,7 +1,7 @@
 <%@ include file="Header.jsp" %>
 
 <div class="container">
-    <div class="span10">
+    <div class="row">
         <div class="page-title">
             <h2>Application List</h2>
         </div>

@@ -8,43 +8,23 @@
         <title>Revolance UI Reviewer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Third parties CSSs -->
+        <!-- JQuery -->
+        <script src="${pageContext.request.contextPath}/libs/jquery/js/jquery.min.js"></script>
+
+        <!-- Twitter Bootstrap-->
         <link href="${pageContext.request.contextPath}/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
-        <link href="${pageContext.request.contextPath}/libs/smallipop/css/jquery.smallipop.min.css" rel="stylesheet" media="screen"/>
-        <link href="${pageContext.request.contextPath}/libs/animate/css/animate.css" rel="stylesheet" media="screen"/>
-        <!--<link href="libs/simplemodal/css/simplemodal.css" rel="stylesheet" media="screen"/>-->
-        <link href="${pageContext.request.contextPath}/libs/smart-wizard/css/smart_wizard_vertical.css" rel="stylesheet" media="screen"></script>
-
-        <!-- Third parties JSs -->
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
         <script src="${pageContext.request.contextPath}/libs/bootstrap/js/bootstrap.min.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/modernizr/js/modernizr.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/smallipop/js/jquery.smallipop.min.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/simplemodal/js/simplemodal.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/smart-wizard/js/jquery.smartWizard.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/jrumble/js/jquery.jrumble.1.3.min.js"></script>
-        <script src="${pageContext.request.contextPath}/libs/js-jquery-spin/js/jQuery.Spin.js"></script>
 
         <!-- Revolance CSSs -->
         <link href="${pageContext.request.contextPath}/css/viewer.css" rel="stylesheet" media="screen"></script>
         <link href="${pageContext.request.contextPath}/css/viewer-page.css" rel="stylesheet" media="screen"></script>
-        <link href="${pageContext.request.contextPath}/css/viewer-content-loader.css" rel="stylesheet" media="screen"></script>
-        <link href="${pageContext.request.contextPath}/css/viewer-wizard.css" rel="stylesheet" media="screen"></script>
         <link href="${pageContext.request.contextPath}/css/viewer-search.css" rel="stylesheet" media="screen"></script>
-        <link href="${pageContext.request.contextPath}/css/viewer-magnifier-glass.css" rel="stylesheet" media="screen"></script>
 
         <!-- Revolance JSs -->
         <script src="${pageContext.request.contextPath}/js/viewer.js"></script>
         <script src="${pageContext.request.contextPath}/js/viewer-list.js"></script>
-        <script src="${pageContext.request.contextPath}/js/viewer-comparator.js"></script>
-        <!--<script src="${pageContext.request.contextPath}/js/viewer-content-loader.js"></script>-->
-        <script src="${pageContext.request.contextPath}/js/viewer-settings.js"></script>
-        <!--<script src="${pageContext.request.contextPath}/js/viewer-wizard.js"></script>-->
         <script src="${pageContext.request.contextPath}/js/viewer-search.js"></script>
-        <script src="${pageContext.request.contextPath}/js/viewer-downloader.js"></script>
-        <!--<script src="${pageContext.request.contextPath}/js/viewer-magnifier-glass.js"></script>-->
-        <script src="${pageContext.request.contextPath}/js/viewer-nav.js"></script>
+
 
         <style>
             .error {
@@ -59,6 +39,7 @@
                 margin: 16px;
             }
         </style>
+
     </head>
 
     <body>

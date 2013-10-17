@@ -1,5 +1,7 @@
 (function($,W,D){
 
+    $.wip = false;
+
     var pixelRatio = screen.width/screen.height;
 
     var definePageElementBehavior = function()
