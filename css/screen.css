@@ -1,9 +1,10 @@
 /*
     =====================================
-    project: Distinctive
-    author:  Luka Cvrk (www.solucija.com)
+    project: RevoLance UI
+    author: wsmash
+    email: bethesmash@gmail.com
     -------------------------------------
-    2009. Solucija
+    2012. Revolance CC BY SA
     =====================================
 */
 .centered { margin: 0 auto; width: 100%; text-align:center; }
@@ -20,6 +21,8 @@
 .up { height: 25px; width: 25px; background-color: #ddd; border-radius: 50%; padding-left: 2px; }
 .carousel-control.left, .carousel-control.right { background-image: none !important; z-index: 10; }
 .carousel-control { position: relative !important; opacity: 1 !important; top: -118px !important; color: white !important; }
+.licensing p { font-size: 0.85em; text-align: center;}
+
 
 *{margin:0;padding:0}:focus,:active {outline:0}img{border: 0}
 /*ul li{margin-left: 20px; padding-left: 10px}*/
