@@ -1,23 +1,28 @@
 package com.smash.revolance.ui.parser.secured;
 
 /*
-        This file is part of Revolance UI Suite.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Explorer
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-import com.smash.revolance.ui.explorer.ApplicationExplorer;
+import com.smash.revolance.ui.explorer.UserExplorer;
 import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.element.ElementNotFound;
@@ -85,7 +90,6 @@ public class SecuredApplicationTest
         manager = new ApplicationManager( appCfg );
         app = manager.getApplication( "website" );
 
-        app.setReportFolder( target );
         app.setUsersHome( login );
         app.setDomain( domain );
 
@@ -156,7 +160,9 @@ public class SecuredApplicationTest
     @Test
     public void testerShouldDetectEnforcementOnASecuredWebsite() throws Exception, ElementNotFound
     {
-        new ApplicationExplorer( app ).explore( 60 );
+        File tmp = File.createTempFile("exploration", ".log");
+
+        new UserExplorer( administrator, tmp, 60 ).explore( );
 
         Page adminPage = administrator.getSiteMap().findPageByUrl( HOME ).getInstance();
 
@@ -167,12 +173,16 @@ public class SecuredApplicationTest
         assertThat( "Missing link 'button-1' for administrator", adminPage.getButton( "button-1" ), notNullValue() );
         assertThat( "Missing link 'button-2' for administrator", adminPage.getButton( "button-2" ), notNullValue() );
 
+        new UserExplorer( user_A, tmp, 60 ).explore( );
+
         Page userAPage = user_A.getSiteMap().findPageByUrl( HOME ).getInstance();
 
         assertThat( "Wrong number of links for user_A", userAPage.getLinks().size(), is( 2 ) );
         assertThat( "Wrong number of buttons for user_A", userAPage.getButtons().size(), is( 0 ) );
         assertThat( "Missing link 'link-1' for user_A", userAPage.getLink( "link-1" ), notNullValue() );
         assertThat( "Missing link 'link-2' for user_A", userAPage.getLink( "link-2" ), notNullValue() );
+
+        new UserExplorer( user_B, tmp, 60 ).explore();
 
         Page userBPage = user_B.getSiteMap().findPageByUrl( HOME ).getInstance();
 

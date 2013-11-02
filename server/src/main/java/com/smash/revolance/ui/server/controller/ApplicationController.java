@@ -1,22 +1,5 @@
 package com.smash.revolance.ui.server.controller;
 
-/*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 import com.smash.revolance.ui.comparator.application.ApplicationComparator;
 import com.smash.revolance.ui.comparator.application.ApplicationComparison;
 import com.smash.revolance.ui.comparator.application.IApplicationComparator;
@@ -54,32 +37,30 @@ import static org.rendersnake.HtmlAttributesFactory.*;
 
 @Service
 @Controller
+/**
+ * Created by wsmash on 27/10/13.
+ */
 public class ApplicationController
 {
-    IStorage repository = new FileSystemStorage();
+    IStorage repository = new FileSystemStorage("applications");
 
     IApplicationComparator sitemapComparator = new ApplicationComparator();
 
     IPageComparator pageComparator = new PageComparator();
 
-    @RequestMapping(value = "/application", method = RequestMethod.POST)
+    @RequestMapping(value = "/applications", method = RequestMethod.POST)
     public ModelAndView addContent(@Valid Application application, BindingResult result) throws IOException, StorageException
     {
         if ( result.hasErrors() )
         {
             return new ModelAndView( "ContentForm" );
-        } else
+        }
+        else
         {
             repository.store( application.getTag(), application.getContent() );
             return new ModelAndView( "ApplicationList", "contentList", getApplications() );
         }
 
-    }
-
-    @RequestMapping(value = "/exploration", method = RequestMethod.GET)
-    public ModelAndView startExploration(@Valid ApplicationConfiguration exploration)
-    {
-        return new ModelAndView( "ExplorationList", "explorationList", getExplorations() );
     }
 
     private List<Application> getApplications() throws StorageException, IOException
@@ -101,20 +82,20 @@ public class ApplicationController
         return applications;
     }
 
-    @RequestMapping(value = "/application/declare", method = RequestMethod.GET)
+    @RequestMapping(value = "/applications/declare", method = RequestMethod.GET)
     public ModelAndView displayContentForm(Application content, BindingResult result)
     {
         return new ModelAndView( "ApplicationForm" );
     }
 
-    @RequestMapping(value = "/application/{applicationId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/applications/{applicationId}", method = RequestMethod.DELETE)
     public ModelAndView displayContentForm(@PathVariable String applicationId) throws StorageException, IOException
     {
         repository.delete( applicationId );
         return new ModelAndView( "ApplicationList", "contentList", getApplications() );
     }
 
-    @RequestMapping(value = "/application/merge/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.POST, headers = "Content-Type=application/json")
+    @RequestMapping(value = "/applications/merge/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.POST, headers = "Content-Type=application/json")
     public void displayContentForm(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @PathVariable String pageRefId, @PathVariable String pageNewId, @RequestBody List<String> contentFilter) throws StorageException, IOException
     {
         PageBean refPage = SiteMap.fromJson( repository.retrieve( contentTagRef ) ).findPageByInternalId( pageRefId );
@@ -146,13 +127,13 @@ public class ApplicationController
         page.setContent( elements );
     }
 
-    @RequestMapping(value = "/application", method = RequestMethod.GET)
+    @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public ModelAndView displayContentList(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
     {
         return new ModelAndView( "ApplicationList", "contentList", getApplications() );
     }
 
-    @RequestMapping(value = "/application/{contentTag}", method = RequestMethod.GET)
+    @RequestMapping(value = "/applications/{contentTag}", method = RequestMethod.GET)
     public ModelAndView displayContentDetails(@PathVariable String contentTag, @ModelAttribute("model") ModelMap model, HttpServletRequest request) throws StorageException, IOException
     {
         model.addAttribute( "contentTag", contentTag );
@@ -191,7 +172,7 @@ public class ApplicationController
         return renderedPages;
     }
 
-    @RequestMapping(value = "/application/compare/{contentTagRef}/{contentTagNew}", method = RequestMethod.GET)
+    @RequestMapping(value = "/applications/compare/{contentTagRef}/{contentTagNew}", method = RequestMethod.GET)
     public ModelAndView displayContentDetails(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @ModelAttribute("model") ModelMap model, HttpServletRequest request) throws StorageException, IOException
     {
 
@@ -232,7 +213,7 @@ public class ApplicationController
                                     .data( "row-id", String.valueOf( idx ) )
                                     .data( "new-page-id", comparison.getMatch().getId() )
                                     .data( "ref-page-id", comparison.getReference().getId() )
-                                    .href( request.getContextPath() + "/application/compare/" + contentTagRef + "/" + contentTagNew + "/" + comparison.getReference().getId() + "/" + comparison.getMatch().getId() ) )
+                                    .href( request.getContextPath() + "/applications/compare/" + contentTagRef + "/" + contentTagNew + "/" + comparison.getReference().getId() + "/" + comparison.getMatch().getId() ) )
                         .content( "Inspect" )
                         ._div()
                         ._div();
@@ -247,7 +228,7 @@ public class ApplicationController
         return values;
     }
 
-    @RequestMapping(value = "/application/compare/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/applications/compare/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.GET)
     public ModelAndView renderMergeView(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @PathVariable String pageRefId, @PathVariable String pageNewId, @ModelAttribute("model") ModelMap model) throws StorageException, IOException
     {
 
@@ -272,8 +253,4 @@ public class ApplicationController
         return new ModelAndView( "PageMerger", model );
     }
 
-    public List<ApplicationConfiguration> getExplorations()
-    {
-        return null;
-    }
 }

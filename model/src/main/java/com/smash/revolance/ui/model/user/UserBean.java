@@ -1,21 +1,26 @@
 package com.smash.revolance.ui.model.user;
 
 /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Model
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -48,9 +53,7 @@ public class UserBean
     private boolean pageScreenshot;
     private boolean pageElementScreenShot;
     private String domain        = "";
-    private String sitemapFolder = "";
     private String home          = "";
-    private String driverPath    = "";
 
     @JsonDeserialize(contentAs = String.class, as = ArrayList.class)
     private List<String> excludedLinks = new ArrayList<String>();
@@ -62,9 +65,7 @@ public class UserBean
     private int     browserWidth;
     private boolean exploreVariants;
 
-    private String reportFolder  = "";
     private String browserType   = "";
-    private String browserBinary = "";
 
     public UserBean(User instance)
     {
@@ -99,16 +100,6 @@ public class UserBean
     public String getId()
     {
         return id;
-    }
-
-    public String getReportFolder()
-    {
-        return reportFolder;
-    }
-
-    public void setReportFolder(String reportFolder)
-    {
-        this.reportFolder = reportFolder;
     }
 
     public void setNewPasswd(String newPasswd)
@@ -186,16 +177,6 @@ public class UserBean
         this.domain = domain;
     }
 
-    public String getSitemapFolder()
-    {
-        return sitemapFolder;
-    }
-
-    public void setSitemapFolder(String sitemapFolder)
-    {
-        this.sitemapFolder = sitemapFolder;
-    }
-
     public void setHome(String home)
     {
         this.home = home;
@@ -204,16 +185,6 @@ public class UserBean
     public String getHome()
     {
         return home;
-    }
-
-    public void setDriverPath(String driverPath)
-    {
-        this.driverPath = driverPath;
-    }
-
-    public String getDriverPath()
-    {
-        return driverPath;
     }
 
     public List<String> getExcludedLinks()
@@ -254,16 +225,6 @@ public class UserBean
     public void setBrowserWidth(int browserWidth)
     {
         this.browserWidth = browserWidth;
-    }
-
-    public String getBrowserBinary()
-    {
-        return browserBinary;
-    }
-
-    public void setBrowserBinary(String browserBinary)
-    {
-        this.browserBinary = browserBinary;
     }
 
     public void setExploreVariants(boolean exploreVariants)

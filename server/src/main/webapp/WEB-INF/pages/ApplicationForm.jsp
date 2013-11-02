@@ -7,7 +7,7 @@
             <h2>Add application</h2>
         </div>
 
-        <form:form method="POST" commandName="content" action="${pageContext.request.contextPath}/application" enctype="multipart/form-data">
+        <form:form method="POST" commandName="content" action="${pageContext.request.contextPath}/applications" enctype="multipart/form-data">
             <form:errors path="*" cssClass="errorblock" element="div" />
             <table>
                 <tr>

@@ -31,16 +31,12 @@
     "pageScreenshot" : true,
     "pageElementScreenShot" : true,
     "domain" : "file:///home/ebour/Documents/dev/revolance/comparator/target/materials/ui-materials-page-new-url",
-    "sitemapFolder" : "",
     "home" : "file:///home/ebour/Documents/dev/revolance/comparator/target/materials/ui-materials-page-new-url/home.html",
-    "driverPath" : null,
     "excludedLinks" : [ ],
     "excludedButtons" : [ ],
     "browserHeight" : 600,
     "browserWidth" : 800,
     "exploreVariants" : false,
-    "reportFolder" : "target/website/userB",
-    "browserType" : "Firefox",
-    "browserBinary" : null
+    "browserType" : "Firefox"
   }
 }

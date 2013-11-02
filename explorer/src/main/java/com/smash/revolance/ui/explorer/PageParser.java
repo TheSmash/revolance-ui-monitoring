@@ -1,21 +1,26 @@
 package com.smash.revolance.ui.explorer;
 
- /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Explorer
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.element.api.Button;
@@ -49,7 +54,7 @@ public class PageParser
 
     private List<Element> parseContent() throws Exception
     {
-        System.out.println( "Parsing elements" );
+        page.getUser().log( "Parsing elements" );
         long mark = System.currentTimeMillis();
 
         List<Element> content = _parseContent();
@@ -57,7 +62,7 @@ public class PageParser
         logClickableContent( content );
 
         long duration = ( System.currentTimeMillis() - mark ) / 1000;
-        System.out.println( "Parsing elements [Done] [Duration: " + duration + " sec]" );
+        page.getUser().log( "Parsing elements [Done] [Duration: " + duration + " sec]" );
 
         return content;
     }
@@ -67,15 +72,16 @@ public class PageParser
         List<Element> clickableContent = Element.filterClickableElements( content );
         if ( !clickableContent.isEmpty() )
         {
-            System.out.println( "Clickable content found: " );
-        } else
+            page.getUser().log( "Clickable content found: " );
+        }
+        else
         {
-            System.out.println( "No clickable content has been found." );
+            page.getUser().log( "No clickable content has been found." );
         }
 
         for ( Element element : clickableContent )
         {
-            System.out.println( "--|  " + element.getContent() );
+            page.getUser().log( "--|  " + element.getContent() );
         }
     }
 
@@ -91,7 +97,7 @@ public class PageParser
 
             page.setContent( content );
 
-            System.out.println( page.getContent().size() + " pertinent elements found" );
+            page.getUser().log( page.getContent().size() + " pertinent elements found" );
 
             takeScreenshots( content );
 
@@ -113,7 +119,7 @@ public class PageParser
 
             if ( page.getUser().isPageScreenshotEnabled() )
             {
-                System.out.print( "\rTaking page snapshot: '" + page.getTitle() + "'" );
+                page.getUser().log( "Taking page snapshot: '" + page.getTitle() + "'" );
                 long mark = System.currentTimeMillis();
 
                 String img = BotHelper.takeScreenshot( bot );
@@ -126,7 +132,7 @@ public class PageParser
                 }
 
                 long duration = ( System.currentTimeMillis() - mark ) / 1000;
-                System.out.println( "\rTaking page snapshot: '" + page.getTitle() + "' [Done] [Duration: " + duration + " sec]" );
+                page.getUser().log( "Taking page snapshot: '" + page.getTitle() + "' [Done] [Duration: " + duration + " sec]" );
             }
 
         }
@@ -138,14 +144,18 @@ public class PageParser
         if ( page.getUser().isPageScreenshotEnabled()
                 && page.getUser().isPageElementScreenshotEnabled() )
         {
+            long mark = System.currentTimeMillis();
+
             int contentIdx = 0;
             for ( Element pageElement : content )
             {
                 contentIdx++;
-                System.out.print( String.format( "\rTaking element screenshots ( %d / %d )", contentIdx, content.size() ) );
+                page.getUser().log( String.format("Taking element screenshots ( %d / %d )", contentIdx, content.size() ) );
                 pageElement.takeScreenShot();
             }
-            System.out.println( String.format( "\rTaking elements screenshots ( %d ) [Done]", contentIdx ) );
+
+            long duration = ( System.currentTimeMillis() - mark ) / 1000;
+            page.getUser().log( "Taking elements screenshots [Done] [Duration: \"" + duration + "\" sec]" );
         }
     }
 
@@ -204,12 +214,14 @@ public class PageParser
             if ( !page.isBroken() && !page.isExternal() && page.isEmpty() )
             {
                 parseContent();
-            } else if ( page.isExternal() )
+            }
+            else if ( page.isExternal() )
             {
-                System.out.println( "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'." );
-            } else
+                page.getUser().log( "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'." );
+            }
+            else
             {
-                System.out.println( "Page with url: '" + page.getUrl() + "' is broken." );
+                page.getUser().log( "Page with url: '" + page.getUrl() + "' is broken." );
             }
 
             page.setParsed( true );
@@ -218,8 +230,9 @@ public class PageParser
 
     public List<Element> getElements() throws Exception
     {
-        List<Element> elements = new ArrayList<Element>();
+        long mark = System.currentTimeMillis();
 
+        List<Element> elements = new ArrayList<Element>();
         List<WebElement> webElements = BotHelper.getRawElements( page.getUser().getBot(), page );
         int idx = 0;
         int elementCount = webElements.size();
@@ -249,9 +262,11 @@ public class PageParser
             {
                 System.err.println( e );
             }
-            System.out.print( "\rRetrieving page element ( " + idx + "/" + elementCount + " )" );
+            page.getUser().log( "Retrieving page element ( " + idx + "/" + elementCount + " )" );
         }
-        System.out.println( "\rRetrieving page elements ( " + elementCount + " ) [Done]" );
+
+        long duration = ( System.currentTimeMillis() - mark ) / 1000;
+        page.getUser().log( "Retrieving page elements [Done] [Duration: \"" + duration + "\" sec]" );
         return elements;
     }
 

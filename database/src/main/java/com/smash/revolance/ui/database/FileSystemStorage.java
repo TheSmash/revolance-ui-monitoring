@@ -1,21 +1,5 @@
 package com.smash.revolance.ui.database;
 
- /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -34,17 +18,18 @@ public class FileSystemStorage implements IStorage
 {
     File databaseFolder;
 
-    public FileSystemStorage()
+    private FileSystemStorage()
     {
-        databaseFolder = new File( new File( "" ).getAbsolutePath(), "revolance/ui/storage" );
+        databaseFolder = new File( new File( "" ).getAbsolutePath(), "storage" );
         createStorageDirectory();
     }
 
-    public FileSystemStorage(File root)
+    public FileSystemStorage(String root)
     {
+        this();
         if ( root != null )
         {
-            databaseFolder = root;
+            databaseFolder = new File(databaseFolder, root);
             createStorageDirectory();
         }
     }
@@ -110,32 +95,38 @@ public class FileSystemStorage implements IStorage
     public Map<String, String> retrieveAll()
     {
         Map<String, String> filesContent = new HashMap<String, String>();
+        File[] files = databaseFolder.listFiles();
 
-        for ( File file : databaseFolder.listFiles() )
+        if(files != null)
         {
-            try
+            for ( File file : files )
             {
-                filesContent.put( file.getName(), FileUtils.readFileToString( file ) );
-            }
-            catch (IOException e)
-            {
-                //TODO: log the exception but do not prevent moving on the loop
+                try
+                {
+                    filesContent.put( file.getName(), FileUtils.readFileToString( file ) );
+                }
+                catch (IOException e)
+                {
+                    //TODO: log the exception but do not prevent moving on the loop
+                }
             }
         }
-
         return filesContent;
     }
 
     @Override
     public Collection<String> getKeys()
     {
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList();
 
-        Collection<File> files = FileUtils.listFiles( databaseFolder, new String[]{}, false );
+        File[] files = databaseFolder.listFiles();
 
-        for ( File file : files )
+        if( files != null )
         {
-            keys.add( file.getName() );
+            for ( File file : files )
+            {
+                keys.add( file.getName() );
+            }
         }
 
         return keys;
@@ -166,6 +157,12 @@ public class FileSystemStorage implements IStorage
         {
             throw new StorageException( "Unable to clear storage system.", e );
         }
+    }
+
+    @Override
+    public File getLocation()
+    {
+        return databaseFolder;
     }
 
     @Override

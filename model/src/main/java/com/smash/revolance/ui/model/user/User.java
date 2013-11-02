@@ -1,24 +1,31 @@
 package com.smash.revolance.ui.model.user;
 
 /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Model
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 import com.smash.revolance.ui.materials.JsonHelper;
 import com.smash.revolance.ui.model.application.Application;
+import com.smash.revolance.ui.model.application.ApplicationManager;
+import com.smash.revolance.ui.model.application.SimpleApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.bot.BrowserFactory;
 import com.smash.revolance.ui.model.element.api.Element;
@@ -28,10 +35,13 @@ import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.reporter.api.GraphReporter;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,9 +59,6 @@ public class User
 
     private SiteMap sitemap;
 
-    private File baseReportFolder = new File( "." );
-    private File reportFolder     = new File( "." );
-
     private boolean browserActive;
     private boolean explorationDone;
 
@@ -64,6 +71,10 @@ public class User
     private Page currentPage;
 
     private Bot bot;
+    private File log;
+
+    private String driverPath = "";
+    private String browserBinary = "";
 
 
     public User()
@@ -93,6 +104,10 @@ public class User
 
     public Application getApplication()
     {
+        if(app == null)
+        {
+            app = new SimpleApplication();
+        }
         return app;
     }
 
@@ -150,20 +165,6 @@ public class User
         return sitemap;
     }
 
-    public File getReportFolder()
-    {
-        if ( bean.getReportFolder().isEmpty() )
-        {
-            reportFolder = new File( getBaseReportFolder(), getId() );
-            if ( !reportFolder.exists() )
-            {
-                reportFolder.mkdirs();
-            }
-            bean.setReportFolder( reportFolder.getPath() );
-        }
-        return new File( bean.getReportFolder() );
-    }
-
     public String getId()
     {
         return bean.getId();
@@ -174,16 +175,7 @@ public class User
         bean.setId( id );
     }
 
-    public File getBaseReportFolder()
-    {
-        return baseReportFolder;
-    }
-
-    public void setBaseReportFolder(String folder)
-    {
-        baseReportFolder = new File( folder, getApplication().getId() );
-    }
-
+    /*
     public void doGraphReport() throws IOException
     {
         String title = "Sitemap for user: " + getId();
@@ -192,7 +184,7 @@ public class User
 
         new GraphReporter( this ).doGraphReport( title, dotfile, imgFile );
     }
-
+    */
 
     public void enablePageScreenshot(boolean b)
     {
@@ -318,22 +310,14 @@ public class User
         this.bean.setBrowserWidth( width );
     }
 
-    public File doContentReport(File report) throws Exception
-    {
-        JsonHelper.getInstance().map( report, getSiteMap() );
-        System.out.println( "Report has been generated: " + report.getAbsolutePath() );
-        return report;
-    }
-
-
     public String getBrowserBinary()
     {
-        return bean.getBrowserBinary();
+        return browserBinary;
     }
 
     public void setBrowserBinary(String binary)
     {
-        this.bean.setBrowserBinary( binary );
+        this.browserBinary = binary;
     }
 
     public UserBean getBean()
@@ -408,12 +392,12 @@ public class User
 
     public void setDriverPath(String path)
     {
-        bean.setDriverPath( path );
+        this.driverPath = path;
     }
 
     public String getDriverPath()
     {
-        return bean.getDriverPath();
+        return driverPath;
     }
 
     public void setPageElementScreenshotEnabled(boolean b)
@@ -505,5 +489,32 @@ public class User
     public Bot getBot() throws BrowserFactory.InstanciationError
     {
         return bot;
+    }
+
+    public void setLog(File log) {
+        this.log = log;
+    }
+
+    public File getLog()
+    {
+        return log;
+    }
+
+    public void log(String s)
+    {
+        FileWriter writer = null;
+        try
+        {
+            writer = new FileWriter(getLog());
+            writer.write(s+"\n");
+        }
+        catch (Exception e)
+        {
+            System.err.print(e);
+        }
+        finally
+        {
+            IOUtils.closeQuietly(writer);
+        }
     }
 }

@@ -42,13 +42,14 @@ public class TestRunner extends BaseTests
         user.setDomain( REF_PAGE );
         user.setHome( REF_PAGE_HOME );
 
-        new UserExplorer( user ).explore();
+        UserExplorer explorer = new UserExplorer( user, new File( "target/reports" ), 60 );
+        explorer.explore();
 
         bot = user.getBot();
         browser = bot.getBrowser();
         sitemap = user.getSiteMap();
 
-        user.doContentReport(new File( "target/sitemap.json" ));
+        explorer.doContentReport();
 
         browser.quit();
     }

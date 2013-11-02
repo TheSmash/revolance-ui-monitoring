@@ -1,18 +1,32 @@
 package com.smash.revolance.ui.cmdline;
 
-import com.smash.revolance.ui.comparator.application.ApplicationComparator;
-import com.smash.revolance.ui.comparator.application.ApplicationComparison;
-import com.smash.revolance.ui.explorer.ApplicationExplorer;
-import com.smash.revolance.ui.materials.JsonHelper;
-import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
-import com.smash.revolance.ui.model.sitemap.SiteMap;
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Cmdline
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -22,7 +36,6 @@ import java.io.IOException;
  */
 public enum Commands
 {
-    EXPLORE( "explore", "appCfg.xml", "out.txt" ),
     STOP_SERVER( "stop", "httpPort" ),
     STATUS( "status", "httpPort" );
 
@@ -91,11 +104,6 @@ public enum Commands
             File workingDir = new File( "." ).getAbsoluteFile();
             switch ( this )
             {
-                case EXPLORE:
-
-                    execStatus = execExploreCmd( workingDir, opts );
-                    break;
-
                 case STOP_SERVER:
 
                     execStatus = execStopServerCmd( workingDir, opts );
@@ -162,45 +170,5 @@ public enum Commands
         }
     }
 
-    private void execCompareCmd(File workingDir, String[] opts) throws Exception
-    {
-        File sitemapFile = new File( workingDir, opts[0] );
-        if ( !sitemapFile.exists() )
-        {
-            throw new FileNotFoundException( "Missing sitemap file: " + sitemapFile );
-        }
-
-        File sitemapRefFile = new File( workingDir, opts[0] );
-        if ( !sitemapRefFile.exists() )
-        {
-            throw new FileNotFoundException( "Missing sitemapRef file: " + sitemapRefFile );
-        }
-
-        SiteMap sitemap = SiteMap.fromJson( sitemapFile );
-        SiteMap sitemapRef = SiteMap.fromJson( sitemapRefFile );
-        ApplicationComparator diffMaker = new ApplicationComparator();
-
-        ApplicationComparison comparison = diffMaker.compare( sitemap, sitemapRef );
-
-        File regression = new File( opts[1] );
-        JsonHelper.getInstance().map( regression, comparison );
-    }
-
-    private int execExploreCmd(File workingDir, String[] opts) throws Exception
-    {
-        File appCfg = new File( workingDir, opts[0] );
-        if ( !appCfg.exists() )
-        {
-            throw new FileNotFoundException( "Missing appCfg file: " + appCfg );
-        }
-
-        ApplicationManager manager = new ApplicationManager( appCfg );
-        for ( Application app : manager.getApplications() )
-        {
-            new ApplicationExplorer( app ).explore( 60 );
-        }
-
-        return 0;
-    }
 
 }

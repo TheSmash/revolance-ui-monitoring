@@ -70,7 +70,7 @@
                     <a class="brand" href="#">UI Viewer</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li><a href="${pageContext.request.contextPath}/application">Applications</a></li>
+                            <li><a href="${pageContext.request.contextPath}/applications">Applications</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                   More<span class="caret"></span>

@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Revolance-UI-Materials-Resources-Page-New-Layout
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Copyright (C) 2012 - 2013 RevoLance
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
 <project name="${project.artifactId}">
 
     <skin>
@@ -7,24 +29,14 @@
         <version>1.3.0</version>
     </skin>
 
-    <bannerLeft>
-        <name>Smash RevoLance</name>
-        <src>http://maven.apache.org/images/apache-maven-project.png</src>
-        <href>http://maven.apache.org/</href>
-    </bannerLeft>
+    <custom>
+        <fluidoSkin>
+            <topBarEnabled>true</topBarEnabled>
+            <sideBarEnabled>false</sideBarEnabled>
+        </fluidoSkin>
+    </custom>
 
     <body>
-        <links>
-            <item name="Apache" href="http://www.apache.org/" />
-        </links>
-
-        <menu name="General Informations">
-            <item name="Introduction" href="index.html"/>
-            <item name="Architecture" href="architecture.html"/>
-            <item name="Release Notes" href="release-notes.html" />
-            <item name="General Information" href="about.html"/>
-            <item name="Road Map" href="roadmap.html" />
-        </menu>
 
         <menu ref="reports"/>
         <menu ref="modules" />

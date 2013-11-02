@@ -5,7 +5,7 @@
 
     $(document).ready(function( )
     {
-        $("#application-del").click(function()
+        $("#del").click(function()
         {
             event.preventDefault();
             $.each($("input[type=checkbox]"), function(idx, checkbox) {
@@ -14,7 +14,7 @@
                 {
                     $.ajax({
                         type: "DELETE",
-                        url: "application/" + $(item).parent().parent().find(".tag").text(),
+                        url: "applications/" + $(checkbox).parent().parent().find(".tag").text(),
                         success: function(result)
                         {
                             $(item).parent().parent().remove();
@@ -24,13 +24,15 @@
             });
 
         });
+
         $("#application-compare").click(function(){
             if($(this).parent().attr("href") == "#")
             {
-                $(this).parent().attr("href", "application/compare/" + $.refApp + "/" + $.app);
+                $(this).parent().attr("href", "applications/compare/" + $.refApp + "/" + $.app);
                 $(this).parent().click();
             }
         });
+
         $("input[type=checkbox]").change(function()
         {
             event.preventDefault();
@@ -38,11 +40,11 @@
 
             if(checkedBoxCount > 0)
             {
-                $("#application-del").attr("disabled", null);
+                $("#del").attr("disabled", null);
             }
             else
             {
-                $("#application-del").attr("disabled", "true");
+                $("#del").attr("disabled", "true");
                 $.refApp = undefined;
                 $.app = undefined;
             }

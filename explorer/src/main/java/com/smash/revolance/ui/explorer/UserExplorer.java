@@ -1,29 +1,31 @@
 package com.smash.revolance.ui.explorer;
 
 /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Explorer
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.element.api.Element;
 import com.smash.revolance.ui.model.element.api.ElementBean;
-import com.smash.revolance.ui.model.helper.BotHelper;
-import com.smash.revolance.ui.model.helper.ImageHelper;
-import com.smash.revolance.ui.model.helper.UrlHelper;
-import com.smash.revolance.ui.model.helper.UserHelper;
+import com.smash.revolance.ui.model.helper.*;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
@@ -31,9 +33,10 @@ import com.smash.revolance.ui.model.user.User;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.io.IOUtils;
 
+import java.io.*;
 import java.util.*;
-
 
 /**
  * User: wsmash
@@ -42,34 +45,119 @@ import java.util.*;
  */
 public class UserExplorer extends Thread
 {
+    private int timeoutInSec;
     private User user;
+    private File log;
+    private File reportFile;
 
-    public UserExplorer(User user)
+    public File doContentReport()
+    {
+        try
+        {
+            JsonHelper.getInstance().map( getReportFile(), getSiteMap() );
+            log("Report has been generated!");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            log("Unable to generate report!");
+        }
+        return getReportFile();
+    }
+
+    public File getReportFile()
+    {
+        return reportFile;
+    }
+
+    public UserExplorer(User user, File log, File reportFile, int timeoutInSec)
     {
         this.user = user;
+        this.log = log;
+        this.user.setLog(log);
+        this.reportFile = reportFile;
+        this.timeoutInSec = timeoutInSec;
+    }
+
+    public UserExplorer(User user, File reportFolder, int timeoutInSec) throws IOException
+    {
+        this(user, File.createTempFile("exploration-" + UUID.randomUUID().toString(), ".log"), reportFolder, timeoutInSec);
+    }
+
+    public File getLog()
+    {
+        return log;
     }
 
     public void run()
     {
         try
         {
-            this.explore();
+            this._explore();
         }
         catch (Exception e)
         {
-            System.err.println( "Exploration aborted. Reason: " + e.getMessage() );
+            log("Exploration aborted. Reason: " + e.getMessage());
             System.err.println( "Stacktrace: " + e );
-
         }
         finally
         {
             user.setExplorationDone( true );
+            doContentReport();
         }
     }
 
-    public User explore() throws Exception
+    public void explore()
     {
-        FileUtils.cleanDirectory( user.getReportFolder() );
+        start();
+
+        if(timeoutInSec == 0)
+        {
+            return; // We don't want to monitor the duration of the exploration
+        }
+        else
+        {
+            long mark = System.currentTimeMillis();
+            while( (System.currentTimeMillis()-mark) < timeoutInSec*1000 )
+            {
+                try
+                {
+                    sleep(10000); //10s of sleep
+                }
+                catch (InterruptedException e)
+                {
+
+                }
+                if(user.isExplorationDone())
+                {
+                    return;
+                }
+            }
+
+            user.setExplorationDone(true);
+        }
+    }
+
+    private void log(String s)
+    {
+        FileWriter writer = null;
+        try
+        {
+            writer = new FileWriter(getLog());
+            writer.write(s+"\n");
+        }
+        catch (Exception e)
+        {
+            System.err.print( e );
+        }
+        finally
+        {
+            IOUtils.closeQuietly(writer);
+        }
+    }
+
+    private User _explore() throws Exception
+    {
         long start = System.currentTimeMillis();
 
         Page home = new Page( user, user.getHome() );
@@ -89,11 +177,11 @@ public class UserExplorer extends Thread
 
         user.setExplorationDone( true );
         user.stopBot();
-        //user.doContentReport();
 
-        System.out.println( "\nDiconnecting user: " + user.getId() );
+        user.log("Diconnecting user: " + user.getId());
+
         long duration = System.currentTimeMillis() - start;
-        System.out.println( "Exploration completed in " + duration / 60000 + "mn" );
+        user.log("Exploration [Done] [Duration " + duration / 60000 + "mn]");
 
         return user;
     }
@@ -101,16 +189,23 @@ public class UserExplorer extends Thread
     private void _explore(Page page) throws Exception
     {
         handleUserAccountLogic( page );
+        doExplore(page);
+        doContentReport();
+    }
+
+    private void doExplore(Page page) throws Exception
+    {
         String title = page.getTitle();
-        System.out.println( "Exploring page: " + title );
+        user.log("Exploring page: " + title);
         if ( page.isOriginal() )
         {
             exploreOriginal( page );
-            System.out.println( "Exploring page: " + title + " [Done]" );
-        } else
+            user.log("Exploring page: " + title + " [Done]");
+        }
+        else
         {
             exploreVariant( page );
-            System.out.println( "Exploring variant [Done]" );
+            user.log("Exploring variant [Done]");
         }
     }
 
@@ -118,14 +213,15 @@ public class UserExplorer extends Thread
     {
         if ( !page.getContent().isEmpty() )
         {
-            System.out.println( "New content has been found in this variant. Exploration will begin..." );
+            user.log("New content has been found in this variant. Exploration will begin...");
             _explore( page );
-            System.out.println( "New content has been found in this variant. Exploration [Done]" );
-        } else
+            user.log("New content has been found in this variant. Exploration [Done]");
+        }
+        else
         {
-            System.out.println( "No variations have been found. Deleting variant and associated content..." );
+            user.log("No variations have been found. Deleting variant and associated content...");
             page.delete(); // Remove itself
-            System.out.println( "No variations have been found. Deletion [Done]" );
+            user.log("No variations have been found. Deletion [Done]");
         }
     }
 

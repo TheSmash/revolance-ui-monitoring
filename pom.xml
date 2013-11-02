@@ -13,6 +13,17 @@
 
     <packaging>pom</packaging>
 
+    <organization>
+        <name>RevoLance</name>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL) version 3</name>
+            <url>${project.basedir}/src/license/LICENSE.txt</url>
+        </license>
+    </licenses>
+
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -398,7 +409,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -410,30 +421,14 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.jeluard</groupId>
-                <artifactId>maven-plantuml-plugin</artifactId>
-                <version>7940</version>
-                <configuration>
-                    <verbose>false</verbose>
-                    <format>png</format>
-                </configuration>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
                 <executions>
                     <execution>
-                        <id>plantuml-site</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>license</goal>
+                            <goal>dependencies</goal>
                         </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <sourceFiles>
-                                <directory>${basedir}/src/site</directory>
-                                <includes>
-                                    <include>**/*.xml</include>
-                                    <include>**/*.txt</include>
-                                </includes>
-                            </sourceFiles>
-                            <outputDirectory>${basedir}/target/site</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -454,17 +449,19 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
                     <aggregate>true</aggregate>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
         </plugins>
     </reporting>
@@ -480,6 +477,44 @@
         <module>distrib</module>
         <module>tests</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>updateLicenceHeader</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <licenseName>gpl_v3</licenseName>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>first</id>
+                                <goals>
+                                    <goal>update-file-header</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>**/license/**.*</exclude>
+                                        <exclude>**.json</exclude>
+                                    </excludes>
+                                    <processStartTag>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</processStartTag>
+                                    <processEndTag>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</processEndTag>
+                                    <sectionDelimiter>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</sectionDelimiter>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
 

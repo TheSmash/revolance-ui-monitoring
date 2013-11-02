@@ -22,7 +22,6 @@
 
         <!-- Revolance JSs -->
         <script src="${pageContext.request.contextPath}/js/viewer.js"></script>
-        <script src="${pageContext.request.contextPath}/js/viewer-list.js"></script>
         <script src="${pageContext.request.contextPath}/js/viewer-search.js"></script>
 
 
@@ -50,7 +49,8 @@
                     <a class="brand" href="#">RevoLance UI Server</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li><a href="${pageContext.request.contextPath}/application">Applications</a></li>
+                            <li><a href="${pageContext.request.contextPath}/explorations">Explorations</a></li>
+                            <li><a href="${pageContext.request.contextPath}/applications">Applications</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                   More<span class="caret"></span>

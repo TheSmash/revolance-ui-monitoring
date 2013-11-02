@@ -1,21 +1,26 @@
 package com.smash.revolance.ui.model.bot;
 
 /*
-        This file is part of Revolance UI Suite.
-
-        Revolance UI Suite is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        Revolance UI Suite is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with Revolance UI Suite.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Revolance-UI-Model
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright (C) 2012 - 2013 RevoLance
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 
 import com.smash.revolance.ui.materials.mock.webdriver.driver.MockedWebDriver;
 import com.smash.revolance.ui.model.user.User;
@@ -53,7 +58,8 @@ public class BrowserFactory
             if ( browserType == BrowserType.Firefox )
             {
                 browser = new FirefoxDriver();
-            } else if ( browserType == BrowserType.Chrome )
+            }
+            else if ( browserType == BrowserType.Chrome )
             {
                 File driver = new File( user.getDriverPath() );
                 File binary = new File( user.getBrowserBinary() );
@@ -71,7 +77,8 @@ public class BrowserFactory
                 // capabilities.setCapability("chrome.switches", Arrays.asList("--start-maximized"));
 
                 browser = new ChromeDriver( (ChromeDriverService) service, capabilities );
-            } else if ( browserType == BrowserType.MockedWebDriver )
+            }
+            else if ( browserType == BrowserType.MockedWebDriver )
             {
                 try
                 {
@@ -86,13 +93,18 @@ public class BrowserFactory
 
             if ( browser != null )
             {
-
                 browser.manage().timeouts().implicitlyWait( 1, TimeUnit.MINUTES );
+                user.log(user.getId() + " is starting the browser: " + browser);
 
-                System.out.println( "The user: " + user.getId() + " is starting the browser (" + user.getBrowserWidth() + ", " + user.getBrowserHeight() + ")" );
                 browser.manage().window().setSize( new Dimension( user.getBrowserWidth(), user.getBrowserHeight() ) );
+                user.log("setting up browser resolution: " + user.getBrowserWidth() + "x" + user.getBrowserHeight());
+
                 user.setBrowser( browser );
                 user.setBrowserActive( true );
+            }
+            else
+            {
+                user.log("Unable to start the browser: " + browser);
             }
 
             if ( service != null )
