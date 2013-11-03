@@ -23,10 +23,11 @@ package com.smash.revolance.ui.explorer;
  */
 
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * User: wsmash
@@ -35,9 +36,14 @@ import java.util.UUID;
  */
 public class ExplorationService implements IExplorer
 {
+    private static Logger LOG = Logger.getLogger(ExplorationService.class);;
+    // private IConfiguration internalConfiguration = new Configuration("conf");
+
     @Override
     public void explore(ExplorationConfiguration configuration) throws IOException
     {
+        // LOG.addAppender(new FileAppender(new SimpleLayout(), internalConfiguration.getLogFile().getAbsolutePath()));
+
         User user = new User( configuration.getId(), configuration.getUrl() );
         user.setDomain( configuration.getDomain() );
 
@@ -54,13 +60,14 @@ public class ExplorationService implements IExplorer
         user.setExcludedLinks( configuration.getExcludedLinks() );
         user.setExcludedButtons(configuration.getExcludedButtons());
 
-        user.setBrowserBinary("");
-        user.setDriverPath("");
+        // user.setDriverPath(internalConfiguration.getDriverPath());
+        // user.setBrowserBinary(internalConfiguration.getBrowserPath());
 
-        File log = configuration.getLogFile();
-        System.out.println("Launching exploration id: " + user.getId() + ". Log file: " + log);
+        LOG.info("Launching exploration id: " + user.getId() + ". Log file: " + configuration.getLogFile());
 
-        UserExplorer explorer = new UserExplorer( user, log, configuration.getReportFile(), configuration.getTimeout() );
+        FileAppender logger = new FileAppender(new SimpleLayout(), configuration.getLogFile().getAbsolutePath());
+
+        UserExplorer explorer = new UserExplorer( user, logger, configuration.getReportFile(), configuration.getTimeout() );
         explorer.explore();
     }
 

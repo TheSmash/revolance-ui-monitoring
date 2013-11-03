@@ -17,11 +17,16 @@
                         url: "applications/" + $(checkbox).parent().parent().find(".tag").text(),
                         success: function(result)
                         {
-                            $(item).parent().parent().remove();
+                            $(checkbox).parent().parent().remove();
                         }
                     });
                 }
             });
+
+            if($(".tag").length === 0)
+            {
+                $("#del").css("disabled", "true");
+            }
 
         });
 

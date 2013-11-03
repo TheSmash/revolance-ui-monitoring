@@ -1,4 +1,4 @@
-package com.smash.revolance.ui.parser;
+package com.smash.revolance.ui.explorer;
 
 /*
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,13 +82,9 @@ public class BaseTests extends TestConstants
         setupBrowserForTest( user );
 
         user.enablePageScreenshot( true );
-
         user.enablePageElementScreenshot( true );
-
         user.setFollowButtons( false );
-
         user.setFollowLinks( false );
-
         user.setExploreVariantsEnabled( false );
     }
 

@@ -5,25 +5,27 @@
     <div class="span2">
         &nbsp;
     </div>
-    <div class="span8">
+
+    <div class="row">
 
         <div class="page-title">
-            <h2>Exploring application at: ${applicationUrl}</h2>
-
-            <div id="log"></div>
-
-            <a class="btn btn-success" id="applicationsListLink" href="${pageContext.request.contextPath}/applications/${explorationId}" style="display:none"></a>
+            <h3>Exploration monitoring</h3>
         </div>
 
+        <div id="log"></div>
+
+        <br /><br />
+        <a class="btn btn-success" id="applicationLink" href="" style="display:none">Review the application</a>
     </div>
 </div>
 
 
     <script src="${pageContext.request.contextPath}/libs/jquery/js/jquery.updater-plugin.js"></script>
     <script>
+        $('#applicationLink').hide();
         $(function(){
             $.updater({
-                url: 'explorations/${explorationTag}/'+$("#log .line").size(),
+                url: '${pageContext.request.contextPath}/explorations/${explorationId}/'+$("#log .line").size(),
                 data: undefined,
                 interval: 100,
                 method: 'get',
@@ -32,26 +34,34 @@
             function(result, response){
                 var logs = $("#log .line")
                 var lastLoggedLine = $(logs[logs.length-1]).text()
-                var idx = 0
 
                 $.each(result, function(idx, line){
 
-                    if(idx === 0 && lastLoggedLine !== line)
-                    {
-                        $('#log').append('<p class="line">' + line + '</p>')
-                    }
-                    if(idx%2 === 0)
-                    {
-                        var y = $('#log').position().top+$('#log').outerHeight()
-                        window.scrollTo(0, y)
-                        idx = 0
-                    }
-
-                    idx ++
-                    if(line === 'Report has been generated!')
+                    if(line.indexOf('Report has been generated') > 0)
                     {
                         $.updater.stop()
-                        $('#applicationsListLink').css('display', 'block')
+                        var startIdx = line.indexOf(":");
+                        var explorationId = line.substring(startIdx+1, line.length).trim();
+
+                        $('#applicationLink').attr('href', '${pageContext.request.contextPath}/applications/'+explorationId);
+                        $('#applicationLink').show();
+                    }
+                    else
+                    {
+                        if(idx === 0 && lastLoggedLine !== line)
+                        {
+                            $('#log').append('<p class="line">' + line + '</p>')
+                        }
+                        else
+                        {
+                            $('#log').append('<p class="line">' + line + '</p>')
+                        }
+                        if(idx%2 === 0)
+                        {
+                            var y = $('#log').position().top+$('#log').outerHeight()
+                            window.scrollTo(0, y)
+                            idx = 0
+                        }
                     }
                 });
             });

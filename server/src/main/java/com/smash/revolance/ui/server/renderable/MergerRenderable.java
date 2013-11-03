@@ -17,6 +17,8 @@ import static org.rendersnake.HtmlAttributesFactory.*;
 public class MergerRenderable implements Renderable
 {
     private final PageComparison comparison;
+    private String refApp;
+    private String newApp;
 
     public MergerRenderable(PageComparison comparison)
     {
@@ -39,11 +41,15 @@ public class MergerRenderable implements Renderable
                 .button( class_( "btn btn-success disabled" )
                                  .id( "commit-button" )
                                  .onClick( "$.applyChanges( this );" )
+                                 .data( "ref-app-id", refApp)
+                                 .data( "new-app-id", newApp)
                                  .data( "ref-page-id", comparison.getReference().getId() )
                                  .data( "new-page-id", comparison.getMatch().getId() ) ).i( class_( "icon-share" ) )._i()._button()
                 .button( class_( "btn btn-warning disabled" )
                                  .id( "revert-button" )
                                  .onClick( "$.revertChanges( this );" )
+                                 .data( "ref-app-id", refApp)
+                                 .data( "new-app-id", newApp)
                                  .data( "ref-page-id", comparison.getReference().getId() )
                                  .data( "new-page-id", comparison.getMatch().getId() ) ).div( class_( "revert" ) )._div()._button()
                 ._div()
@@ -75,4 +81,13 @@ public class MergerRenderable implements Renderable
                 ._tbody();
     }
 
+    public void setRefApp(String refApp)
+    {
+        this.refApp = refApp;
+    }
+
+    public void setNewApp(String newApp)
+    {
+        this.newApp = newApp;
+    }
 }

@@ -24,6 +24,8 @@ package com.smash.revolance.ui.model.bot;
 
 import com.smash.revolance.ui.materials.mock.webdriver.driver.MockedWebDriver;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -50,6 +52,8 @@ public class BrowserFactory
 
     public static void instanceciateNavigator(User user, BrowserType browserType) throws InstanciationError
     {
+        final Logger logger = user.getLogger();
+
         if ( !user.isExplorationDone() )
         {
             WebDriver browser = null;
@@ -87,24 +91,24 @@ public class BrowserFactory
                 }
                 catch (MalformedURLException e)
                 {
-                    throw new InstanciationError( "Unable to start the mock!", e );
+                    throw new InstanciationError( "Unable to start the mocked web driver!", e );
                 }
             }
 
             if ( browser != null )
             {
                 browser.manage().timeouts().implicitlyWait( 1, TimeUnit.MINUTES );
-                user.log(user.getId() + " is starting the browser: " + browser);
+                logger.log(Level.INFO, "Launching a " + browser + " browser");
 
                 browser.manage().window().setSize( new Dimension( user.getBrowserWidth(), user.getBrowserHeight() ) );
-                user.log("setting up browser resolution: " + user.getBrowserWidth() + "x" + user.getBrowserHeight());
+                logger.log(Level.INFO, "Setting up resolution to: " + user.getBrowserWidth() + "x" + user.getBrowserHeight());
 
                 user.setBrowser( browser );
                 user.setBrowserActive( true );
             }
             else
             {
-                user.log("Unable to start the browser: " + browser);
+                logger.log(Level.ERROR, "Unable to start the browser: " + browser);
             }
 
             if ( service != null )

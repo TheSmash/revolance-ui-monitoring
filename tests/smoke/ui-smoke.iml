@@ -74,6 +74,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.seleniumhq.selenium:selenium-support:2.35.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.kohsuke:graphviz-api:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-compress:1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-io:1.3.2" level="project" />
     <orderEntry type="module" module-name="ui-cmdline" scope="TEST" />
     <orderEntry type="module" module-name="ui-server" scope="TEST" />

@@ -1,4 +1,4 @@
-package com.smash.revolance.ui.parser;
+package com.smash.revolance.ui.explorer;
 
 /*
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,14 +22,13 @@ package com.smash.revolance.ui.parser;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-import com.smash.revolance.ui.explorer.UserExplorer;
 import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.element.api.Button;
 import com.smash.revolance.ui.model.element.api.Element;
 import com.smash.revolance.ui.model.element.api.Link;
-import com.smash.revolance.ui.model.page.IPage;
+import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.model.user.User;
@@ -157,7 +156,7 @@ public class BotTest
     @Test
     public void botShouldExtractButtonsFromPageContent() throws Exception
     {
-        IPage page_B = sitemap.findPageByUrl( pageB ).getInstance();
+        Page page_B = sitemap.findPageByUrl( pageB ).getInstance();
         List<Element> buttons = page_B.getButtons();
 
         assertThat( buttons.size(), is( 2 ) );
@@ -169,7 +168,7 @@ public class BotTest
     public void botShouldExtractLinksFromPageContent() throws Exception
     {
         // page_B page check
-        IPage page_B = sitemap.findPageByUrl( pageB ).getInstance();
+        Page page_B = sitemap.findPageByUrl( pageB ).getInstance();
         List<Element> links = page_B.getLinks();
         assertThat( links.size(), is( 3 ) );
         assertThat( Link.containsLink( links, "index" ), is( true ) );
@@ -190,7 +189,7 @@ public class BotTest
     @Test
     public void botShouldNotExploreAnyPageOutOfTheUserDomain() throws Exception
     {
-        IPage google = sitemap.findPageByUrl( "www.google.fr" ).getInstance();
+        Page google = sitemap.findPageByUrl( "www.google.fr" ).getInstance();
         assertThat( google.isExternal(), is( true ) );
         assertThat( google.hasBeenExplored(), is( false ) );
         assertThat( google.getSource().getContent(), is( "Google" ) );

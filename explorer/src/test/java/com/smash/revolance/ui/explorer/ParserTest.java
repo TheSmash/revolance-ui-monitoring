@@ -1,4 +1,4 @@
-package com.smash.revolance.ui.parser;
+package com.smash.revolance.ui.explorer;
 
 /*
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,6 @@ package com.smash.revolance.ui.parser;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-import com.smash.revolance.ui.explorer.UserExplorer;
 import com.smash.revolance.ui.model.page.api.Page;
 import org.junit.After;
 import org.junit.BeforeClass;

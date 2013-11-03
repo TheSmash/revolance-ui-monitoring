@@ -507,7 +507,7 @@ public class ElementBean implements Comparable<ElementBean>
 
     public List<ElementDiffType> getDiff(ElementBean refElement)
     {
-        List<ElementDiffType> differencies = new ArrayList<ElementDiffType>();
+        List<ElementDiffType> differencies = new ArrayList();
 
         for ( ElementDiffType diffType : ElementDiffType.values() )
         {
@@ -559,20 +559,23 @@ public class ElementBean implements Comparable<ElementBean>
         if ( isLeft( element ) && isAbove( element ) )
         {
             return -1;
-        } else if ( isLeft( element ) && isBelow( element ) )
+        }
+        else if ( isLeft( element ) && isBelow( element ) )
         {
             return 1;
-        } else if ( isRight( element ) && isAbove( element ) )
+        }
+        else if ( isRight( element ) && isAbove( element ) )
         {
             return -1;
-        } else if ( isRight( element ) && isBelow( element ) )
+        }
+        else if ( isRight( element ) && isBelow( element ) )
         {
             return 1;
-        } else
+        }
+        else
         {
             return 0;
         }
-
     }
 
     public boolean isLeft(ElementBean element)

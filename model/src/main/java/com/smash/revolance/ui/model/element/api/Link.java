@@ -75,6 +75,7 @@ public class Link extends Element
         setTag( "a" );
     }
 
+    /*
     @Override
     public boolean equals(Element element) throws IOException
     {
@@ -84,7 +85,8 @@ public class Link extends Element
         }
         return getBean().equals( element.getBean() );
     }
-
+    */
+    /*
     public static boolean containsLink(List<Element> elements, Link link)
     {
         for ( Element element : filterLinks( elements ) )
@@ -97,7 +99,7 @@ public class Link extends Element
         }
         return false;
     }
-
+    */
     public static List<Element> filterLinks(List<Element> elements)
     {
         List<Element> links = new ArrayList<Element>();

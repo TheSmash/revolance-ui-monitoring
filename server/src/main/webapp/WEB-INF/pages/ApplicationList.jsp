@@ -15,7 +15,6 @@
                     <tr>
                         <th>&nbsp;&nbsp;</th>
                         <th>Tag</th>
-                        <th>User Id</th>
                         <th>Domain</th>
                         <th>Browser Type</th>
                         <th>Browser Width</th>
@@ -29,7 +28,6 @@
                         <tr>
                             <td><input type="checkbox"></td>
                             <td><div class="tag"><a href="${pageContext.request.contextPath}/applications/${item.tag}">${item.tag}</a></div></td>
-                            <td><div class="userId">${item.user.id}</div></td>
                             <td><div class="domain">${item.user.domain}</div></td>
                             <td><div class="browserType">${item.user.browserType}</div></td>
                             <td><div class="browserWidth">${item.user.browserWidth}</div></td>

@@ -47,7 +47,8 @@ public class SecuredApplication extends Application
             user.getBrowser().findElement( By.id( "username" ) ).sendKeys( user.getLogin() );
             user.getBrowser().findElement( By.id( "password" ) ).sendKeys( user.getPasswd() );
             return true;
-        } else
+        }
+        else
         {
             return false;
         }

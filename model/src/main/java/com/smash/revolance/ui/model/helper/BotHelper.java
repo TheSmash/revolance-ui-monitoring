@@ -26,9 +26,9 @@ import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.element.api.Button;
 import com.smash.revolance.ui.model.element.api.Element;
 import com.smash.revolance.ui.model.element.api.Link;
-import com.smash.revolance.ui.model.page.IPage;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.Level;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
@@ -41,11 +41,6 @@ import java.util.List;
  */
 public class BotHelper
 {
-    public static boolean rightDomain(IPage page)
-    {
-        return rightDomain( page.getUser(), page.getUrl() );
-    }
-
     public static boolean rightDomain(User user, String url)
     {
         String domain = user.getDomain();
@@ -107,7 +102,8 @@ public class BotHelper
         if ( newImg != img )
         {
             return newImg;
-        } else
+        }
+        else
         {
             return img;
         }
@@ -125,7 +121,7 @@ public class BotHelper
         UserHelper.browseTo( page );
         WebDriver browser = bot.getBrowser();
 
-        List<WebElement> elements = new ArrayList<WebElement>();
+        List<WebElement> elements = new ArrayList();
 
         By selector = By.xpath( "//body//a" );
         elements.addAll( browser.findElements( selector ) );
@@ -138,7 +134,7 @@ public class BotHelper
         UserHelper.browseTo( page );
         WebDriver browser = bot.getBrowser();
 
-        List<WebElement> elements = new ArrayList<WebElement>();
+        List<WebElement> elements = new ArrayList();
 
         By selector = By.xpath( "//body//input" );
         elements.addAll( browser.findElements( selector ) );
@@ -167,7 +163,8 @@ public class BotHelper
         if ( !element.getId().trim().isEmpty() )
         {
             return browser.findElement( By.xpath( "//body//" + element.getTag() + "[@id='" + element.getId() + "']" ) );
-        } else if ( element instanceof Link || element instanceof Button )
+        }
+        else if ( element instanceof Link || element instanceof Button )
         {
             // Take the longest time (++)
             if ( element instanceof Link )
@@ -178,9 +175,10 @@ public class BotHelper
                 return Element.filterElementByLocation( getRawButtons( bot, element.getPage() ), element.getLocation() );
             }
             return null;
-        } else
+        }
+        else
         {
-            System.err.println( "There is no way to find back that element: " + element.toJson() );
+            bot.getUser().getLogger().log(Level.WARN, "There is no way to find back that element: " + element.toJson());
             return null;
         }
     }
@@ -194,7 +192,8 @@ public class BotHelper
     {
         try
         {
-            user.getBrowser().switchTo().alert().getText();
+            String alertMsg = user.getBrowser().switchTo().alert().getText();
+            user.getLogger().log(Level.INFO, "handling alert: " + alertMsg);
             return true;
         }
         catch (NoAlertPresentException e)
@@ -208,7 +207,7 @@ public class BotHelper
         UserHelper.browseTo( page );
         WebDriver browser = bot.getBrowser();
 
-        List<WebElement> elements = new ArrayList<WebElement>();
+        List<WebElement> elements = new ArrayList();
 
         By selector = By.xpath( "//body//*" );
         elements.addAll( browser.findElements( selector ) );

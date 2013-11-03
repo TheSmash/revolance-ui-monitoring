@@ -48,6 +48,8 @@
         <taglibs.version>1.1.2</taglibs.version>
         <servlet-api.version>2.5</servlet-api.version>
         <jetty-runner.version>8.1.13.v20130916</jetty-runner.version>
+        <commons-io.version>1.3.2</commons-io.version>
+        <log4j.version>1.2.17</log4j.version>
 
     </properties>
 
@@ -108,6 +110,17 @@
                 <artifactId>jetty-runner</artifactId>
                 <version>${jetty-runner.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
 
             <!-- Test Materials -->
             <dependency>
@@ -469,6 +482,7 @@
     <modules>
         <module>materials</module>
         <module>model</module>
+        <!--<module>configuration</module>-->
         <module>explorer</module>
         <module>cmdline</module>
         <module>comparator</module>

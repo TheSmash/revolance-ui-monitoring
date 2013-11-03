@@ -22,9 +22,7 @@ package com.smash.revolance.ui.model.user;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-import com.smash.revolance.ui.materials.JsonHelper;
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.application.SimpleApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.bot.BrowserFactory;
@@ -33,16 +31,14 @@ import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.helper.UserHelper;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
-import com.smash.revolance.ui.model.reporter.api.GraphReporter;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
-import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -71,7 +67,7 @@ public class User
     private Page currentPage;
 
     private Bot bot;
-    private File log;
+    private Logger log;
 
     private String driverPath = "";
     private String browserBinary = "";
@@ -256,7 +252,7 @@ public class User
         this.bean.setExcludedButtons( excludedButtons );
     }
 
-
+/*
     public Collection<String> getBrokenLinks()
     {
         List<String> links = new ArrayList<String>();
@@ -271,7 +267,7 @@ public class User
     {
         return getSiteMap().getBrokenPages();
     }
-
+*/
 
     public void setDriverService(DriverService service)
     {
@@ -431,11 +427,6 @@ public class User
         }
     }
 
-    public boolean wantsGreedyExploration()
-    {
-        return true;
-    }
-
     public User goTo(Page page)
     {
         UserHelper.browseTo( page );
@@ -464,6 +455,7 @@ public class User
         this.currentPage = currentPage;
     }
 
+    /*
     public boolean canSee(String url, String impl, String txt) throws Exception
     {
         return !Element.filterElementsByText( filterContentByImpl( url, impl ), txt ).isEmpty();
@@ -473,6 +465,7 @@ public class User
     {
         return !canSee( url, impl, txt );
     }
+
 
     public List<ElementBean> filterContentByImpl(String url, String... impl) throws Exception
     {
@@ -485,36 +478,20 @@ public class User
             return new ArrayList<ElementBean>();
         }
     }
+    */
 
     public Bot getBot() throws BrowserFactory.InstanciationError
     {
         return bot;
     }
 
-    public void setLog(File log) {
+    public void setLogger(Logger log) {
         this.log = log;
     }
 
-    public File getLog()
+    public Logger getLogger()
     {
         return log;
     }
 
-    public void log(String s)
-    {
-        FileWriter writer = null;
-        try
-        {
-            writer = new FileWriter(getLog());
-            writer.write(s+"\n");
-        }
-        catch (Exception e)
-        {
-            System.err.print(e);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(writer);
-        }
-    }
 }

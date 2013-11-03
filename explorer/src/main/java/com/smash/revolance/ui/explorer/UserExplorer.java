@@ -30,7 +30,7 @@ import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.model.user.User;
-import org.apache.commons.io.FileUtils;
+import org.apache.log4j.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.IOUtils;
@@ -45,22 +45,37 @@ import java.util.*;
  */
 public class UserExplorer extends Thread
 {
+    private Logger log = Logger.getLogger(UserExplorer.class);
+
     private int timeoutInSec;
     private User user;
-    private File log;
     private File reportFile;
+
+    public UserExplorer(User user, WriterAppender log, File reportFile, int timeoutInSec)
+    {
+        this.user = user;
+        this.log.addAppender(log);
+        this.user.setLogger(this.log);
+        this.reportFile = reportFile;
+        this.timeoutInSec = timeoutInSec;
+    }
+
+    public UserExplorer(User user, File reportFolder, int timeoutInSec) throws IOException
+    {
+        this(user, new FileAppender(new SimpleLayout(), File.createTempFile("exploration-" + UUID.randomUUID().toString(), ".log").getAbsolutePath()), reportFolder, timeoutInSec);
+    }
 
     public File doContentReport()
     {
         try
         {
             JsonHelper.getInstance().map( getReportFile(), getSiteMap() );
-            log("Report has been generated!");
+            getLogger().log(Level.INFO, "Report has been generated with id: " + getReportFile().getName());
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            log("Unable to generate report!");
+            getLogger().log(Level.ERROR, "Unable to generate report!");
         }
         return getReportFile();
     }
@@ -70,21 +85,7 @@ public class UserExplorer extends Thread
         return reportFile;
     }
 
-    public UserExplorer(User user, File log, File reportFile, int timeoutInSec)
-    {
-        this.user = user;
-        this.log = log;
-        this.user.setLog(log);
-        this.reportFile = reportFile;
-        this.timeoutInSec = timeoutInSec;
-    }
-
-    public UserExplorer(User user, File reportFolder, int timeoutInSec) throws IOException
-    {
-        this(user, File.createTempFile("exploration-" + UUID.randomUUID().toString(), ".log"), reportFolder, timeoutInSec);
-    }
-
-    public File getLog()
+    public Logger getLogger()
     {
         return log;
     }
@@ -97,8 +98,8 @@ public class UserExplorer extends Thread
         }
         catch (Exception e)
         {
-            log("Exploration aborted. Reason: " + e.getMessage());
-            System.err.println( "Stacktrace: " + e );
+            getLogger().log(Level.ERROR, "Exploration aborted. Reason: " + e.getMessage());
+            getLogger().log(Level.ERROR, e );
         }
         finally
         {
@@ -138,38 +139,24 @@ public class UserExplorer extends Thread
         }
     }
 
-    private void log(String s)
-    {
-        FileWriter writer = null;
-        try
-        {
-            writer = new FileWriter(getLog());
-            writer.write(s+"\n");
-        }
-        catch (Exception e)
-        {
-            System.err.print( e );
-        }
-        finally
-        {
-            IOUtils.closeQuietly(writer);
-        }
-    }
-
     private User _explore() throws Exception
     {
         long start = System.currentTimeMillis();
-
         Page home = new Page( user, user.getHome() );
+
+        user.goTo( home ).awaitLoaded();
+        new PageParser(home).parse(); // Just for the home page
         if ( !home.hasBeenExplored() )
         {
-            user.goTo( home );
-            new PageParser( home ).parse();
             if ( !home.isExternal() && !home.isBroken() )
             {
+                // This call will recursively:
+                // parse & handleUserAccout logic & explore
+                // of all the pages accessible from home
                 explore( home );
                 home.setExplored( true );
-            } else if ( home.isBroken() )
+            }
+            else if ( home.isBroken() )
             {
                 home.getSource().setBroken( true );
             }
@@ -178,10 +165,8 @@ public class UserExplorer extends Thread
         user.setExplorationDone( true );
         user.stopBot();
 
-        user.log("Diconnecting user: " + user.getId());
-
         long duration = System.currentTimeMillis() - start;
-        user.log("Exploration [Done] [Duration " + duration / 60000 + "mn]");
+        user.getLogger().log(Level.INFO, "Exploration [Done] [Duration " + duration / 60000 + "mn]");
 
         return user;
     }
@@ -196,16 +181,16 @@ public class UserExplorer extends Thread
     private void doExplore(Page page) throws Exception
     {
         String title = page.getTitle();
-        user.log("Exploring page: " + title);
+        user.getLogger().log(Level.INFO, "Exploring page: " + title);
         if ( page.isOriginal() )
         {
             exploreOriginal( page );
-            user.log("Exploring page: " + title + " [Done]");
+            user.getLogger().log(Level.INFO, "Exploring page: " + title + " [Done]");
         }
         else
         {
             exploreVariant( page );
-            user.log("Exploring variant [Done]");
+            user.getLogger().log(Level.INFO, "Exploring variant [Done]");
         }
     }
 
@@ -213,22 +198,21 @@ public class UserExplorer extends Thread
     {
         if ( !page.getContent().isEmpty() )
         {
-            user.log("New content has been found in this variant. Exploration will begin...");
+            user.getLogger().log(Level.INFO, "New content has been found in this variant. Exploration will begin...");
             _explore( page );
-            user.log("New content has been found in this variant. Exploration [Done]");
+            user.getLogger().log(Level.INFO, "New content has been found in this variant. Exploration [Done]");
         }
         else
         {
-            user.log("No variations have been found. Deleting variant and associated content...");
+            user.getLogger().log(Level.INFO, "No variations have been found. Deleting variant and associated content...");
             page.delete(); // Remove itself
-            user.log("No variations have been found. Deletion [Done]");
+            user.getLogger().log(Level.INFO, "No variations have been found. Deletion [Done]");
         }
     }
 
     public void explore(Page page) throws Exception
     {
-        user.goTo( page ).awaitLoaded();
-        new PageParser( page ).parse();
+        new PageParser(page).parse();
         handleUserAccountLogic( page );
 
         if ( !page.hasBeenExplored() && !page.isBroken() && !page.isExternal() )
@@ -450,7 +434,8 @@ public class UserExplorer extends Thread
                 if ( logIn( page ) )
                 {
                     return;
-                } else if ( changePasswd( page ) )
+                }
+                else if ( changePasswd( page ) )
                 {
                     return;
                 }

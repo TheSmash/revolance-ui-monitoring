@@ -25,8 +25,11 @@ package com.smash.revolance.ui.model.helper;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+
 
 /**
  * User: wsmash
@@ -44,11 +47,13 @@ public class UserHelper
     {
         if ( page != null )
         {
+
+            final User user = page.getUser();
+            final Logger logger = user.getLogger();
+
             String url = page.getUrl();
             try
             {
-                final User user = page.getUser();
-
                 if ( browseTo( user, url, force ) )
                 {
                     Bot bot = page.getUser().getBot();
@@ -57,15 +62,13 @@ public class UserHelper
                     page.setUrl( bot.getCurrentUrl() );
                     page.setTitle( bot.getCurrentTitle() );
 
-                    user.log( user.getId() + " is browsing page: " + page.getTitle() );
                     user.getSiteMap().addPage( page );
-
                 }
             }
             catch (Exception e)
             {
-                page.getUser().log( e.getMessage() );
-                page.getUser().log( "Page: " + url + " is broken." );
+                logger.log(Level.ERROR, e.getMessage() );
+                logger.log(Level.ERROR, "Page: " + url + " is broken." );
             }
         }
     }
@@ -97,6 +100,7 @@ public class UserHelper
         {
             try
             {
+                user.getLogger().log(Level.INFO, "browsing url: " + url);
                 browser.navigate().to( url );
                 handleAlert( user );
             }

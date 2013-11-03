@@ -242,7 +242,10 @@ public class ApplicationController
         if ( refPage != null && newPage != null )
         {
             PageComparison comparison = pageComparator.compare( newPage, refPage );
-            new MergerRenderable( comparison ).renderOn( canvas );
+            MergerRenderable merge = new MergerRenderable( comparison );
+            merge.setRefApp(contentTagRef);
+            merge.setNewApp(contentTagNew);
+            merge.renderOn( canvas );
         }
         else
         {

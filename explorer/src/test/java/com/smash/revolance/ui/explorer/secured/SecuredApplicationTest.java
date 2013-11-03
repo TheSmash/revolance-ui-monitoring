@@ -1,4 +1,4 @@
-package com.smash.revolance.ui.parser.secured;
+package com.smash.revolance.ui.explorer.secured;
 
 /*
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

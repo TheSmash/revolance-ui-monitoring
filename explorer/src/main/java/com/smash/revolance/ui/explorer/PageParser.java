@@ -30,6 +30,8 @@ import com.smash.revolance.ui.model.element.api.Link;
 import com.smash.revolance.ui.model.helper.BotHelper;
 import com.smash.revolance.ui.model.helper.ImageHelper;
 import com.smash.revolance.ui.model.page.api.Page;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
@@ -54,7 +56,7 @@ public class PageParser
 
     private List<Element> parseContent() throws Exception
     {
-        page.getUser().log( "Parsing elements" );
+        page.getUser().getLogger().log(Level.INFO, "Parsing elements" );
         long mark = System.currentTimeMillis();
 
         List<Element> content = _parseContent();
@@ -62,49 +64,59 @@ public class PageParser
         logClickableContent( content );
 
         long duration = ( System.currentTimeMillis() - mark ) / 1000;
-        page.getUser().log( "Parsing elements [Done] [Duration: " + duration + " sec]" );
+        page.getUser().getLogger().log(Level.INFO, "Parsing elements [Done] [Duration: " + duration + " sec]" );
 
         return content;
     }
 
     private void logClickableContent(List<Element> content)
     {
-        List<Element> clickableContent = Element.filterClickableElements( content );
-        if ( !clickableContent.isEmpty() )
+        // List<Element> clickableContent = Element.filterClickableElements( content );
+        if ( !content.isEmpty() )
         {
-            page.getUser().log( "Clickable content found: " );
+            page.getUser().getLogger().log(Level.INFO, "Clickable content found: " );
+            for ( Element element : content )
+            {
+                if(element instanceof Link || element instanceof Button)
+                {
+                    page.getUser().getLogger().log(Level.INFO, "--|  " + element.getContent() );
+                }
+            }
         }
         else
         {
-            page.getUser().log( "No clickable content has been found." );
-        }
-
-        for ( Element element : clickableContent )
-        {
-            page.getUser().log( "--|  " + element.getContent() );
+            page.getUser().getLogger().log(Level.INFO, "No clickable content has been found." );
         }
     }
 
     private List<Element> _parseContent() throws Exception
     {
-        List<Element> content = new ArrayList<Element>();
-
+        List<Element> content = new ArrayList();
         if ( !page.isExternal() && !page.isBroken() )
         {
+            // retrieve all the elements of the html body
             content = getElements();
-
-            Element.filterElementsIncludedInEachOthers( content, page.getArea() * 0.95, 1 / 8 );
-
-            page.setContent( content );
-
-            page.getUser().log( page.getContent().size() + " pertinent elements found" );
-
+            // filter the elements included in each other (optimization)
+            _filterElementsIncludedInEachOther(content);
+            // takes screenshot of all the content
             takeScreenshots( content );
-
+            // only for convenience to be able to track the click sequence
             Collections.sort( content );
         }
 
+        page.setContent( content );
         return content;
+    }
+
+    private void _filterElementsIncludedInEachOther(List<Element> content) throws Exception
+    {
+        long mark = System.currentTimeMillis();
+        page.getUser().getLogger().log(Level.INFO, "Filtering page elements" );
+        Element.filterElementsIncludedInEachOthers( content, page.getArea() * 0.95, 1 / 8 );
+
+        long duration = ( System.currentTimeMillis() - mark ) / 1000;
+        page.getUser().getLogger().log(Level.INFO, "Filtering page elements [Done] [Duration: " + duration + "sec]");
+        page.getUser().getLogger().log(Level.INFO, "Found: " + content.size() + " pertinent elements" );
     }
 
     public String takeScreenShot() throws Exception
@@ -119,7 +131,7 @@ public class PageParser
 
             if ( page.getUser().isPageScreenshotEnabled() )
             {
-                page.getUser().log( "Taking page snapshot: '" + page.getTitle() + "'" );
+                page.getUser().getLogger().log(Level.INFO, "Taking page snapshot: '" + page.getTitle() + "'" );
                 long mark = System.currentTimeMillis();
 
                 String img = BotHelper.takeScreenshot( bot );
@@ -132,7 +144,7 @@ public class PageParser
                 }
 
                 long duration = ( System.currentTimeMillis() - mark ) / 1000;
-                page.getUser().log( "Taking page snapshot: '" + page.getTitle() + "' [Done] [Duration: " + duration + " sec]" );
+                page.getUser().getLogger().log(Level.INFO, "Taking page snapshot: '" + page.getTitle() + "' [Done] [Duration: " + duration + " sec]" );
             }
 
         }
@@ -150,12 +162,12 @@ public class PageParser
             for ( Element pageElement : content )
             {
                 contentIdx++;
-                page.getUser().log( String.format("Taking element screenshots ( %d / %d )", contentIdx, content.size() ) );
+                page.getUser().getLogger().log(Level.INFO, String.format("Taking element screenshots ( %d / %d )", contentIdx, content.size() ));
                 pageElement.takeScreenShot();
             }
 
             long duration = ( System.currentTimeMillis() - mark ) / 1000;
-            page.getUser().log( "Taking elements screenshots [Done] [Duration: \"" + duration + "\" sec]" );
+            page.getUser().getLogger().log(Level.INFO, "Taking elements screenshots [Done] [Duration: " + duration + "sec]");
         }
     }
 
@@ -187,6 +199,8 @@ public class PageParser
     {
         if ( !page.hasBeenParsed() )
         {
+            Logger logger = page.getUser().getLogger();
+
             if ( page.getUser().getCurrentPage() != page )
             {
                 page.getUser().goTo( page ).awaitLoaded();
@@ -217,11 +231,11 @@ public class PageParser
             }
             else if ( page.isExternal() )
             {
-                page.getUser().log( "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'." );
+                logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'.");
             }
             else
             {
-                page.getUser().log( "Page with url: '" + page.getUrl() + "' is broken." );
+                logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is broken.");
             }
 
             page.setParsed( true );
@@ -230,6 +244,8 @@ public class PageParser
 
     public List<Element> getElements() throws Exception
     {
+        final Logger logger = page.getUser().getLogger();
+
         long mark = System.currentTimeMillis();
 
         List<Element> elements = new ArrayList<Element>();
@@ -260,13 +276,16 @@ public class PageParser
             }
             catch (StaleElementReferenceException e)
             {
-                System.err.println( e );
+                logger.log(Level.ERROR, e);
             }
-            page.getUser().log( "Retrieving page element ( " + idx + "/" + elementCount + " )" );
+            finally
+            {
+                logger.log(Level.INFO, "Retrieving page element ( " + idx + "/" + elementCount + " )" );
+            }
         }
 
         long duration = ( System.currentTimeMillis() - mark ) / 1000;
-        page.getUser().log( "Retrieving page elements [Done] [Duration: \"" + duration + "\" sec]" );
+        logger.log(Level.INFO, "Retrieving page elements [Done] [Duration: " + duration + "sec]" );
         return elements;
     }
 

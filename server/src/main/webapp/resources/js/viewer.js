@@ -266,11 +266,7 @@
         askForConfirmation( 'Work in progress will be permanently lost! Do you want to continue?' );
         if( !$.wip )
         {
-            $(window).spin();
-
             document.location.reload();
-
-            $(window).spin();
         }
         else
         {
@@ -286,16 +282,12 @@
             var rowIdx = parseInt($("#dialog").attr('data-row-id'))+1;
             if(rowIdx <= $("#report tr").size() )
             {
-                $(window).spin();
-
                 var refPageIdx = $('#report tr[data-id=' + rowIdx + '] .ref-page .page-decorator').attr("data-id");
                 var pageIdx = $('#report tr[data-id=' + rowIdx + '] .new-page .page-decorator').attr("data-id");
                 var content = buildDialodContent(rowIdx, refPageIdx, pageIdx);
                 $('a.simplemodal-close').click();
                 $.modal( content );
                 defineModalViewPageBaseElementBehavior();
-
-                $(window).spin();
             }
         }
     };
@@ -339,10 +331,10 @@
     {
         if( askForConfirmation( 'Are you sure you want to commit?', false ) )
         {
-            $(window).spin();
-
             var newContent = Array();
 
+            var refAppId = $(button).attr("data-ref-app-id");
+            var appId = $(button).attr("data-new-app-id");
             var refPageId = $(button).attr("data-ref-page-id");
             var pageId = $(button).attr("data-new-page-id");
 
@@ -353,18 +345,16 @@
 
             $.ajax({
                 type: "POST",
-                url: "/ui-explorer-viewer/application/merge/" + $("#ref-tag").text() + "/" + $("#new-tag").text() + "/" + refPageId + "/" + pageId,
+                url: "/ui-explorer-viewer/application/merge/" + refAppId + "/" + appId + "/" + refPageId + "/" + pageId,
                 data: JSON.stringify( newContent ),
                 contentType: 'application/json',
                 success: function(result)
                 {
-                    $(window).spin();
                     alert("Changes have been saved!");
                 },
                 error: function()
                 {
-                    $(window).spin();
-                    alert("Changes could not be saved!");
+                    alert("Changes could not be saved! Sorry for the inconvenience.");
                 }
             });
 
@@ -372,7 +362,7 @@
         }
         else
         {
-            alert('There is no current changes to be commited');
+            alert('There is no changes to be commited');
         }
     };
 

@@ -46,6 +46,7 @@ import com.smash.revolance.ui.model.helper.UserHelper;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.Level;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.*;
@@ -53,9 +54,7 @@ import org.openqa.selenium.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -68,19 +67,20 @@ public class Element implements Comparable<Element>
     private ElementBean bean = new ElementBean( this );
     private BufferedImage img;
 
+    public Element()
+    {
+
+    }
+
     public Element(Page page, WebElement element)
     {
+        this();
         setPage( page );
         setTag( element.getTagName() );
         setDim( element.getSize() );
         setPos( element.getLocation() );
         setClz( element.getAttribute( "class" ) );
         setId( element.getAttribute( "id" ) );
-    }
-
-    public Element()
-    {
-
     }
 
     public void setAlt(String alt)
@@ -131,11 +131,6 @@ public class Element implements Comparable<Element>
         {
             tag = "";
         }
-        String href = element.getAttribute( "href" );
-        if ( href == null )
-        {
-            href = "";
-        }
         String type = element.getAttribute( "type" );
         if ( type == null )
         {
@@ -146,27 +141,59 @@ public class Element implements Comparable<Element>
         {
             txt = "";
         }
-        if ( tag.contentEquals( "a" )
-                && !txt.isEmpty() )
+        if (isALink(tag, txt))
         {
             return Link.class;
-        } else if ( ( tag.contentEquals( "input" ) && ( type.contentEquals( "submit" ) || type.contentEquals( "button" ) ) )
-                || ( tag.contentEquals( "button" ) ) )
+        }
+        else if (isAButton(tag, type))
         {
             return Button.class;
-        } else if ( tag.contentEquals( "input" ) && ( !type.contentEquals( "submit" ) && !type.contentEquals( "button" ) ) )
+        }
+        else if (isAnInput(tag, type))
         {
             return Input.class;
-        } else if ( !txt.trim().isEmpty() && ( tag.contentEquals( "li" ) || tag.contentEquals( "p" ) || tag.contentEquals( "label" ) || tag.startsWith( "h" ) ) )
+        }
+        else if (isAData(tag, txt))
         {
             return Data.class;
-        } else if ( !getBg( tag, element ).isEmpty() )
+        }
+        else if (isAnImage(element, tag))
         {
             return Image.class;
-        } else
+        }
+        else
         {
             return null;
         }
+    }
+
+    private static boolean isAnImage(WebElement element, String tag)
+    {
+        return !getBg( tag, element ).isEmpty();
+    }
+
+    private static boolean isAData(String tag, String txt)
+    {
+        return !txt.trim().isEmpty() &&
+                    ( tag.contentEquals( "li" ) || tag.contentEquals( "p" )
+                            || tag.contentEquals( "label" ) || tag.startsWith( "h" ) );
+    }
+
+    private static boolean isAnInput(String tag, String type)
+    {
+        return tag.contentEquals( "input" ) && ( !type.contentEquals( "submit" ) && !type.contentEquals( "button" ) );
+    }
+
+    private static boolean isAButton(String tag, String type)
+    {
+        return ( tag.contentEquals( "input" )
+                    && ( type.contentEquals( "submit" ) || type.contentEquals( "button" ) ) )
+                        || ( tag.contentEquals( "button" ) );
+    }
+
+    private static boolean isALink(String tag, String txt)
+    {
+        return tag.contentEquals( "a" ) && !txt.isEmpty();
     }
 
     public Element(PageBean pageBean, ElementBean bean)
@@ -185,18 +212,20 @@ public class Element implements Comparable<Element>
         if ( isClickable() )
         {
             UserHelper.browseTo( getUser(), getUrl() );
+            getBot().getUser().getLogger().log(Level.INFO, "Clicking on '" + getContent() + "'" );
 
             try
             {
                 _click( getBot() );
-
+                getBot().getUser().getLogger().log(Level.INFO, "Clicking on '" + getContent() + "' [Done]" );
                 setHref( getBot().getCurrentUrl() );
                 setClicked( true );
             }
             catch (Exception e)
             {
                 setBroken( true );
-                logException( e );
+                getBot().getUser().getLogger().log(Level.ERROR, "Clicking on '" + getContent() + "' [Failed]" );
+                getBot().getUser().getLogger().log(Level.ERROR, e);
             }
         }
 
@@ -205,17 +234,16 @@ public class Element implements Comparable<Element>
 
     private void _click(Bot bot) throws Exception
     {
+
         WebElement element = BotHelper.findMatchingElement( bot, this );
         if ( element != null )
         {
-            bot.getUser().log( "Clicking on '" + getContent() + "'." );
             try
             {
                 String disabled = element.getAttribute( "disabled" );
                 if ( disabled == null )
                 {
                     element.click(); // Can thow an ex
-
                 }
             }
             catch (UnhandledAlertException e)
@@ -224,11 +252,6 @@ public class Element implements Comparable<Element>
                 _click( bot );
             }
         }
-    }
-
-    private void logException(Exception e) throws IOException
-    {
-        System.err.println( "Element could not be found:\n" + e.getMessage() );
     }
 
     public boolean isIncluded(Element element)
@@ -436,20 +459,24 @@ public class Element implements Comparable<Element>
             if ( !getUser().wantsToFollowLinks() )
             {
                 return false;
-            } else
+            }
+            else
             {
                 return !getUser().getExcludedLinks().contains( getContent() );
             }
-        } else if ( bean.getImpl().contentEquals( "Button" ) )
+        }
+        else if ( bean.getImpl().contentEquals( "Button" ) )
         {
             if ( !getUser().wantsToFollowButtons() )
             {
                 return false;
-            } else
+            }
+            else
             {
                 return !getUser().getExcludedButtons().contains( getContent() );
             }
-        } else
+        }
+        else
         {
             return false;
         }
@@ -528,7 +555,7 @@ public class Element implements Comparable<Element>
 
     public static List<Element> filterClickableElements(List<Element> elements)
     {
-        List<Element> filteredElements = new ArrayList<Element>();
+        List<Element> filteredElements = new ArrayList();
 
         for ( Element element : elements )
         {
@@ -708,11 +735,6 @@ public class Element implements Comparable<Element>
         return bean.getBg();
     }
 
-    public Point getCenter()
-    {
-        return bean.getCenter();
-    }
-
     public boolean isDisabled()
     {
         return bean.isDisabled();
@@ -771,10 +793,10 @@ public class Element implements Comparable<Element>
     public static boolean isElementsAndBlocContentMatching(List<Element> matchingElements, Element hudgeBloc)
     {
         // Does those elements can substitute the content of the bloc?
-        List<String> blocContent = buildListFromArray( hudgeBloc.getContent().split( "\\n" ) );
+        List<String> blocContent = Arrays.asList( hudgeBloc.getContent().split( "\\n" ) );
         for ( Element element : matchingElements )
         {
-            List<String> matchingElementsContent = buildListFromArray( element.getContent().split( "\\n" ) );
+            List<String> matchingElementsContent = Arrays.asList( element.getContent().split( "\\n" ) );
             for ( String matchingElementContent : matchingElementsContent )
             {
                 if ( blocContent.contains( matchingElementContent ) )
@@ -802,18 +824,6 @@ public class Element implements Comparable<Element>
         }
 
         return matchingElements;
-    }
-
-    private static <T> List<T> buildListFromArray(T[] array)
-    {
-        List<T> list = new ArrayList<T>();
-
-        for ( T t : array )
-        {
-            list.add( t );
-        }
-
-        return list;
     }
 
     public static Element getBiggestElement(List<Element> elements)

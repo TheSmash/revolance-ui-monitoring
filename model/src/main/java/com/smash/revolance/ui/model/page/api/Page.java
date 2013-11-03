@@ -31,6 +31,7 @@ import com.smash.revolance.ui.model.helper.UrlHelper;
 import com.smash.revolance.ui.model.page.IPage;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.log4j.Level;
 import org.openqa.selenium.WebDriver;
 
 import java.awt.image.BufferedImage;
@@ -91,7 +92,8 @@ public class Page implements IPage
         if ( source == null )
         {
             return new Element();
-        } else
+        }
+        else
         {
             return source.getInstance();
         }
@@ -104,7 +106,8 @@ public class Page implements IPage
         {
             // The url is relative to the domain
             return getUser().getDomain() + bean.getUrl();
-        } else
+        }
+        else
         {
             return bean.getUrl();
         }
@@ -116,7 +119,8 @@ public class Page implements IPage
         {
             url = url.substring( getUser().getDomain().length() );
             bean.setUrl( url );
-        } else
+        }
+        else
         {
             bean.setExternal( true );
             bean.setUrl( url );
@@ -130,13 +134,13 @@ public class Page implements IPage
 
     public void awaitLoaded() throws Exception
     {
-        getUser().log( "Awaiting page: '" + getTitle() + "' to be loaded" );
+        getUser().getLogger().log(Level.INFO, "Awaiting page: '" + getTitle() + "' to be loaded" );
         long mark = System.currentTimeMillis();
 
         getApplication().awaitPageLoaded( this );
 
         long duration = ( System.currentTimeMillis() - mark ) / 1000;
-        getUser().log( "Awaiting page: '" + getTitle() + "' to be loaded [Done] [Duration: " + duration + " sec]" );
+        getUser().getLogger().log(Level.INFO, "Awaiting page: '" + getTitle() + "' to be loaded [Done] [Duration: " + duration + " sec]" );
     }
 
     @Override
@@ -180,7 +184,6 @@ public class Page implements IPage
         bean = null;
     }
 
-
     public boolean hasBeenBrowsed()
     {
         return bean.hasBeenBrowsed();
@@ -189,32 +192,6 @@ public class Page implements IPage
     @Override
     public List<Element> getLinks() throws Exception
     {
-        /*
-        if( links == null )
-        {
-            links = new ArrayList<Element>(  );
-
-            if(!getUser().isExplorationDone())
-            {
-                if(!isExternal() && !isBroken())
-                {
-                    System.out.print( "Retrieving links" );
-
-                    links.addAll( Link.getLinks( this ) );
-                    ArrayList<ElementBean> beanLinks = new ArrayList<ElementBean>(  );
-                    for(Element link : links)
-                    {
-                        beanLinks.add( link.getBean() );
-                    }
-                    bean.setLinks( beanLinks );
-
-                    System.out.println( "\r" + bean.getLinks().size() + " links found" );
-                    takeScreenshots( links );
-                }
-            }
-        }
-        return links;
-        */
         return Link.filterLinks( content );
     }
 
@@ -243,7 +220,7 @@ public class Page implements IPage
     @Override
     public List<Element> getBrokenLinks() throws Exception
     {
-        List<Element> brokenLinks = new ArrayList<Element>();
+        List<Element> brokenLinks = new ArrayList();
 
         for ( Element link : getLinks() )
         {
@@ -330,33 +307,6 @@ public class Page implements IPage
     @Override
     public List<Element> getButtons() throws Exception
     {
-        /*
-        if( buttons == null )
-        {
-            buttons = new ArrayList<Element>(  );
-
-            if(!getUser().isExplorationDone())
-            {
-                if(!isExternal() && !isBroken() )
-                {
-                    System.out.print("Retrieving buttons");
-                    buttons.addAll( Button.getButtons( this ) );
-                    ArrayList<ElementBean> beanButtons = new ArrayList<ElementBean>(  );
-
-                    for(Element button : buttons)
-                    {
-                        beanButtons.add( button.getBean() );
-                    }
-
-                    bean.setButtons( beanButtons );
-                    System.out.println("\r" + bean.getButtons().size() + " buttons found");
-
-                    takeScreenshots( buttons );
-                }
-            }
-        }
-        return buttons;
-        */
         return Button.filterButtons( content );
     }
 
@@ -364,7 +314,7 @@ public class Page implements IPage
     {
         if ( isOriginal() )
         {
-            List<Page> variants = new ArrayList<Page>();
+            List<Page> variants = new ArrayList();
             for ( PageBean page : _getVariants() )
             {
                 variants.add( page.getInstance() );
@@ -427,7 +377,8 @@ public class Page implements IPage
         if ( source == null )
         {
             return null;
-        } else
+        }
+        else
         {
             for ( Page page : getVariants() )
             {
@@ -491,7 +442,7 @@ public class Page implements IPage
 
     private List<Element> getClickableVariations() throws Exception
     {
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> elements = new ArrayList();
 
         elements.addAll( Element.filterClickableElementBeans( bean.getAddedVariations() ) );
 
@@ -548,7 +499,7 @@ public class Page implements IPage
     @Override
     public List<Element> getClickableContent() throws Exception
     {
-        List<Element> clickableElements = new ArrayList<Element>();
+        List<Element> clickableElements = new ArrayList();
 
         clickableElements.addAll( getLinks() );
         clickableElements.addAll( getButtons() );
@@ -598,7 +549,7 @@ public class Page implements IPage
 
     public Collection<Element> getButtons(String button) throws Exception
     {
-        List<Element> buttons = new ArrayList<Element>();
+        List<Element> buttons = new ArrayList();
         for ( Element aButton : getButtons() )
         {
             if ( aButton.getContent().contentEquals( button ) )
@@ -623,7 +574,7 @@ public class Page implements IPage
 
     public Collection<Element> getLinks(String link) throws Exception
     {
-        List<Element> links = new ArrayList<Element>();
+        List<Element> links = new ArrayList();
         for ( Element aLink : getLinks() )
         {
             if ( aLink.getContent().contentEquals( link ) )
@@ -636,33 +587,6 @@ public class Page implements IPage
 
     public List<Element> getImages() throws Exception
     {
-        /*
-        if( images == null )
-        {
-            images = new ArrayList<Element>(  );
-
-            if(!getUser().isExplorationDone())
-            {
-                if(!isExternal() && !isBroken() )
-                {
-                    System.out.print("Retrieving images");
-                    images.addAll( Image.getImages( this ) );
-                    ArrayList<ElementBean> beanImages = new ArrayList<ElementBean>(  );
-
-                    for(Element image : images)
-                    {
-                        beanImages.add( image.getBean() );
-                    }
-
-                    bean.setImages( beanImages );
-                    System.out.println("\r" + bean.getImages().size() + " images found");
-
-                    takeScreenshots( images );
-                }
-            }
-        }
-        return images;
-        */
         return Image.filterImages( content );
     }
 
@@ -680,7 +604,7 @@ public class Page implements IPage
 
     public List<Element> getDatas(String data)
     {
-        List<Element> datas = new ArrayList<Element>();
+        List<Element> datas = new ArrayList();
         for ( Element elem : Data.filterData( content ) )
         {
             if ( elem.getContent().contentEquals( data ) )
@@ -718,7 +642,7 @@ public class Page implements IPage
 
     public void setContent(List<Element> content)
     {
-        ArrayList<ElementBean> beanElements = new ArrayList<ElementBean>();
+        ArrayList<ElementBean> beanElements = new ArrayList();
         for ( Element element : content )
         {
             beanElements.add( element.getBean() );
