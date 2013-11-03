@@ -44,8 +44,8 @@
                     <label class="control-label" for="browserType">Browser</label>
                     <div class="controls">
                         <label class="radio"><input name="browserType" type="radio" value="Firefox" />Firefox</label>
-                        <label class="radio"><input name="browserType" type="radio" value="Chrome" />Chrome</label>
-                        <label class="radio"><input name="browserType" type="radio" value="IExplorer"/>IExplorer</label>
+                        <label class="radio"><input name="browserType" type="radio" value="Chrome" disabled/>Chrome</label>
+                        <label class="radio"><input name="browserType" type="radio" value="IExplorer" disabled/>IExplorer</label>
                         <form:errors path="id" cssClass="error" />
                     </div>
                 </div>
