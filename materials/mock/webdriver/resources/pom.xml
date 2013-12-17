@@ -6,18 +6,17 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui-materials-mock-webdriver</artifactId>
+        <artifactId>ui-monitoring-materials-mock-webdriver</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Revolance-UI-Materials-Mock-Webdriver-Resources</name>
-    <artifactId>ui-materials-mock-webdriver-resources</artifactId>
+    <artifactId>ui-monitoring-materials-mock-webdriver-resources</artifactId>
 
     <dependencies>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+            <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -32,35 +31,35 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-resources-page-ref</artifactId>
+            <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-resources-page-new-url</artifactId>
+            <artifactId>ui-monitoring-materials-resources-page-new-url</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-resources-page-new-layout</artifactId>
+            <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-resources-page-new-look</artifactId>
+            <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-resources-page-new-content</artifactId>
+            <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>

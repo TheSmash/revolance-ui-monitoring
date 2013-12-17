@@ -4,12 +4,11 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui</artifactId>
+        <artifactId>ui-monitoring</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Revolance-UI-Server</name>
-    <artifactId>ui-server</artifactId>
+    <artifactId>ui-monitoring-server</artifactId>
 
     <packaging>war</packaging>
 
@@ -18,21 +17,21 @@
         <!-- Revolance dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-model</artifactId>
+            <artifactId>ui-monitoring-model</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>ui-materials-mock-webdriver-service</artifactId>
+                    <artifactId>ui-monitoring-materials-mock-webdriver-service</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-database</artifactId>
+            <artifactId>ui-monitoring-database</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-comparator</artifactId>
+            <artifactId>ui-monitoring-comparator</artifactId>
         </dependency>
 
         <!-- Spring 3 dependencies -->
@@ -83,7 +82,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Rendersnale -->
+        <!-- Rendersnake -->
         <dependency>
             <groupId>org.rendersnake</groupId>
             <artifactId>rendersnake</artifactId>

@@ -6,14 +6,13 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui-materials</artifactId>
+        <artifactId>ui-monitoring-materials</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <packaging>pom</packaging>
 
-    <name>Revolance-UI-Materials-Mock</name>
-    <artifactId>ui-materials-mock</artifactId>
+    <artifactId>ui-monitoring-materials-mock</artifactId>
 
     <modules>
         <module>webdriver</module>

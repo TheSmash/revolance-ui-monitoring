@@ -6,22 +6,21 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui</artifactId>
+        <artifactId>ui-monitoring</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Revolance-UI-Comparator</name>
-    <artifactId>ui-comparator</artifactId>
+    <artifactId>ui-monitoring-comparator</artifactId>
 
     <dependencies>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-explorer</artifactId>
+            <artifactId>ui-monitoring-explorer</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-model</artifactId>
+            <artifactId>ui-monitoring-model</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -43,20 +42,20 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+            <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+            <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-commons</artifactId>
+            <artifactId>ui-monitoring-materials-commons</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

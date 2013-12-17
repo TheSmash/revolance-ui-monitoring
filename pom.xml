@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.smash.revolance</groupId>
-    <artifactId>ui</artifactId>
+    <artifactId>ui-monitoring</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>Revolance-UI</name>
-    <description>Revolance UI is a tool that assists tester to detect and manage changes in the application they test</description>
+    <name>RevoLance UI Monitoring</name>
+    <description>Revolance UI Monitoring is a tool that assists tester to detect and manage changes in the application they test</description>
 
     <packaging>pom</packaging>
 
@@ -71,38 +71,38 @@
             <!-- Internal component version management -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-model</artifactId>
+                <artifactId>ui-monitoring-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-explorer</artifactId>
+                <artifactId>ui-monitoring-explorer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-comparator</artifactId>
+                <artifactId>ui-monitoring-comparator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-database</artifactId>
+                <artifactId>ui-monitoring-database</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-cmdline</artifactId>
+                <artifactId>ui-monitoring-cmdline</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-server</artifactId>
+                <artifactId>ui-monitoring-server</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-distrib</artifactId>
+                <artifactId>ui-monitoring-distrib</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -125,54 +125,54 @@
             <!-- Test Materials -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-resources-page-ref</artifactId>
+                <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-resources-page-new-content</artifactId>
+                <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-resources-page-new-url</artifactId>
+                <artifactId>ui-monitoring-materials-resources-page-new-url</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-resources-page-new-look</artifactId>
+                <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-resources-page-new-layout</artifactId>
+                <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-mock-webdriver-resources</artifactId>
+                <artifactId>ui-monitoring-materials-mock-webdriver-resources</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+                <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ui-materials-commons</artifactId>
+                <artifactId>ui-monitoring-materials-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

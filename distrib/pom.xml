@@ -6,22 +6,21 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui</artifactId>
+        <artifactId>ui-monitoring</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Revolance-UI-Distrib</name>
-    <artifactId>ui-distrib</artifactId>
+    <artifactId>ui-monitoring-distrib</artifactId>
 
     <dependencies>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-explorer</artifactId>
+            <artifactId>ui-monitoring-explorer</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-cmdline</artifactId>
+            <artifactId>ui-monitoring-cmdline</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -30,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-server</artifactId>
+            <artifactId>ui-monitoring-server</artifactId>
             <type>war</type>
         </dependency>
 

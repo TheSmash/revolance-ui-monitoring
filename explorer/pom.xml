@@ -6,29 +6,28 @@
 
     <parent>
         <groupId>com.smash.revolance</groupId>
-        <artifactId>ui</artifactId>
+        <artifactId>ui-monitoring</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Revolance-UI-Explorer</name>
-    <artifactId>ui-explorer</artifactId>
+    <artifactId>ui-monitoring-explorer</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-model</artifactId>
+            <artifactId>ui-monitoring-model</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-commons</artifactId>
+            <artifactId>ui-monitoring-materials-commons</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-materials-mock-webdriver-commons</artifactId>
+            <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>test</scope>
