@@ -1,4 +1,4 @@
-Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui.png)](https://travis-ci.org/TheSmash/revolance-ui-monitoring)
+Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monitoring.png)](https://travis-ci.org/TheSmash/revolance-ui-monitoring)
 ============
 
 
