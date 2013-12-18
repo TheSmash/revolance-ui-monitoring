@@ -17,7 +17,7 @@
 .description { text-align: justify; }
 .details p { font-size: 0.85em; color: #333; }
 .components, .roadmap, .features { padding-left: 8px; }
-.carousel-caption { position: absolute !important; left: 0 !important; padding: 10px 15px 5px; background: rgba(0, 0, 0, 0.75); width: 100% !important;}
+.carousel-caption { position: absolute !important; left: 0 !important; padding: 10px 15px 5px; background: rgba(0, 0, 0, 0.45); width: 100% !important;}
 .up { height: 25px; width: 25px; background-color: #ddd; border-radius: 50%; padding-left: 2px; }
 .carousel-control.left, .carousel-control.right { background-image: none !important; z-index: 10; }
 .carousel-control { position: relative !important; opacity: 1 !important; top: -118px !important; color: white !important; }
