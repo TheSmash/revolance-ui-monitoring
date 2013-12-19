@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>Revolance UI Viewer</display-name>
+    <display-name>UI Monitoring</display-name>
 
     <servlet>
         <servlet-name>mvc-dispatcher</servlet-name>

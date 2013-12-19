@@ -35,7 +35,7 @@ public class TestConstants
     public static String TEST_RESOURCES              = "src/test/resources";
     public static String TARGET                      = new File( new File( "" ).getAbsolutePath(), "target" ).getAbsolutePath();
     public static String MATERIALS                   = new File( TARGET, "materials" ).getAbsolutePath();
-    public static File   MATERIALS_WEBDRIVER_RES_DIR = new File( MATERIALS, "ui-materials-mock-webdriver-commons" );
+    public static File   MATERIALS_WEBDRIVER_RES_DIR = new File( MATERIALS, "ui-monitoring-materials-mock-webdriver-commons" );
 
     // Name of the materials
     public static String REF_PAGE_DIR         = "page-ref";
@@ -52,35 +52,35 @@ public class TestConstants
     public static  File   MOCK_REF_PAGE    = new File( MATERIALS_WEBDRIVER_RES_DIR, REF_PAGE_DIR + "/mock.json" );
 
     // New Page Url materials
-    private static String NEW_PAGE_URL_FOLDER  = new File( MATERIALS, "ui-materials-resources-page-new-url" ).getAbsolutePath();
+    private static String NEW_PAGE_URL_FOLDER  = new File( MATERIALS, "ui-monitoring-materials-resources-page-new-url" ).getAbsolutePath();
     public static  String NEW_PAGE_URL         = "file://" + NEW_PAGE_URL_FOLDER;
     public static  String NEW_PAGE_URL_HOME    = "file://" + new File( NEW_PAGE_URL_FOLDER, "home.html" ).getAbsolutePath();
     public static  File   NEW_PAGE_URL_SITEMAP = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_URL_DIR + "sitemap.json" );
     public static  File   MOCK_NEW_PAGE_URL    = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_URL_DIR + "/mock.json" );
 
     // New Page Look materials
-    private static String NEW_PAGE_LOOK_FOLDER  = new File( MATERIALS, "ui-materials-resources-page-new-look" ).getAbsolutePath();
+    private static String NEW_PAGE_LOOK_FOLDER  = new File( MATERIALS, "ui-monitoring-materials-resources-page-new-look" ).getAbsolutePath();
     public static  String NEW_PAGE_LOOK_HOME    = "file://" + new File( NEW_PAGE_LOOK_FOLDER, "index.html" ).getAbsolutePath();
     public static  String NEW_PAGE_LOOK         = "file://" + NEW_PAGE_LOOK_FOLDER;
     public static  File   NEW_PAGE_LOOK_SITEMAP = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_LOOK_DIR + "/sitemap.json" );
     public static  File   MOCK_NEW_PAGE_LOOK    = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_LOOK_DIR + "/mock.json" );
 
     // New Page Content materials
-    private static String NEW_PAGE_CONTENT_FOLDER  = new File( MATERIALS, "ui-materials-resources-page-new-content" ).getAbsolutePath();
+    private static String NEW_PAGE_CONTENT_FOLDER  = new File( MATERIALS, "ui-monitoring-materials-resources-page-new-content" ).getAbsolutePath();
     public static  String NEW_PAGE_CONTENT         = "file://" + NEW_PAGE_CONTENT_FOLDER;
     public static  String NEW_PAGE_CONTENT_HOME    = "file://" + new File( NEW_PAGE_CONTENT_FOLDER, "index.html" ).getAbsolutePath();
     public static  File   NEW_PAGE_CONTENT_SITEMAP = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_CONTENT_DIR + "/sitemap.json" );
     public static  File   MOCK_NEW_PAGE_CONTENT    = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_CONTENT_DIR + "/mock.json" );
 
     // New Page Layout materials
-    private static String NEW_PAGE_LAYOUT_FOLDER  = new File( MATERIALS, "ui-materials-resources-page-new-layout" ).getAbsolutePath();
+    private static String NEW_PAGE_LAYOUT_FOLDER  = new File( MATERIALS, "ui-monitoring-materials-resources-page-new-layout" ).getAbsolutePath();
     public static  String NEW_PAGE_LAYOUT         = "file://" + NEW_PAGE_LAYOUT_FOLDER;
     public static  String NEW_PAGE_LAYOUT_HOME    = "file://" + new File( NEW_PAGE_LAYOUT_FOLDER, "index.html" ).getAbsolutePath();
     public static  File   NEW_PAGE_LAYOUT_SITEMAP = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_LAYOUT_DIR + "/sitemap.json" );
     public static  File   MOCK_NEW_PAGE_LAYOUT    = new File( MATERIALS_WEBDRIVER_RES_DIR, NEW_PAGE_LAYOUT_DIR + "/mock.json" );
 
-    private static String REF_WEBSITE = "file://" + new File( MATERIALS, "ui-materials-resources-website-ref/index.html" ).getAbsolutePath();
-    public static  String NEW_WEBSITE = "file://" + new File( MATERIALS, "ui-materials-resources-website-new/index.html" ).getAbsolutePath();
+    private static String REF_WEBSITE = "file://" + new File( MATERIALS, "ui-monitoring-materials-resources-website-ref/index.html" ).getAbsolutePath();
+    public static  String NEW_WEBSITE = "file://" + new File( MATERIALS, "ui-monitoring-materials-resources-website-new/index.html" ).getAbsolutePath();
 
     public static String WEBSITE = new File( new File( "" ).getAbsolutePath(), "src/test/resources" ).getAbsolutePath();
 
@@ -96,7 +96,7 @@ public class TestConstants
     public static String START_SCRIPT  = (OSHelper.isUnix()?"./":"") + "start" + OSHelper.getScriptExtension();
     public static String STOP_SCRIPT   = (OSHelper.isUnix()?"./":"") + "stop" + OSHelper.getScriptExtension();
 
-    public static String[] KILL_SERVER_CMD = new String[]{"ps", "-ef", "|", "grep", "ui-server", "|", "grep", "-v", "grep"};
+    public static String[] KILL_SERVER_CMD = new String[]{"ps", "-ef", "|", "grep", "ui-monitoring-server", "|", "grep", "-v", "grep"};
 
     public static File getMockedPage(String url) throws Exception
     {
