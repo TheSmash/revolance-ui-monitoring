@@ -25,7 +25,7 @@
         $('#applicationLink').hide();
         $(function(){
             $.updater({
-                url: '${pageContext.request.contextPath}/explorations/${explorationId}/'+$("#log .line").size(),
+                url: '${pageContext.request.contextPath}/explorations/${explorationId}/logs/?fromLine='+$("#log .line").size(),
                 data: undefined,
                 interval: 100,
                 method: 'get',

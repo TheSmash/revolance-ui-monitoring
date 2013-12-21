@@ -9,7 +9,6 @@ import com.smash.revolance.ui.comparator.page.PageComparison;
 import com.smash.revolance.ui.database.FileSystemStorage;
 import com.smash.revolance.ui.database.IStorage;
 import com.smash.revolance.ui.database.StorageException;
-import com.smash.revolance.ui.model.application.ApplicationConfiguration;
 import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
@@ -131,6 +130,12 @@ public class ApplicationController
     public ModelAndView displayContentList(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
     {
         return new ModelAndView( "ApplicationList", "contentList", getApplications() );
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView displayRoot(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
+    {
+        return displayContentList(model);
     }
 
     @RequestMapping(value = "/applications/{contentTag}", method = RequestMethod.GET)

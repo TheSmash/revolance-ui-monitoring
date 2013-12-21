@@ -54,9 +54,8 @@
         <dependencySet>
             <outputDirectory>/lib</outputDirectory>
             <includes>
-                <include>${project.groupId}:ui-explorer</include>
-                <include>${project.groupId}:ui-server</include>
-                <include>${project.groupId}:ui-cmdline</include>
+                <include>${project.groupId}:ui-monitoring-server</include>
+                <include>${project.groupId}:ui-monitoring-cmdline</include>
                 <include>org.mortbay.jetty:jetty-runner</include>
             </includes>
         </dependencySet>
