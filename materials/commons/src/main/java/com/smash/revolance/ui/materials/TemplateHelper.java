@@ -27,7 +27,6 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +48,8 @@ public class TemplateHelper
             {
                 System.err.println( "Unable to find template: " + templateName );
                 return "Unable to find template: " + templateName;
-            } else
+            }
+            else
             {
                 stream = new InputStreamReader( content );
                 template = new Template( "template", stream, null );
@@ -74,26 +74,6 @@ public class TemplateHelper
             out.flush();
         }
         return baos.toString();
-    }
-
-    public String buildElementList(List<String> elementIds)
-    {
-        StringBuilder str = new StringBuilder();
-
-        str.append( "[" );
-        for ( String elementId : elementIds )
-        {
-            str.append( "{" );
-            str.append( "\"ELEMENT\":\"{" ).append( elementId ).append( "}\"" );
-            str.append( "}" );
-            if ( !elementIds.get( elementIds.size() - 1 ).contentEquals( elementId ) )
-            {
-                str.append( "," );
-            }
-        }
-        str.append( "]" );
-
-        return str.toString();
     }
 
 }
