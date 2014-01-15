@@ -20,8 +20,13 @@
 .carousel-caption { position: absolute !important; left: 0 !important; padding: 10px 15px 5px; background: rgba(0, 0, 0, 0.45); width: 100% !important;}
 .up { height: 25px; width: 25px; background-color: #ddd; border-radius: 50%; padding-left: 2px; }
 .carousel-control.left, .carousel-control.right { background-image: none !important; z-index: 10; }
-.carousel-control { position: relative !important; opacity: 1 !important; top: -118px !important; color: white !important; }
+.carousel-control { position: relative !important; opacity: 1 !important; top: -76px !important; color: white !important; }
 .licensing p { font-size: 0.85em; text-align: center;}
+.laptop{background-image: url('../images/laptop.png'); background-repeat: no-repeat; width: 640px; height: 405px; padding: 24px 79px 77px 79px; margin: 0 auto;}
+.laptop img{height: 100%; width: 100%; }
+.browser-container{-moz-box-shadow: 0px 0px 10px gray; -webkit-box-shadow: 0px 0px 10px gray; box-shadow: 0px 0px 10px gray;}
+.browser{background-image: url('../images/browser.png');background-repeat: no-repeat;background-size: 100%;}
+.browser-filler{width: 100%}
 
 *{margin:0;padding:0}:focus,:active {outline:0}img{border: 0}
 /*ul li{margin-left: 20px; padding-left: 10px}*/
@@ -30,7 +35,7 @@ a { text-decoration: underlined; color: #e06666; }
 h1 { font-size: 1.4em; font-weight: normal; }
     h1 a { color: #fff; font-size: 1.6em; }
 h2 { font-size: 1.2em; }
-h3 { font-size: 1.2em; background: #222; padding: 6px 0px; color: #da823b; border: #3c78d8 1px solid; font-weight: normal; margin: 0 0 15px; float: left; }
+
 h4 { margin: 0 0 15px; color: #555; font-weight: normal; font-size: 1.6em; font-weight: normal; }
 h5 { margin: 0 0 8px; color: #888; font-size: 1.2em;}
 .two-third h4{ padding-left: 25px; border-bottom: 2px solid #9E9E9E; }
