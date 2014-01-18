@@ -27,15 +27,22 @@ Well I think this project can help us to fill that purpose!
 That's it for the speech guys and now let's have some more technical insight.
 
 
-Requirements
-===========
+
+# User quick start
+
+  - start => ./start.sh
+  - stop => ./stop.sh
+  - status => ./status.sh
+  
+  connect to http://localhost/ui-monitoring-server
+
+#Developer quick start
+
+## Requirements
 
   - Java 1.7
   - Maven at least 3.04
   - Firefox
-
-Quick start
-===========
 
 ## compilation 
 
@@ -62,6 +69,8 @@ Quick start
   * each modules has his unit tests
   * the integration tests are run on the war directly passing through the UI and with bdd scenarios
   * the smoke tests checks that the scripting and the necessary libraries are well packaged
+
+
 
 Author
 ======
