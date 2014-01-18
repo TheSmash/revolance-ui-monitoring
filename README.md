@@ -8,7 +8,7 @@ Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monit
 
 Welcome to the RevoLance initiative!
 
--> [![RevoLance](http://thesmash.github.io/revolance-ui-monitoring/images/logo-cutted.png)](http://thesmash.github.io/revolance-ui-monitoring) <-
+->[![RevoLance](http://thesmash.github.io/revolance-ui-monitoring/images/logo-cutted.png)](http://thesmash.github.io/revolance-ui-monitoring)<-
 
 # Want to know more?
 
@@ -45,7 +45,7 @@ Welcome to the RevoLance initiative!
 
   * base components : model + explorer + database
   * war  : base components + explorer + server
-  * distrib : war + cmdline + distrib
+  * distrib : war + cmdline
   
 # Testing vision
 
