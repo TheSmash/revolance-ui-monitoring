@@ -33,9 +33,9 @@ import com.smash.revolance.ui.model.user.User;
 import org.apache.log4j.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -103,8 +103,16 @@ public class UserExplorer extends Thread
         }
         finally
         {
-            user.setExplorationDone( true );
-            doContentReport();
+            user.setExplorationDone(true);
+            try
+            {
+                user.stopBot();
+                doContentReport();
+            }
+            catch (Exception e)
+            {
+                getLogger().log(Level.ERROR, e);
+            }
         }
     }
 
@@ -173,12 +181,11 @@ public class UserExplorer extends Thread
 
     private void _explore(Page page) throws Exception
     {
-        handleUserAccountLogic( page );
-        doExplore(page);
+        doRecursiveExploration(page);
         doContentReport();
     }
 
-    private void doExplore(Page page) throws Exception
+    private void doRecursiveExploration(Page page) throws Exception
     {
         String title = page.getTitle();
         user.getLogger().log(Level.INFO, "Exploring page: " + title);
@@ -221,10 +228,13 @@ public class UserExplorer extends Thread
             Collections.sort( clickables );
             for ( Element clickable : clickables )
             {
-                if ( !clickable.hasBeenClicked() && clickable.isClickable() && !clickable.isDisabled() )
+                if ( !clickable.hasBeenClicked()
+                        && clickable.isClickable()
+                        && !clickable.isDisabled()
+                        && BotHelper.rightDomain(user, clickable.getHref()) )
                 {
                     // Checking if some content is left to be explored on the target page (if already being explored)
-                    if ( !getSiteMap().hasBeenExplored( clickable.getHref() )
+                    if ( !getSiteMap().hasBeenExplored( UrlHelper.removeHash(clickable.getHref()) )
                             && !UrlHelper.areEquivalent( UrlHelper.removeHash( clickable.getHref() ), UrlHelper.removeHash( page.getUrl() ) )
                             && !getSourceContent( page ).contentEquals( clickable.getContent() ) )
                     {
@@ -237,13 +247,14 @@ public class UserExplorer extends Thread
                             if ( getBrowser().getWindowHandles().size() > windowCount )
                             {
                                 exploreNewWindowChanges( page, clickable, oldWindowHandle );
-                            } else
+                            }
+                            else
                             {
                                 exploreChanges( page, clickable );
                             }
                         }
-
-                    } else
+                    }
+                    else
                     {
                         // Either the target page has already been explored or we're already exploring the page
                         clickable.setClicked( true );
@@ -260,7 +271,8 @@ public class UserExplorer extends Thread
         if ( source == null )
         {
             return "";
-        } else
+        }
+        else
         {
             return source.getContent();
         }
@@ -272,7 +284,8 @@ public class UserExplorer extends Thread
         if ( target == null )
         {
             return false;
-        } else
+        }
+        else
         {
             String currentUrl = UrlHelper.removeHash( page.getUrl() );
             String targetUrl = UrlHelper.removeHash( target.getPage().getUrl() );
@@ -323,16 +336,20 @@ public class UserExplorer extends Thread
         if ( !UrlHelper.areEquivalent( currentUrl, page.getUrl() ) )
         {
             handleUrlChange( page, clickable, currentUrl );
-        } else // url are equivalent (without hash) so we've to check if this is a dynamic change in the content
+        }
+        /*
+        else // url are equivalent (without hash) so we've to check if this is a dynamic change in the content
         {
             if ( user.isPageScreenshotEnabled() )
             {
                 handleDynamicChange( page, clickable );
-            } else
+            }
+            else
             {
                 clickable.setDisabled( true ); // nothing seems to have changed
             }
         }
+        */
     }
 
     private void handleDynamicChange(Page page, Element source) throws Exception
@@ -404,10 +421,11 @@ public class UserExplorer extends Thread
             variant.setScrollY( String.valueOf( (Long) user.getBot().runJS( "return window.scrollY" ) ) );
 
             prevPage.addVariant( variant );
-        } else // Real change of page
+        }
+        else if(BotHelper.rightDomain( prevPage.getUser(), currentUrl))// Real change of page
         {
             Page page = getSiteMap().getPage( currentUrl, true ).getInstance();
-            if ( !page.hasBeenExplored() )
+            if ( !page.hasBeenExplored() && !page.isExternal())
             {
                 page.setSource( clickable );
                 explore( page );
@@ -419,7 +437,7 @@ public class UserExplorer extends Thread
     {
         if ( !page.isBroken() )
         {
-            System.out.println( "Exploring the original version of the page: " + page.getTitle() );
+            user.getLogger().log(Level.TRACE, "Exploring the original version of the page: " + page.getTitle() );
 
             explore( page );
         }
@@ -429,17 +447,7 @@ public class UserExplorer extends Thread
     {
         if ( getApplication() != null )
         {
-            if ( getApplication().isSecured() )
-            {
-                if ( logIn( page ) )
-                {
-                    return;
-                }
-                else if ( changePasswd( page ) )
-                {
-                    return;
-                }
-            }
+            logIn( page );
         }
     }
 
@@ -514,14 +522,9 @@ public class UserExplorer extends Thread
         return variant.getBean();
     }
 
-    private boolean changePasswd(Page page) throws Exception
-    {
-        return getApplication().enterNewPassword( user, page );
-    }
-
     private boolean logIn(Page page) throws Exception
     {
-        return getApplication().enterLogin( user, page );
+        return getApplication().login(user, page);
     }
 
     private SiteMap getSiteMap()

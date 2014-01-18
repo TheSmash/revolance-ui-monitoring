@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar lib/ui-cmdline-${project.version}.jar status 8080
+java -Dport=8080 -jar bin/ui-monitoring-cmdline-${project.version}.jar status > /dev/null 2>&1

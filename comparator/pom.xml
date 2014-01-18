@@ -15,8 +15,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ui-monitoring-explorer</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

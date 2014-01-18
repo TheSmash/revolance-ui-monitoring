@@ -34,7 +34,7 @@
         <takePageScreenshot>true</takePageScreenshot>
         <takePageElementScreenshot>true</takePageElementScreenshot>
 
-        <applicationImpl>com.smash.revolance.ui.model.application.SimpleApplication</applicationImpl>
+        <applicationImpl>com.smash.revolance.ui.model.application.DefaultApplication</applicationImpl>
 
         <excludeLinks>
 

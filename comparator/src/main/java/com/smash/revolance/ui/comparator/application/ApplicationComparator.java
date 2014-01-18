@@ -4,6 +4,7 @@ import com.smash.revolance.ui.comparator.NoMatchFound;
 import com.smash.revolance.ui.comparator.page.*;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.List;
  * Date: 09/06/13
  * Time: 12:08
  */
+@Service
 public class ApplicationComparator implements IApplicationComparator
 {
 
@@ -52,7 +54,7 @@ public class ApplicationComparator implements IApplicationComparator
             {
                 try
                 {
-                    Collection<PageMatch> matches = pageMatchMaker.findMatch( pages, page, PageSearchMethod.URL, PageSearchMethod.TITLE );
+                    Collection<PageMatch> matches = pageMatchMaker.findMatch( pages, page, PageSearchMethod.URL, PageSearchMethod.TITLE, PageSearchMethod.CONTENT );
                     PageMatch bestMatch = pageMatchMaker.getBestMatch( matches );
 
                     if ( bestMatch.getReference() != null && bestMatch.getMatch() != null )
@@ -70,7 +72,8 @@ public class ApplicationComparator implements IApplicationComparator
                     comparison.addRemovedPage( page );
                     refPages.remove( page );
                 }
-            } else
+            }
+            else
             {
                 refPages.remove( page );
             }

@@ -65,23 +65,27 @@ public class PageBean
 
     @JsonDeserialize(contentAs = PageBean.class, as = ArrayList.class)
     private List<PageBean> variants = new ArrayList<PageBean>();
+
     private ElementBean source;
 
     private boolean broken;
     private boolean browsed;
     private boolean homePage;
+    private boolean loginPage;
+
     private boolean external;
+
     private boolean authorized = true;
 
     @JsonIgnore
-    private UserBean user;
-
+    private UserBean                         user;
     @JsonIgnore
-    private Page instance;
-
+    private Page                             instance;
     private Map<DiffType, List<ElementBean>> variations;
     private String                           scrollY;
     private String                           scrollX;
+
+    private Map<String, String> metas = new HashMap<>();
 
     public PageBean()
     {
@@ -91,7 +95,7 @@ public class PageBean
     public PageBean(Page instance)
     {
         this();
-        setInstance( instance );
+        setInstance(instance);
     }
 
     public void setTitle(String title)
@@ -106,24 +110,24 @@ public class PageBean
 
     public void setLinks(ArrayList<ElementBean> links)
     {
-        this.content.addAll( links );
-        Collections.sort( content );
+        this.content.addAll(links);
+        Collections.sort(content);
     }
 
     public List<ElementBean> getLinks()
     {
-        return ElementBean.filterLinks( getContent() );
+        return ElementBean.filterLinks(getContent());
     }
 
     public void setButtons(ArrayList<ElementBean> buttons)
     {
-        this.content.addAll( buttons );
-        Collections.sort( content );
+        this.content.addAll(buttons);
+        Collections.sort(content);
     }
 
     public List<ElementBean> getButtons()
     {
-        return ElementBean.filterButtons( getContent() );
+        return ElementBean.filterButtons(getContent());
     }
 
     public void setUrl(String url)
@@ -133,13 +137,13 @@ public class PageBean
 
     public void setImages(List<ElementBean> images)
     {
-        this.content.addAll( images );
-        Collections.sort( content );
+        this.content.addAll(images);
+        Collections.sort(content);
     }
 
     public List<ElementBean> getImages()
     {
-        return ElementBean.filterImages( getContent() );
+        return ElementBean.filterImages(getContent());
     }
 
     public String getUrl()
@@ -320,7 +324,7 @@ public class PageBean
      */
     public List<ElementBean> getBaseVariations() throws Exception
     {
-        return getVariations().get( DiffType.BASE );
+        return getVariations().get( DiffType.CHANGED );
     }
 
     public Map<DiffType, List<ElementBean>> getVariations() throws Exception
@@ -444,7 +448,7 @@ public class PageBean
 
         filterElementsIncludedInEachOthers( baseElements );
         Collections.sort( baseElements );
-        differencies.put( DiffType.BASE, baseElements );
+        differencies.put( DiffType.CHANGED, baseElements );
 
         filterElementsIncludedInEachOthers( removedElements );
         Collections.sort( removedElements );
@@ -794,5 +798,20 @@ public class PageBean
     public boolean hasVariants()
     {
         return variants.isEmpty();
+    }
+
+    public boolean isLogin()
+    {
+        return loginPage;
+    }
+
+    public void addMetaInf(String k, String v)
+    {
+        metas.put(k, v);
+    }
+
+    public Map<String, String> getMetas()
+    {
+        return metas;
     }
 }

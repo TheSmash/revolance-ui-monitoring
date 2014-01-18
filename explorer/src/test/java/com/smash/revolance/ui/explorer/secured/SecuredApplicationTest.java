@@ -24,7 +24,7 @@ package com.smash.revolance.ui.explorer.secured;
 
 import com.smash.revolance.ui.explorer.UserExplorer;
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
+import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.element.ElementNotFound;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.user.User;
@@ -51,10 +51,7 @@ public class SecuredApplicationTest
     private static String      target;
     private static Application app;
 
-    private static File appCfg;
-
-    private static final String             domain;
-    private static       ApplicationManager manager;
+    private static final String domain;
 
     private static final String securedWebsite;
 
@@ -69,8 +66,6 @@ public class SecuredApplicationTest
         securedWebsite = new File( new File( "" ).getAbsoluteFile(), "src/test/resources/secured-website" ).getAbsolutePath();
 
         target = new File( new File( "" ).getAbsoluteFile(), "target" ).getAbsolutePath();
-
-        appCfg = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-app.xml" );
 
         domain = "file://" + securedWebsite;
         HOME = domain + "/home.html";
@@ -87,8 +82,7 @@ public class SecuredApplicationTest
     @BeforeClass
     public static void setUp() throws Exception
     {
-        manager = new ApplicationManager( appCfg );
-        app = manager.getApplication( "website" );
+        app = new DefaultApplication();
 
         app.setUsersHome( login );
         app.setDomain( domain );

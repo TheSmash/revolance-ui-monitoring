@@ -85,4 +85,7 @@ public interface IPage
 
     boolean isExternal();
 
+    boolean isLogin();
+
+    void addMetaInf(String k, String v);
 }

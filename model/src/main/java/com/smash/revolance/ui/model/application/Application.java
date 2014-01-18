@@ -26,7 +26,6 @@ import com.smash.revolance.ui.model.page.IPage;
 import com.smash.revolance.ui.model.user.User;
 import org.openqa.selenium.Alert;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,22 +151,24 @@ public abstract class Application
 
     public abstract void handleAlert(Alert alert);
 
-    public abstract boolean enterNewPassword(User user, IPage page) throws Exception;
-
-    public abstract boolean enterLogin(User user, IPage page) throws Exception;
+    public boolean login(User user, IPage page) throws Exception
+    {
+        if(page.isLogin())
+        {
+            user.login();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     public abstract boolean isPageBroken(IPage page);
 
     public abstract boolean isAuthorized(IPage page);
 
-    public abstract boolean isSecured();
-
     public abstract void awaitPageLoaded(IPage page) throws Exception;
-
-    public File getUsersCfgFile()
-    {
-        return bean.getUsersCfgFile();
-    }
 
     public int getBrowserHeight()
     {
@@ -179,21 +180,6 @@ public abstract class Application
         return bean.getBrowserWidth();
     }
 
-    public boolean isExploreVariantsEnabled()
-    {
-        return bean.isExploreVariantsEnabled();
-    }
-
-    public boolean isPageElementScreenshotEnabled()
-    {
-        return bean.isPageElementScreenshotEnabled();
-    }
-
-    public boolean isPageScreenshotEnabled()
-    {
-        return bean.isPageScreenshotEnabled();
-    }
-
     public boolean isFollowLinksEnabled()
     {
         return bean.isFollowLinksEnabled();
@@ -202,24 +188,6 @@ public abstract class Application
     public boolean isFollowButtonsEnabled()
     {
         return bean.isFollowButtonsEnabled();
-    }
-
-    public void stopBrowsers()
-    {
-        for ( User user : getUsers() )
-        {
-            if ( user.isBrowserActive() )
-            {
-                try
-                {
-                    user.getBrowser().quit();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public List<String> getExcludedLinks()

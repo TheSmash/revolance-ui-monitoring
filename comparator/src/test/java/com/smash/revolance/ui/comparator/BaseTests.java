@@ -2,7 +2,6 @@ package com.smash.revolance.ui.comparator;
 
 import com.smash.revolance.ui.materials.TestConstants;
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.model.user.User;
@@ -16,7 +15,6 @@ import org.openqa.selenium.WebDriver;
 public class BaseTests extends TestConstants
 {
     static Application        app;
-    static ApplicationManager manager;
     static Bot                bot;
     static WebDriver          browser;
     static SiteMap            sitemap;

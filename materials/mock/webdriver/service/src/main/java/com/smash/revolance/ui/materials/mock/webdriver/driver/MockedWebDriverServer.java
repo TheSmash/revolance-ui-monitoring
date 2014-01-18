@@ -67,6 +67,9 @@ public class MockedWebDriverServer
     public static void main(String[] argv) throws Exception
     {
         new MockedWebDriverServer( 9090 ).start();
-        Thread.sleep( 3000000 );
+        while(true)
+        {
+            Thread.sleep(3600);
+        }
     }
 }

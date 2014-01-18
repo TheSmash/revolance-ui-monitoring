@@ -166,7 +166,7 @@ public class PageMatchMaker implements IPageMatchMaker
     {
         for ( PageBean page : pages )
         {
-            if ( page.getUrl().contentEquals( url ) )
+            if ( page.getUrl().toLowerCase().contentEquals( url.toLowerCase() ) )
             {
                 return page;
             }

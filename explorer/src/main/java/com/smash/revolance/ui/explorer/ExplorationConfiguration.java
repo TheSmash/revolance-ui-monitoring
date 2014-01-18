@@ -40,10 +40,16 @@ public class ExplorationConfiguration
     private ArrayList<String> excludedLinks   = new ArrayList<String>();
     private ArrayList<String> excludedButtons = new ArrayList<String>();
 
-    private String id     = "";
-    private String domain = "";
-    private String url = "";
+    private String id          = "";
+    private String domain      = "";
+    private String url         = "";
     private String browserType = "";
+
+    private String password      = "";
+    private String passwordField = "";
+
+    private String loginField = "";
+    private String login      = "";
 
     private int     browserWidth;
     private int     browserHeight;
@@ -56,6 +62,46 @@ public class ExplorationConfiguration
     public ExplorationConfiguration()
     {
 
+    }
+
+    public String getPasswordField()
+    {
+        return passwordField;
+    }
+
+    public void setPasswordField(String passField)
+    {
+        this.passwordField = passField;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+    public String getLoginField()
+    {
+        return loginField;
+    }
+
+    public void setLoginField(String loginField)
+    {
+        this.loginField = loginField;
+    }
+
+    public String getLogin()
+    {
+        return login;
+    }
+
+    public void setLogin(String login)
+    {
+        this.login = login;
     }
 
     public void setFollowLinks(boolean b)

@@ -107,7 +107,7 @@ public class Element implements Comparable<Element>
         {
             bg = element.getAttribute( "src" );
         }
-        if ( bg.contentEquals( "none" ) )
+        if ( bg == null || bg.contentEquals( "none" ) )
         {
             bg = "";
         }
@@ -478,7 +478,7 @@ public class Element implements Comparable<Element>
         }
         else
         {
-            return false;
+            return true;
         }
     }
 
@@ -750,9 +750,14 @@ public class Element implements Comparable<Element>
                 if ( o1.getArea() > o2.getArea() )
                 {
                     return -1;
-                } else
+                }
+                else if(o1.getArea() < o2.getArea())
                 {
                     return 1;
+                }
+                else
+                {
+                    return 0;
                 }
             }
         } );

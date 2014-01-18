@@ -24,6 +24,7 @@ package com.smash.revolance.ui.model.sitemap;
 
 import com.smash.revolance.ui.materials.JsonHelper;
 import com.smash.revolance.ui.model.element.api.ElementBean;
+import com.smash.revolance.ui.model.helper.BotHelper;
 import com.smash.revolance.ui.model.helper.UrlHelper;
 import com.smash.revolance.ui.model.page.IPage;
 import com.smash.revolance.ui.model.page.api.Page;
@@ -31,6 +32,7 @@ import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.user.UserBean;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.kohsuke.graphviz.Edge;
 import org.kohsuke.graphviz.Graph;
 import org.kohsuke.graphviz.Node;
@@ -49,13 +51,23 @@ import java.util.*;
                 isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class SiteMap
 {
+    private long date = 0;
+
     private HashMap<String, PageBean> sitemap = null;
 
+    @JsonIgnore
     private static final String RED   = "#FF0000";
+
+    @JsonIgnore
     private static final String BLUE  = "#0000FF";
+
+    @JsonIgnore
     private static final String GRAY  = "#222222";
+
+    @JsonIgnore
     private static final String GREEN = "#00FF00";
 
+    @JsonIgnore
     private static final String BLACK = "#000000";
 
     private UserBean user;
@@ -76,7 +88,7 @@ public class SiteMap
 
     private SiteMap()
     {
-        sitemap = new HashMap<String, PageBean>();
+        sitemap = new HashMap();
     }
 
     public SiteMap(UserBean user)
@@ -98,6 +110,14 @@ public class SiteMap
     public Collection<PageBean> getPages()
     {
         return sitemap.values();
+    }
+
+    /**
+     * Retrieve the number of pages in the sitemap
+     */
+    public int getPagesCount()
+    {
+        return getPages().size();
     }
 
     /**
@@ -134,28 +154,6 @@ public class SiteMap
         }
     }
 
-    public PageBean findPageByCaption(String caption)
-    {
-        if ( sitemap.isEmpty() )
-        {
-            return null;
-        }
-        if ( caption != null && !caption.isEmpty() )
-        {
-            for ( PageBean page : getPages() )
-            {
-                if ( page.getCaption().contentEquals( caption ) )
-                {
-                    return page;
-                }
-            }
-            return null;
-        } else
-        {
-            return null;
-        }
-    }
-
     public PageBean findPageByUrl(String url)
     {
         if ( sitemap.isEmpty() )
@@ -181,7 +179,7 @@ public class SiteMap
         PageBean page = null;
         for ( String urlRegistered : sitemap.keySet() )
         {
-            if ( UrlHelper.areEquivalent( urlRegistered, url ) )
+            if ( UrlHelper.areEquivalent(urlRegistered, url) )
             {
                 return sitemap.get( urlRegistered );
             }
@@ -384,7 +382,7 @@ public class SiteMap
 
     private void setColor(Node node, String color)
     {
-        node.attr( "color", color );
+        node.attr("color", color);
     }
 
     public void setHomeNode(Node node)
@@ -426,20 +424,26 @@ public class SiteMap
 
         if ( page != null )
         {
-            if ( !page.getInstance().hasBeenExplored() )
+            if ( page.getInstance().hasBeenExplored() )
+            {
+                return true;
+            }
+            else
             {
                 for ( ElementBean element : page.getClickableContent() )
                 {
                     if ( !element.isBroken()
                             && !element.hasBeenClicked()
-                            && element.getInstance().isClickable() )
+                            && element.getInstance().isClickable()
+                            && BotHelper.rightDomain(getUser().getDomain(), url))
                     {
                         return false;
                     }
                 }
+                return true;
             }
-            return true;
-        } else
+        }
+        else
         {
             return false;
         }
@@ -452,10 +456,12 @@ public class SiteMap
         if ( url.isEmpty() )
         {
             return null;
-        } else if ( !UrlHelper.containsHash( url ) )
+        }
+        else if ( !UrlHelper.containsHash( url ) )
         {
             page = findPageByUrl( url );
-        } else
+        }
+        else
         {
             url = UrlHelper.removeHash( url );
             page = findPageByUrl( url );
@@ -475,7 +481,8 @@ public class SiteMap
         if ( page == null )
         {
             return null;
-        } else
+        }
+        else
         {
             if ( !page.getInstance().hasBeenExplored() )
             {
@@ -555,4 +562,15 @@ public class SiteMap
         }
         return null;
     }
+
+    public long getDate()
+    {
+        return date;
+    }
+
+    public void setDate(final long date)
+    {
+        this.date = date;
+    }
+
 }

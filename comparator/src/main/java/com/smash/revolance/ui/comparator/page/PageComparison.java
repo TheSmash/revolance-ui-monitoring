@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -85,56 +86,17 @@ public class PageComparison
         return pageDifferencies;
     }
 
-    public List<String> getReferenceCommonContent()
-    {
-        List<String> content = new ArrayList<String>();
-
-        if ( diffType == DiffType.BASE )
-        {
-            for ( ElementComparison comparison : elementComparisons )
-            {
-                if ( comparison.getDiffType() == DiffType.BASE && comparison.getElementDifferencies().isEmpty() )
-                {
-                    content.add( comparison.getReference().getInternalId() );
-                }
-            }
-        }
-
-        return content;
-    }
-
-    public List<String> getMatchCommonContent()
-    {
-        List<String> content = new ArrayList<String>();
-
-        if ( diffType == DiffType.BASE )
-        {
-            for ( ElementComparison comparison : elementComparisons )
-            {
-                if ( comparison.getDiffType() == DiffType.BASE && comparison.getElementDifferencies().isEmpty() )
-                {
-                    content.add( comparison.getMatch().getInternalId() );
-                }
-            }
-        }
-
-        return content;
-    }
-
     public List<ElementBean> getBaseContent()
     {
         List<ElementBean> content = new ArrayList<ElementBean>();
 
-        if ( diffType == DiffType.BASE )
+        for ( ElementComparison comparison : elementComparisons )
         {
-            for ( ElementComparison comparison : elementComparisons )
+            if ( comparison.getDiffType() == DiffType.BASE )
             {
-                if ( comparison.getDiffType() == DiffType.BASE )
+                if ( comparison.getReference() != null )
                 {
-                    if ( comparison.getReference() != null )
-                    {
-                        content.add( comparison.getReference() );
-                    }
+                    content.add( comparison.getReference() );
                 }
             }
         }
@@ -146,16 +108,13 @@ public class PageComparison
     {
         List<ElementBean> content = new ArrayList<ElementBean>();
 
-        if ( diffType == DiffType.BASE )
+        for ( ElementComparison comparison : elementComparisons )
         {
-            for ( ElementComparison comparison : elementComparisons )
+            if ( comparison.getDiffType() == DiffType.ADDED )
             {
-                if ( comparison.getDiffType() == DiffType.ADDED )
+                if ( comparison.getMatch() != null )
                 {
-                    if ( comparison.getMatch() != null )
-                    {
-                        content.add( comparison.getMatch() );
-                    }
+                    content.add( comparison.getMatch() );
                 }
             }
         }
@@ -167,16 +126,13 @@ public class PageComparison
     {
         List<ElementBean> content = new ArrayList<ElementBean>();
 
-        if ( diffType == DiffType.BASE )
+        for ( ElementComparison comparison : elementComparisons )
         {
-            for ( ElementComparison comparison : elementComparisons )
+            if ( comparison.getDiffType() == DiffType.DELETED )
             {
-                if ( comparison.getDiffType() == DiffType.DELETED )
+                if ( comparison.getReference() != null )
                 {
-                    if ( comparison.getReference() != null )
-                    {
-                        content.add( comparison.getReference() );
-                    }
+                    content.add( comparison.getReference() );
                 }
             }
         }
@@ -194,17 +150,14 @@ public class PageComparison
     {
         List<ElementBean> content = new ArrayList<ElementBean>();
 
-        if ( diffType == DiffType.BASE )
+        for ( ElementComparison comparison : elementComparisons )
         {
-            for ( ElementComparison comparison : elementComparisons )
+            if ( comparison.getDiffType() == DiffType.CHANGED
+                    && comparison.getElementDifferencies().contains( ElementDifferency.POS ) )
             {
-                if ( comparison.getDiffType() == DiffType.BASE
-                        && comparison.getElementDifferencies().contains( ElementDifferency.POS ) )
+                if ( comparison.getReference() != null && match.getMatch() != null )
                 {
-                    if ( comparison.getReference() != null && match.getMatch() != null )
-                    {
-                        content.add( comparison.getReference() );
-                    }
+                    content.add( comparison.getReference() );
                 }
             }
         }
@@ -216,17 +169,32 @@ public class PageComparison
     {
         List<ElementBean> content = new ArrayList<ElementBean>();
 
-        if ( diffType == DiffType.BASE )
+        for ( ElementComparison comparison : elementComparisons )
         {
-            for ( ElementComparison comparison : elementComparisons )
+            if ( comparison.getDiffType() == DiffType.CHANGED
+                    && comparison.getElementDifferencies().contains( ElementDifferency.LOOK ) )
             {
-                if ( comparison.getDiffType() == DiffType.BASE
-                        && comparison.getElementDifferencies().contains( ElementDifferency.LOOK ) )
+                if ( comparison.getReference() != null && match.getMatch() != null )
                 {
-                    if ( comparison.getReference() != null && match.getMatch() != null )
-                    {
-                        content.add( comparison.getReference() );
-                    }
+                    content.add( comparison.getReference() );
+                }
+            }
+        }
+
+        return content;
+    }
+
+    public Collection getChangedContent()
+    {
+        List<ElementBean> content = new ArrayList<ElementBean>();
+
+        for ( ElementComparison comparison : elementComparisons )
+        {
+            if ( comparison.getDiffType() == DiffType.CHANGED )
+            {
+                if ( comparison.getReference() != null && match.getMatch() != null )
+                {
+                    content.add( comparison.getReference() );
                 }
             }
         }

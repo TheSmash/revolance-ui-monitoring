@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar lib/ui-cmdline-${project.version}.jar stop 8080
+java -Dport=8080 -jar bin/ui-monitoring-cmdline-${project.version}.jar stop > logs/server.log 2>&1

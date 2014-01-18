@@ -23,24 +23,18 @@ package com.smash.revolance.ui.model.user;
  */
 
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.SimpleApplication;
+import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.bot.BrowserFactory;
-import com.smash.revolance.ui.model.element.api.Element;
-import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.helper.UserHelper;
 import com.smash.revolance.ui.model.page.api.Page;
-import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.IOUtils;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -63,46 +57,72 @@ public class User
     private DriverService driverService;
 
 
-    private UserBean bean = new UserBean( this );
+    private UserBean bean = new UserBean(this);
     private Page currentPage;
 
-    private Bot bot;
+    private Bot    bot;
     private Logger log;
 
-    private String driverPath = "";
+    private String driverPath    = "";
     private String browserBinary = "";
+    private String loginField;
+    private String passwdField;
 
 
     public User()
     {
-        sitemap = new SiteMap( bean );
+        sitemap = new SiteMap(bean);
+        sitemap.setDate(System.currentTimeMillis());
+    }
+
+    public User(String id)
+    {
+        this();
+        setId(id);
     }
 
     public User(String id, String home)
     {
-        this();
-        setId( id );
-        setHome( home );
+        this(id);
+        setHome(home);
     }
 
     public User(String id, String home, String login, String passwd, String newPasswd)
     {
-        this( id, home );
-        setLogin( login );
-        setPasswd( passwd );
-        setNewPasswd( newPasswd );
+        this(id, home);
+        setLogin(login);
+        setPasswd(passwd);
+        setNewPasswd(newPasswd);
     }
 
     public void enablePageElementScreenshot(boolean b)
     {
-        bean.setPageElementScreenshotEnabled( b );
+        bean.setPageElementScreenshotEnabled(b);
+    }
+
+    public void typeLogin() throws Exception
+    {
+        WebElement element = bot.getBrowser().findElement(By.id(loginField));
+        element.sendKeys(getId());
+    }
+
+    public void typePasswdAndSubmit() throws Exception
+    {
+        WebElement element = bot.getBrowser().findElement(By.id(passwdField));
+        element.sendKeys(getPasswd());
+    }
+
+    public void login() throws Exception
+    {
+        typeLogin();
+        typePasswdAndSubmit();
     }
 
     public Application getApplication()
     {
         if(app == null)
         {
-            app = new SimpleApplication();
+            app = new DefaultApplication();
         }
         return app;
     }
@@ -110,7 +130,7 @@ public class User
     public void setApplication(Application app)
     {
         this.app = app;
-        setDomain( app.getDomain() );
+        setDomain(app.getDomain());
     }
 
     public String getLogin()
@@ -120,7 +140,7 @@ public class User
 
     public void setLogin(String login)
     {
-        bean.setLogin( login );
+        bean.setLogin(login);
     }
 
     public String getPasswd()
@@ -130,7 +150,7 @@ public class User
 
     public void setPasswd(String passwd)
     {
-        bean.setPasswd( passwd );
+        bean.setPasswd(passwd);
     }
 
     public String getNewPasswd()
@@ -140,24 +160,20 @@ public class User
 
     public void setNewPasswd(String passwd)
     {
-        bean.setNewPasswd( passwd );
+        bean.setNewPasswd(passwd);
     }
 
     public WebDriver getBrowser() throws Exception
     {
-        if ( browser == null )
+        if(browser == null)
         {
-            bot = new Bot( this );
+            bot = new Bot(this);
         }
         return browser;
     }
 
     public SiteMap getSiteMap()
     {
-        if ( sitemap == null )
-        {
-            sitemap = new SiteMap( bean );
-        }
         return sitemap;
     }
 
@@ -168,7 +184,7 @@ public class User
 
     public void setId(String id)
     {
-        bean.setId( id );
+        bean.setId(id);
     }
 
     /*
@@ -494,4 +510,23 @@ public class User
         return log;
     }
 
+    public String getLoginField()
+    {
+        return loginField;
+    }
+
+    public String getPasswdField()
+    {
+        return passwdField;
+    }
+
+    public void setLoginField(String loginField)
+    {
+        this.loginField = loginField;
+    }
+
+    public void setPasswdField(String passwdField)
+    {
+        this.passwdField = passwdField;
+    }
 }

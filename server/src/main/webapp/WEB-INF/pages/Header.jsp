@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 
@@ -11,6 +13,10 @@
         <!-- JQuery -->
         <script src="${pageContext.request.contextPath}/libs/jquery/js/jquery.min.js"></script>
 
+        <!-- Powertip -->
+        <link href="${pageContext.request.contextPath}/libs/powertip/css/powertip.min.css" rel="stylesheet" media="screen"/>
+        <script src="${pageContext.request.contextPath}/libs/powertip/js/powertip.min.js"></script>
+
         <!-- Twitter Bootstrap-->
         <link href="${pageContext.request.contextPath}/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
         <script src="${pageContext.request.contextPath}/libs/bootstrap/js/bootstrap.min.js"></script>
@@ -20,9 +26,6 @@
         <link href="${pageContext.request.contextPath}/css/viewer-page.css" rel="stylesheet" media="screen"></script>
         <link href="${pageContext.request.contextPath}/css/viewer-search.css" rel="stylesheet" media="screen"></script>
 
-        <!-- Revolance JSs -->
-        <script src="${pageContext.request.contextPath}/js/viewer.js"></script>
-        <script src="${pageContext.request.contextPath}/js/viewer-search.js"></script>
 
 
         <style>
@@ -46,21 +49,25 @@
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="#">RevoLance UI Server</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li><a href="${pageContext.request.contextPath}/explorations">Explorations</a></li>
-                            <li><a href="${pageContext.request.contextPath}/applications">Applications</a></li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                  More<span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/licence">Licence</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/user-guide">User guide</a></li>
+                    <div class="row">
+                        <div class="span12">
+                            <a class="brand" href="#">RevoLance UI Monitoring</a>
+                            <div class="nav-collapse collapse pull-right">
+                                <ul class="nav">
+                                    <li><a href="/ui-monitoring-server/applications">Applications</a></li>
+                                    <li><a href="/ui-monitoring-server/reviews">Reviews</a></li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                          More<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/licence">Licence</a></li>
+                                            <li><a href="/user-guide">User guide</a></li>
+                                        </ul>
+                                      </li>
                                 </ul>
-                              </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

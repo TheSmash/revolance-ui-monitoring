@@ -41,12 +41,13 @@ public class LookTest extends TestConstants
         PageComparator comparator = new PageComparator();
         PageComparison comparison = comparator.compare( newPage, refPage );
 
-        assertThat( comparison.getPageDiffType(), is( DiffType.BASE ) );
+        assertThat( comparison.getPageDiffType(), is( DiffType.CHANGED ) );
         assertThat( comparison.getPageDifferencies().contains( PageDiffType.LAYOUT ), is( true ) );
 
         assertThat( comparison.getPageElementComparisons().size(), is( 39 ) );
 
-        assertThat( comparison.getBaseContent().size(), is( 39 ) );
+        assertThat( comparison.getBaseContent().size(), is( 19 ) );
+        assertThat( comparison.getChangedContent().size(), is( 20 ) );
         assertThat( comparison.getAddedContent().size(), is( 0 ) );
         assertThat( comparison.getDeletedContent().size(), is( 0 ) );
 

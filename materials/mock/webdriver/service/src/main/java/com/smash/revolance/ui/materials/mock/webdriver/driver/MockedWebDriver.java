@@ -54,56 +54,6 @@ public class MockedWebDriver extends RemoteWebDriver implements TakesScreenshot,
     public MockedWebDriver(int port) throws MalformedURLException
     {
         super( new URL( String.format( "http://localhost:%d/hub", port ) ), new DesiredCapabilities( "MockedWebDriver", "", Platform.ANY ) );
-
-        /*
-
-        setSessionId( UUID.randomUUID().toString() );
-        setAlertMessage( "No alert is present" );
-
-        setAlertStatusCode( WireProtocolResponseCode.NoAlertOpenError );
-
-        setUrl( "about:blank" );
-
-        stubFor( post( urlEqualTo( "/hub/session" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session" ) ) );
-        stubFor( post( urlMatching( "/hub/session/.+/timeouts" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session/any/timeouts" ) ) );
-        stubFor( post( urlMatching( "/hub/session/.+/window/current/size" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session/any/window/current/size" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/alert_text" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/alert_text" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/url" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/url" ) ) );
-        stubFor( post( urlMatching( "/hub/session/.+/url" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session/any/url" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/displayed" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/displayed" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/name" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/name" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/attribute/href" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/attribute/href" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/attribute/type" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/attribute/type" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/attribute/class" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/attribute/class" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/attribute/disabled" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/attribute/disabled" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/attribute/id" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/attribute/id" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/text" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/text" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/size" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/size" ) ) );
-        stubFor( get( urlMatching( "/hub/session/.+/element/.+/location" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.GET, "/hub/session/any/element/any/location" ) ) );
-        stubFor( post( urlMatching( "/hub/session/.+/element/.+/click" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session/any/element/any/click" ) ) );
-        stubFor( post( urlMatching( "/hub/session/.+/elements" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.POST, "/hub/session/any/elements" ) ) );
-        stubFor( delete( urlMatching( "/hub/session/.+" ) )
-                         .willReturn( buildJsonResponse( RequestMethod.DELETE, "/hub/session/any" ) ) );
-
-        */
     }
 
     /**
@@ -120,7 +70,7 @@ public class MockedWebDriver extends RemoteWebDriver implements TakesScreenshot,
         }
         catch (Exception e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -221,11 +171,11 @@ public class MockedWebDriver extends RemoteWebDriver implements TakesScreenshot,
         }
         catch (IOException e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         catch (TemplateException e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         return "";
     }
@@ -233,7 +183,7 @@ public class MockedWebDriver extends RemoteWebDriver implements TakesScreenshot,
     @Override
     public void kill()
     {
-        // nothing to do. The process will stop with the jvm shutdown.
+
     }
 
     @Override

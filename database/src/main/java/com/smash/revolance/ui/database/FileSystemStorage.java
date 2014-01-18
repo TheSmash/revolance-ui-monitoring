@@ -3,6 +3,7 @@ package com.smash.revolance.ui.database;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,22 +15,17 @@ import java.util.*;
  * Date: 14/09/13
  * Time: 17:36
  */
+@Service
 public class FileSystemStorage implements IStorage
 {
-    File databaseFolder;
+    private File databaseFolder;
 
-    private FileSystemStorage()
-    {
-        databaseFolder = new File( new File( "" ).getAbsolutePath(), "storage" );
-        createStorageDirectory();
-    }
 
     public FileSystemStorage(String root)
     {
-        this();
-        if ( root != null )
+        if(root != null)
         {
-            databaseFolder = new File(databaseFolder, root);
+            databaseFolder = new File(System.getProperty("storage.location", ""), root);
             createStorageDirectory();
         }
     }
@@ -46,7 +42,13 @@ public class FileSystemStorage implements IStorage
     @Override
     public void store(String k, String o) throws StorageException
     {
-        if ( isKeyValid( k ) && !isKeyUsed( k ) )
+        store(k, o, false);
+    }
+
+    @Override
+    public void store(String k, String o, boolean override) throws StorageException
+    {
+        if ( isKeyValid( k ) && (override||!isKeyUsed( k )) )
         {
             FileWriter writer = null;
             File f = new File( databaseFolder, k );

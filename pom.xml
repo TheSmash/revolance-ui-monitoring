@@ -35,7 +35,7 @@
         <codec.version>1.6</codec.version>
         <commons-lang.version>3.1</commons-lang.version>
         <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
-        <jetty.version>9.1.0.M0</jetty.version>
+
         <jersey.version>1.5</jersey.version>
         <freemarker.version>2.3.20</freemarker.version>
         <rendersnake.version>1.7.2</rendersnake.version>
@@ -47,7 +47,7 @@
         <jstl.version>1.1.2</jstl.version>
         <taglibs.version>1.1.2</taglibs.version>
         <servlet-api.version>2.5</servlet-api.version>
-        <jetty-runner.version>8.1.13.v20130916</jetty-runner.version>
+        <jetty.version>8.1.13.v20130916</jetty.version>
         <commons-io.version>1.3.2</commons-io.version>
         <log4j.version>1.2.17</log4j.version>
 
@@ -119,61 +119,6 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
-            </dependency>
-
-
-            <!-- Test Materials -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-resources-page-new-url</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-mock-webdriver-resources</artifactId>
-                <version>${project.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>ui-monitoring-materials-commons</artifactId>
-                <version>${project.version}</version>
             </dependency>
 
             <!-- Testing libs -->
@@ -353,6 +298,16 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jsp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.2.2</version>
@@ -374,7 +329,7 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/TheSmash/revolance-ui/issues</url>
+        <url>https://github.com/TheSmash/revolance-ui-monitoring/issues</url>
     </issueManagement>
 
     <developers>
@@ -387,7 +342,7 @@
     <inceptionYear>2012</inceptionYear>
 
     <scm>
-        <url>https://github.com/TheSmash/revolance-ui</url>
+        <url>https://github.com/TheSmash/revolance-ui-monitoring</url>
     </scm>
 
     <ciManagement>
@@ -489,7 +444,7 @@
         <module>database</module>
         <module>server</module>
         <module>distrib</module>
-        <module>tests</module>
+        <module>itests</module>
     </modules>
 
     <profiles>

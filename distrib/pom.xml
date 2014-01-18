@@ -23,14 +23,54 @@
             <artifactId>ui-monitoring-cmdline</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-runner</artifactId>
-            <version>${jetty-runner.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-server</artifactId>
             <type>war</type>
+        </dependency>
+
+
+        <!-- Test materials -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-website-ref</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-website-new</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

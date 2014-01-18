@@ -37,26 +37,24 @@ public class Main
         if ( !isValidCmd( args ) )
         {
             printUsages();
-        } else
+        }
+        else
         {
-            String[] opts = getOpts( args );
-            Commands cmd = getCmd( args[0], opts.length );
-
-            exec( cmd, opts );
+            exec( getCmd( args[0] ) );
         }
     }
 
-    private static Commands getCmd(String cmd, int optsCount)
+    private static Commands getCmd(String cmd)
     {
-        return Commands.toCommand( cmd, optsCount );
+        return Commands.toCommand( cmd );
 
     }
 
-    private static void exec(Commands arg, String[] opts)
+    private static void exec(Commands command)
     {
         try
         {
-            arg.exec( opts );
+            command.exec();
         }
         catch (Exception e)
         {
@@ -71,6 +69,7 @@ public class Main
 
     private static void printUsages()
     {
+        System.out.println( "" );
         System.out.println( Commands.getUsages() );
     }
 
@@ -79,29 +78,35 @@ public class Main
         if ( args == null )
         {
             return false;
-        } else
+        }
+        else
         {
-            return args.length < 1 ? false : _isValidCmd( args[0], args.length - 1 );
+            return _isValidCmd( args[0], args.length - 1 );
         }
     }
 
     private static boolean _isValidCmd(String cmd, int optsCount)
     {
-        return Commands.toCommand( cmd, optsCount ) != null;
+        Commands command = Commands.toCommand( cmd );
+        if(command != null )
+        {
+            return Commands.allParametersDefined(command);
+        }
+        else
+        {
+            System.out.println( "Unknown command: '" + cmd + "'" );
+            return false;
+        }
     }
 
     private static void printHeader()
     {
         System.out.println( "*********************************************************" );
         System.out.println( "*" );
-        System.out.println( "*  Revolance UI Explorer Command line v" + getVersion() );
+        System.out.println( "*  Revolance UI Command line" );
         System.out.println( "*" );
         System.out.println( "*********************************************************" );
         System.out.println( "" );
     }
 
-    public static String getVersion()
-    {
-        return "0.1.0-SNAPSHOT";
-    }
 }

@@ -24,7 +24,7 @@ package com.smash.revolance.ui.explorer;
 
 import com.smash.revolance.ui.materials.TestConstants;
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
+import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.model.user.User;
@@ -42,7 +42,6 @@ import java.io.File;
 public class BaseTests extends TestConstants
 {
     static Application        app;
-    static ApplicationManager manager;
     static Bot                bot;
     static User               user;
     static WebDriver          browser;
@@ -73,13 +72,10 @@ public class BaseTests extends TestConstants
     @BeforeClass
     public static void setUp() throws Exception
     {
-        manager = new ApplicationManager( new File( APP_CFG ) );
-        app = manager.getApplication( "website" );
-
-        user = app.getUser( "user_A" );
-
+        user = new User( "user_A" );
+        user.setApplication(new DefaultApplication());
         //setupBrowserForFirefox( user );
-        setupBrowserForTest( user );
+        setupBrowserForTest(user);
 
         user.enablePageScreenshot( true );
         user.enablePageElementScreenshot( true );

@@ -23,7 +23,7 @@ package com.smash.revolance.ui.explorer;
  */
 
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.ApplicationManager;
+import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.element.api.Button;
 import com.smash.revolance.ui.model.element.api.Element;
@@ -55,9 +55,6 @@ import static org.hamcrest.core.Is.is;
 @Ignore
 public class BotTest
 {
-    private static final File userCfg;
-    private static final File appCfg;
-
     private static final String website;
     private static final String index;
     private static final String pageA;
@@ -69,9 +66,6 @@ public class BotTest
 
     static
     {
-        appCfg = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-app.xml" );
-        userCfg = new File( new File( "" ).getAbsoluteFile(), "src/test/config/cfg-users.xml" );
-
         website = "file://" + new File( new File( "" ).getAbsoluteFile(), "src/test/resources/website" ).getAbsolutePath();
 
         index = website + "/index.html";
@@ -85,14 +79,12 @@ public class BotTest
     private static SiteMap            sitemap;
     private static WebDriver          browser;
     private static Bot                bot;
-    private static ApplicationManager manager;
     private static Application        app;
 
     @BeforeClass
     public static void setUp() throws Exception
     {
-        manager = new ApplicationManager( appCfg );
-        app = manager.getApplication( "website" );
+        app = new DefaultApplication();
 
         assertThat( app.getUserCount(), is( 3 ) );
 

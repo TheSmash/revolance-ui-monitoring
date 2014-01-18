@@ -79,15 +79,16 @@ public class UrlHelper
 
     public static boolean containsHash(String url)
     {
-        return url.contains( "#" ) && url.split( "#" ).length > 1;
+        return url.contains( "#" );
     }
 
     private static String _removeHash(String url)
     {
         if ( containsHash( url ) )
         {
-            return url.split( "#" )[0];
-        } else
+            return url.substring(0, url.indexOf("#" ));
+        }
+        else
         {
             return url;
         }

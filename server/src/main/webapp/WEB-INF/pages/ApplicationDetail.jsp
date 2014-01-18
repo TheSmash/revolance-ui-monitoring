@@ -2,24 +2,26 @@
 <%@ include file="Header.jsp" %>
 
 <div class="container">
-    <div class="span10">
 
-        <div class="page-title">
-            <h2>Application details</h2>
+        <div class="row">
+            <div class="page-title">
+                <h2>${applicationId} details</h2>
+            </div>
+            <div class="pages-count">
+                <h4>
+                    <span id="pages-count">${pagesCount}</span>
+                    <c:if test="${pagesCount eq 1}">page</c:if>
+                    <c:if test="${pagesCount ne 1}">pages</c:if>
+                </h4>
+            </div>
         </div>
 
-        <div class="span10" id="text-area-options">
-            <c:forEach var="page" items="${pages}">
-                ${page}
-            </c:forEach>
-        </div>
+        ${pages}
 
-    </div>
 </div>
 
-<script>
-    $.definePageBehavior();
-    $.definePageElementBehavior();
-</script>
+<script src="${pageContext.request.contextPath}/js/review.js"></script>
+<script src="${pageContext.request.contextPath}/js/viewer.js"></script>
+<script src="${pageContext.request.contextPath}/js/viewer-search.js"></script>
 
 <%@ include file="Footer.jsp" %>

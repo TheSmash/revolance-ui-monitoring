@@ -3,8 +3,8 @@ package com.smash.revolance.ui.server.renderable;
 import com.smash.revolance.ui.comparator.page.PageComparison;
 import com.smash.revolance.ui.model.diff.PageDiffType;
 import org.rendersnake.HtmlCanvas;
+import org.rendersnake.Renderable;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.rendersnake.HtmlAttributesFactory.class_;
@@ -15,55 +15,35 @@ import static org.rendersnake.HtmlAttributesFactory.href;
  * Date: 09/06/13
  * Time: 19:20
  */
-public class PageComparisonRenderable extends ContextualRenderable
+public class PageComparisonRenderable implements Renderable
 {
     private final PageComparison comparison;
+    private final String reviewId;
 
-    public PageComparisonRenderable(PageComparison comparison)
+    public PageComparisonRenderable(String reviewId, PageComparison comparison)
     {
+        this.reviewId = reviewId;
         this.comparison = comparison;
     }
 
     @Override
-    public void renderWithContext(HtmlCanvas html, HttpSession context) throws IOException
+    public void renderOn(HtmlCanvas html) throws IOException
     {
-        html.div( class_( "span1" ) )
+        html.div()
                 .a( href( "#" ).onClick( "$.previousVariant( this );" ) ).i( class_( "icon-chevron-left" ) )._i()._a()
-                ._div()
-                .div( class_( "span4 ref-page" ) )
-                .render( new PageRenderable( comparison.getReference() ).withContext( context ) )
-                ._div()
-                .div( class_( "span4 new-page" ) )
-                .render( new PageRenderable( comparison.getMatch() ).withContext( context ) )
-                ._div()
-                .div( class_( "span1" ) )
-                .a( href( "#" ).onClick( "$.nextVariant( this );" ) ).i( class_( "icon-chevron-right" ) )._i()._a()
-                ._div()
-                .div( class_( "data-container span10" ) )
-                .p( class_( "data-container-title" ) )
-                .i( class_( "icon-tags" ) )._i().write( "  Tags" )
-                ._p()
-                .div( class_( "span10" ) )
-                .span( class_( "label label-info" ) ).write( "o:title: " )
-                .em().write( comparison.getReference().getTitle() )._em()
-                ._span()
-                ._div()
-                .div( class_( "span10" ) )
-                .span( class_( "label label-info" ) ).write( "n:title: " )
-                .em().write( comparison.getMatch().getTitle() )._em()
-                ._span()
-                ._div()
-                .div( class_( "span10" ) )
-                .span( class_( "label label-info" ) ).write( "o:url: " )
-                .em().write( comparison.getReference().getUrl() )._em()
-                ._span()
-                ._div()
-                .div( class_( "span10" ) )
-                .span( class_( "label label-info" ) ).write( "n:url: " )
-                .em().write( comparison.getMatch().getUrl() )._em()
-                ._span()
-                ._div()
-                .div( class_( "cloud-tag span10" ) );
+                .a( class_("pull-right").href( "#" ).onClick( "$.nextVariant( this );" ) ).i( class_( "icon-chevron-right" ) )._i()._a()
+            ._div()
+            .div( class_( "span4 ref-page" ) )
+                .render( new PageRenderable(reviewId, comparison.getReference()) )
+            ._div()
+            .div( class_( "span4 new-page" ) )
+                .render( new PageRenderable(reviewId, comparison.getMatch()) )
+            ._div()
+            .div( class_( "data-container span3" ) )
+                .div( class_( "cloud-tag" ) )
+                    .p( class_( "data-container-title" ) )
+                        .i( class_( "icon-tags" ) )._i().write( "  Tags" )
+                    ._p();
         if ( comparison.getPageDifferencies().isEmpty() )
         {
             html.span( class_( "label label-success no-changes" ) )
@@ -103,6 +83,19 @@ public class PageComparisonRenderable extends ContextualRenderable
                         ._span();
             }
         }
+
+        html.span( class_( "label label-info" ) ).write( "o:title: " )
+                .em().write( comparison.getReference().getTitle() )._em()
+            ._span()
+            .span( class_( "label label-info" ) ).write( "n:title: " )
+                .em().write( comparison.getMatch().getTitle() )._em()
+            ._span()
+            .span( class_( "label label-info" ) ).write( "o:url: " )
+                .em().write( comparison.getReference().getUrl() )._em()
+            ._span()
+            .span( class_( "label label-info" ) ).write( "n:url: " )
+                .em().write( comparison.getMatch().getUrl() )._em()
+            ._span();
 
         html._div();
 

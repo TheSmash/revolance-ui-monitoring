@@ -197,9 +197,10 @@ public class PageParser
 
     public void parse() throws Exception
     {
-        if ( !page.hasBeenParsed() )
+        Logger logger = page.getUser().getLogger();
+
+        if ( !page.hasBeenParsed() && !page.isExternal() )
         {
-            Logger logger = page.getUser().getLogger();
 
             if ( page.getUser().getCurrentPage() != page )
             {
@@ -225,13 +226,9 @@ public class PageParser
                 takeScreenShot();
             }
 
-            if ( !page.isBroken() && !page.isExternal() && page.isEmpty() )
+            if ( !page.isBroken() && page.isEmpty() )
             {
                 parseContent();
-            }
-            else if ( page.isExternal() )
-            {
-                logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'.");
             }
             else
             {
@@ -239,6 +236,10 @@ public class PageParser
             }
 
             page.setParsed( true );
+        }
+        else if ( page.isExternal() )
+        {
+            logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'.");
         }
     }
 

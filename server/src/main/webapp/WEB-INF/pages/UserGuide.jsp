@@ -18,7 +18,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <div class="page-decorator base" style="width: 300px; height: 400px">
+                            <div class="page-decorator base" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-screenshot="" data-w=250 data-h=80 data-x=50 data-y=600>
                                         some content
@@ -27,7 +27,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="page-decorator ok" style="width: 300px; height: 400px">
+                            <div class="page-decorator ok" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-screenshot="" data-w=250 data-h=80 data-x=50 data-y=600>
                                         some content
@@ -52,13 +52,13 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="page-decorator undef" style="width: 300px; height: 400px">
+                            <div class="page-decorator undef" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="page-decorator added" style="width: 300px; height: 400px">
+                            <div class="page-decorator added" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="page-decorator base" style="width: 300px; height: 400px">
+                            <div class="page-decorator base" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-caption="" data-w=250 data-h=80 data-x=50 data-y=600>
                                         some content
@@ -81,7 +81,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="page-decorator warn" style="width: 300px; height: 400px">
+                            <div class="page-decorator warn" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-caption="" data-w=250 data-h=80 data-x=100 data-y=300>
                                         some content
@@ -106,7 +106,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="page-decorator base" style="width: 300px; height: 400px">
+                            <div class="page-decorator base" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-screenshot="" data-w=250 data-h=80 data-x=100 data-y=100>
                                         some content
@@ -115,7 +115,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="page-decorator error" style="width: 300px; height: 400px">
+                            <div class="page-decorator error" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="page-decorator removed" style="width: 300px; height: 400px">
+                            <div class="page-decorator removed" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                     <div class="page-element" data-id="dadada" data-diff-added=true data-diff-removed=false data-diff-base=false data-diff-content=true data-diff-location=true data-diff-target=true data-diff-look=true data-diff-type=true data-diff-state=true data-screenshot="" data-w=250 data-h=80 data-x=100 data-y=100>
                                         some content
@@ -143,7 +143,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="page-decorator undef" style="width: 300px; height: 400px">
+                            <div class="page-decorator undef" style="width: 200px; height: 300px">
                                 <div class="page" data-w=800 data-h=1600 data-placement="right" data-toggle="tooltip" data-html=true data-title="Empty content" data-trigger="hover">
                                 </div>
                             </div>
@@ -167,8 +167,9 @@
         </div>
     </div>
 </div>
+<!--
 <script>
     $.definePageBehavior();
     $.definePageElementBehavior();
-</script>
+</script>-->
 <%@ include file="Footer.jsp" %>

@@ -7,6 +7,7 @@ import com.smash.revolance.ui.model.diff.DiffType;
 import com.smash.revolance.ui.model.diff.PageDiffType;
 import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.page.api.PageBean;
+import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.security.InvalidParameterException;
@@ -19,6 +20,7 @@ import java.util.List;
  * Date: 09/06/13
  * Time: 10:53
  */
+@Service
 public class PageComparator implements IPageComparator
 {
     IContentComparator contentComparator = new ContentComparator();
@@ -49,8 +51,6 @@ public class PageComparator implements IPageComparator
         }
         else
         {
-            comparison.setDiffType( DiffType.BASE );
-
             if ( !urlEquals( reference, page ) )
             {
                 comparison.addPageDifferency( PageDiffType.URL );
@@ -74,6 +74,15 @@ public class PageComparator implements IPageComparator
             if ( !titleEquals( reference, page ) )
             {
                 comparison.addPageDifferency( PageDiffType.TITLE );
+            }
+
+            if(comparison.getPageDifferencies().isEmpty())
+            {
+                comparison.setDiffType( DiffType.BASE );
+            }
+            else
+            {
+                comparison.setDiffType( DiffType.CHANGED );
             }
 
             Collection<ElementComparison> comparisons = contentComparator.compare( reference.getContent(), page.getContent() );

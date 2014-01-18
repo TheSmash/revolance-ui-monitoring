@@ -42,7 +42,7 @@
 
         <fileSet>
             <directory>${basedir}/src/main/resources</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/samples</outputDirectory>
             <includes>
                 <include>samples/*</include>
             </includes>
@@ -52,11 +52,26 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>/web-apps</outputDirectory>
             <includes>
                 <include>${project.groupId}:ui-monitoring-server</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
                 <include>${project.groupId}:ui-monitoring-cmdline</include>
-                <include>org.mortbay.jetty:jetty-runner</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/samples</outputDirectory>
+            <includes>
+                <include>${project.groupId}:ui-materials-resources-website-ref</include>
+                <include>${project.groupId}:ui-materials-resources-website-new</include>
+                <include>${project.groupId}:ui-materials-resources-page-ref</include>
+                <include>${project.groupId}:ui-materials-resources-page-new-look</include>
+                <include>${project.groupId}:ui-materials-resources-page-new-layout</include>
+                <include>${project.groupId}:ui-materials-resources-page-new-content</include>
             </includes>
         </dependencySet>
     </dependencySets>

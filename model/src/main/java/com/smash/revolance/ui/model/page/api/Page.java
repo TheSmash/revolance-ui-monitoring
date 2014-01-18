@@ -435,6 +435,18 @@ public class Page implements IPage
         return bean.isExternal();
     }
 
+    @Override
+    public boolean isLogin()
+    {
+        return bean.isLogin();
+    }
+
+    @Override
+    public void addMetaInf(String k, String v)
+    {
+        bean.addMetaInf(k, v);
+    }
+
     public void setExternal(boolean b)
     {
         bean.setExternal( b );

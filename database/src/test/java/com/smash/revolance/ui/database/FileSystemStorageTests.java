@@ -17,7 +17,6 @@ import static org.junit.Assert.assertThat;
  */
 public class FileSystemStorageTests
 {
-    private static File target = new File( new File( "" ).getAbsoluteFile(), "target" );
     private static String dbRoot = "db";
 
     private static IStorage storage;

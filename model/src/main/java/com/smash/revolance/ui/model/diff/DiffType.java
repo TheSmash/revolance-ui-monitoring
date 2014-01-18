@@ -31,7 +31,8 @@ public enum DiffType
 {
     ADDED( "ADDED" ),
     DELETED( "DELETED" ),
-    BASE( "BASE" );
+    BASE( "BASE" ),
+    CHANGED( "CHANGED" );
 
     private final String value;
 

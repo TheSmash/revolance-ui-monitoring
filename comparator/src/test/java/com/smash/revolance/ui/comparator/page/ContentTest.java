@@ -41,12 +41,13 @@ public class ContentTest extends TestConstants
         PageComparator comparator = new PageComparator();
         PageComparison comparison = comparator.compare( newPage, refPage );
 
-        assertThat( comparison.getPageDiffType(), is( DiffType.BASE ) );
+        assertThat( comparison.getPageDiffType(), is( DiffType.CHANGED ) );
         assertThat( comparison.getPageDifferencies().contains( PageDiffType.CONTENT ), is( true ) );
 
         assertThat( comparison.getPageElementComparisons().size(), is( 44 ) );
 
-        assertThat( comparison.getBaseContent().size(), is( 26 ) );
+        assertThat( comparison.getBaseContent().size(), is( 6 ) );
+        assertThat( comparison.getChangedContent().size(), is( 20 ) );
         assertThat( comparison.getAddedContent().size(), is( 5 ) );
         assertThat( comparison.getDeletedContent().size(), is( 13 ) );
 

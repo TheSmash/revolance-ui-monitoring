@@ -13,6 +13,8 @@ public interface IStorage
 {
     void store(String key, String object) throws StorageException;
 
+    void store(String key, String object, boolean override) throws StorageException;
+
     String retrieve(String key) throws StorageException;
 
     String delete(String key) throws StorageException;

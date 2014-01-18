@@ -28,9 +28,22 @@
         </property>
     </bean>
 
-    <bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource">
-        <property name="basename" value="messages"/>
+    <bean id="applications" class="com.smash.revolance.ui.database.FileSystemStorage" >
+        <constructor-arg name="root" value="applications"/>
     </bean>
+    <bean id="reviews" class="com.smash.revolance.ui.database.FileSystemStorage">
+        <constructor-arg name="root" value="reviews"/>
+    </bean>
+    <bean id="logs" class="com.smash.revolance.ui.database.FileSystemStorage">
+        <constructor-arg name="root" value="logs"/>
+    </bean>
+
+    <bean id="explorer" class="com.smash.revolance.ui.explorer.explorer"></bean>
+    <bean id="applicationComparator" class="com.smash.revolance.ui.comparator.application.ApplicationComparator"></bean>
+    <bean id="pageComparator" class="com.smash.revolance.ui.comparator.page.PageComparator"></bean>
+    <bean id="elementComparator" class="com.smash.revolance.ui.comparator.element.ElementComparator"></bean>
+
+    <bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource"></bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 

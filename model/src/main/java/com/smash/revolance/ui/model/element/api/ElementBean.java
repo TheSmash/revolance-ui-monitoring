@@ -752,7 +752,7 @@ public class ElementBean implements Comparable<ElementBean>
 
     public String toString()
     {
-        return "[" + getImpl() + "] " + getContent();
+        return "[" + getImpl() + "] " + getContent() + " -> " + getHref();
     }
 
     public static boolean isIncluded(ElementBean element, Rectangle rectangle)

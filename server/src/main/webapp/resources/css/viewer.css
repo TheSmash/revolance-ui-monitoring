@@ -14,20 +14,9 @@ body
     background-color: #FAFAF0;
 }
 
-th
-{
-    text-align: center !important;
-}
-
 .navbar-fixed-top, .navbar-fixed-bottom
 {
     z-index: 1000 !important;
-}
-
-td.page-decorator
-{
-    margin-left:auto;
-    margin-right: auto;
 }
 
 .file-input-name
@@ -45,7 +34,6 @@ td.page-decorator
 
 #dialog
 {
-    border: 1px solid #333333;
     border-radius: 10px;
     background-color: #FAFAF0;
     -moz-box-shadow: 0px 2px 5px #555555 !important;
@@ -72,6 +60,7 @@ js no-touch rgba cssanimations cssgradients csstransitions
 .table th, .table td
 {
     vertical-align: middle !important;
+    padding: 8px 4px !important;
 }
 
 .logo
@@ -96,17 +85,151 @@ footer
     bottom: 0px;
 }
 
-.table th
+#powerTip
 {
-    text-align: center !important;
+	display: none;
+	cursor: default;
+    background-color: #333;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 6px;
+    color: #fff;
+    display: none;
+    padding: 10px;
+    position: absolute;
+    z-index: 2147483647;
 }
 
-input[type="checkbox"]
+.ref-element-details, new-element-details
 {
-    margin: 0px;
+    float: left;
+    margin-left: 15px;
+    width: 300px;
 }
 
-.page-toolbar
+.application
 {
-    float: right;
+    height: 22px;
+    width: 180px;
+    background-size: 22px;
+    background-repeat: no-repeat;
+    background-image: url("../img/browser.png");
+}
+
+.log-application
+{
+    height: 22px;
+    margin: 0 auto;
+    background-size: 22px;
+    background-repeat: no-repeat;
+}
+
+.compare-application, .del-application, .add-application, .add-review, .del-review
+{
+    height: 28px;
+    width: 28px;
+    background-size: 28px;
+    background-repeat: no-repeat;
+    float: left;
+
+    cursor:pointer;
+    margin: 0 5px;
+}
+
+.add-review
+{
+    background-image: url("../img/add-review.png");
+}
+
+.del-review
+{
+    background-image: url("../img/del-review.png");
+}
+
+.history-application
+{
+    height: 22px;
+    width: 22px;
+    float: left;
+    background-size: 22px;
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+.disabled
+{
+    cursor:default;
+}
+
+.compare-application
+{
+    background-image: url("../img/compare-browser.png");
+}
+
+.add-application
+{
+    background-image: url("../img/add-browser.png");
+}
+
+.del-application
+{
+    background-image: url("../img/del-browser.png");
+}
+
+.log-application
+{
+    background-image: url("../img/log-browser.png");
+}
+
+.history-application
+{
+    background-image: url("../img/history-browser.png");
+}
+
+.tag
+{
+    padding-left: 8px;
+    padding-top: 1px;
+}
+
+#application-list input[type=checkbox]
+{
+    margin-bottom: 5px;
+    padding: 0px !important;
+}
+
+.pages-count
+{
+    font-family: cursive;
+    font-style: italic;
+}
+
+.centered
+{
+    margin: 0 auto;
+    float: none;
+}
+
+.page-decorator[data-page-reviewed=false]
+{
+    -moz-box-shadow: 0px 0px 10px orange;
+    -webkit-box-shadow: 0px 0px 10px orange;
+    box-shadow: 0px 0px 10px orange;
+}
+
+.resume
+{
+    cursor: pointer !important;
+    width: auto;
+}
+
+.status
+{
+    padding-left: 6px;
+    margin-bottom: -7px;
+}
+
+.status-badge
+{
+    width: 45px;
+    text-align: center;
 }

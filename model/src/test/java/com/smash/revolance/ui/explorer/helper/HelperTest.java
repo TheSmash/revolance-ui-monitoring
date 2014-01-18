@@ -95,9 +95,9 @@ public class HelperTest
     @Test
     public void checkRemoveHash()
     {
-        String url = "url#hash";
-        assertThat( UrlHelper.getHash( url ), is( "hash" ) );
-        assertThat( UrlHelper.removeHash( url ), is( "url" ) );
+        assertThat( UrlHelper.getHash( "url#hash" ), is( "hash" ) );
+        assertThat( UrlHelper.removeHash( "url#hash" ), is( "url" ) );
+        assertThat( UrlHelper.removeHash( "url#" ), is( "url" ) );
     }
 
     @Test

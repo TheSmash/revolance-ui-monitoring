@@ -52,7 +52,8 @@ public class BotHelper
         if ( domain != null && !domain.isEmpty() && url != null && !url.isEmpty() )
         {
             return url.startsWith( domain );
-        } else
+        }
+        else
         {
             return false;
         }
@@ -83,8 +84,8 @@ public class BotHelper
         }
         catch (Exception e)
         {
-            sleep( 1 );
-            return BotHelper.takeScreenshot( bot );
+            System.err.println(e);
+            throw e;
         }
     }
 
@@ -185,18 +186,28 @@ public class BotHelper
 
     public static void handleApplicationAlertPopup(User user, Alert popup) throws Exception
     {
-        user.getApplication().handleAlert( popup );
+        if(!user.getBrowserType().contentEquals("PhantomJS"))
+        {
+            user.getApplication().handleAlert( popup );
+        }
     }
 
     public static boolean isAlertPresent(User user) throws Exception
     {
-        try
+        if(!user.getBrowserType().contentEquals("PhantomJS"))
         {
-            String alertMsg = user.getBrowser().switchTo().alert().getText();
-            user.getLogger().log(Level.INFO, "handling alert: " + alertMsg);
-            return true;
+            try
+            {
+                String alertMsg = user.getBrowser().switchTo().alert().getText();
+                user.getLogger().log(Level.INFO, "handling alert: " + alertMsg);
+                return true;
+            }
+            catch (NoAlertPresentException e)
+            {
+                return false;
+            }
         }
-        catch (NoAlertPresentException e)
+        else
         {
             return false;
         }

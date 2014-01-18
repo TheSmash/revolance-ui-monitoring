@@ -24,7 +24,12 @@ package com.smash.revolance.ui.cmdline;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +41,9 @@ import java.io.IOException;
  */
 public enum Commands
 {
-    STOP_SERVER( "stop", "httpPort" ),
-    STATUS( "status", "httpPort" );
+    STOP( "stop", "port" ),
+    STATUS( "status", "port" ),
+    START( "start", "port", "war" );
 
     private String[] opts = new String[]{};
     private final String   cmd;
@@ -63,7 +69,7 @@ public enum Commands
         String optsString = "";
         for ( int optIdx = 0; optIdx < getOptsCount(); optIdx++ )
         {
-            optsString += opts[optIdx];
+            optsString += "-D"+opts[optIdx]+" ";
         }
         return optsString.trim();
     }
@@ -83,11 +89,11 @@ public enum Commands
         return usage;
     }
 
-    public static Commands toCommand(String cmd, int optsCount)
+    public static Commands toCommand(String cmd)
     {
         for ( Commands command : Commands.values() )
         {
-            if ( command.getOptsCount() == optsCount && command.getCmd().contentEquals( cmd ) )
+            if ( command.getCmd().contentEquals( cmd ) )
             {
                 return command;
             }
@@ -95,25 +101,40 @@ public enum Commands
         return null;
     }
 
-    public int exec(String... opts) throws Exception
+    public static boolean allParametersDefined(Commands cmd)
+    {
+        for(String parameter : cmd.opts)
+        {
+            if(System.getProperty(parameter)==null)
+            {
+                System.out.println( "Undefined parameter: '" + parameter + "' for command: '" + cmd.getCmd() + "" );
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int exec() throws Exception
     {
         int execStatus = -1;
-
-        if ( getOptsCount() == opts.length )
+        File workingDir = new File( "." ).getAbsoluteFile();
+        switch ( this )
         {
-            File workingDir = new File( "." ).getAbsoluteFile();
-            switch ( this )
-            {
-                case STOP_SERVER:
 
-                    execStatus = execStopServerCmd( workingDir, opts );
-                    break;
+            case START:
 
-                case STATUS:
+                execStatus = execStartCmd( workingDir, opts );
+                break;
 
-                    execStatus = execStatusCmd( workingDir, opts );
-                    break;
-            }
+            case STOP:
+
+                execStatus = execStopCmd(workingDir, opts);
+                break;
+
+            case STATUS:
+
+                execStatus = execStatusCmd( workingDir, opts );
+                break;
         }
 
         return execStatus;
@@ -125,33 +146,64 @@ public enum Commands
         {
             System.out.println( "Retrieving server status" );
             DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet("http://localhost:"+opts[0]+"/ping");
-            HttpResponse response = client.execute(request);
-            if(response.getStatusLine().getStatusCode() == 200)
-            {
-                System.out.println("server is started");
-                return 0;
-            }
-            else
-            {
-                System.out.println( "server is started" );
-                return 0;
-            }
+            HttpGet request = new HttpGet("http://localhost:"+Integer.getInteger("port").intValue()+"/ui-monitoring-server/status");
+            client.execute(request); // throw an IOException when
+            System.out.println("server is started");
+            return 0;
         }
-        catch (IOException e)
+        catch (HttpHostConnectException e)
         {
             System.out.println( "server is stopped" );
-            return 0;
+            return 1;
+        }
+        catch (Exception e)
+        {
+            return 2;
         }
     }
 
-    private int execStopServerCmd(File workingDir, String[] opts)
+    private int execStartCmd(final File workingDir, final String[] opts)
+    {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run()
+            {
+                Server server = new Server();
+
+                Connector connector = new SelectChannelConnector();
+                connector.setPort(Integer.getInteger("port").intValue());
+                server.setConnectors(new Connector[] { connector });
+
+                String war = workingDir+"/"+System.getProperty("war");
+
+                WebAppContext webapp = new WebAppContext(war, "/ui-monitoring-server");
+                server.setHandler(webapp);
+
+                try
+                {
+                    System.out.println( "Starting server" );
+                    server.start();
+                    System.out.println( "Starting server [Done]" );
+                    server.join();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).run();
+
+        return 0;
+    }
+
+    private int execStopCmd(File workingDir, String[] opts)
     {
         try
         {
             System.out.println( "Stopping server" );
             DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet("http://localhost:"+opts[0]+"/shutdown");
+            HttpGet request = new HttpGet("http://localhost:"+Integer.getInteger("port").intValue()+"/ui-monitoring-server/shutdown");
             HttpResponse response = client.execute(request);
             if(response.getStatusLine().getStatusCode() != 200)
             {
@@ -161,12 +213,12 @@ public enum Commands
             else
             {
                 System.err.println( "Stopping server [Failed]" );
-                return -1;
+                return 1;
             }
         }
         catch (IOException e)
         {
-            return 0;
+            return 2;
         }
     }
 

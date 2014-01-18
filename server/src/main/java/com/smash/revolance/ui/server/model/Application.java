@@ -24,8 +24,13 @@ public class Application
 
     SiteMap sitemap;
 
+    int pagesCount = 0;
+
     MultipartFile file;
+
     private UserBean user;
+    private int revision;
+    private int progress;
 
     public Application()
     {
@@ -75,5 +80,35 @@ public class Application
     public UserBean getUser()
     {
         return user;
+    }
+
+    public void setPagesCount(int pagesCount)
+    {
+        this.pagesCount = pagesCount;
+    }
+
+    public int getPagesCount()
+    {
+        return this.pagesCount;
+    }
+
+    public void setRevision(int revision)
+    {
+        this.revision = revision;
+    }
+
+    public int getRevision()
+    {
+        return revision;
+    }
+
+    public void setProgress(int progress)
+    {
+        this.progress = progress;
+    }
+
+    public int getProgress()
+    {
+        return progress;
     }
 }

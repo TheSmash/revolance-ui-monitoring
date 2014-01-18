@@ -12,7 +12,25 @@
 
     <packaging>war</packaging>
 
+    <properties>
+        <materials>file://${project.build.directory}/materials</materials>
+    </properties>
+
+
     <dependencies>
+
+        <!-- Jetty utils -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>8.1.13.v20130916</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+            <version>8.1.13.v20130916</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Revolance dependencies -->
         <dependency>
@@ -23,6 +41,10 @@
                     <groupId>${project.groupId}</groupId>
                     <artifactId>ui-monitoring-materials-mock-webdriver-service</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>servlet-api-2.5</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -32,6 +54,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-comparator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-explorer</artifactId>
         </dependency>
 
         <!-- Spring 3 dependencies -->
@@ -48,6 +74,7 @@
             <artifactId>spring-webmvc</artifactId>
         </dependency>
 
+        <!-- Form object validation -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -59,7 +86,7 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
 
-        <!-- Apache Commons Upload -->
+        <!-- Apache Commons IO -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -75,7 +102,7 @@
             <artifactId>standard</artifactId>
         </dependency>
 
-        <!-- HttpServletRequest / HttpServletResponse -->
+        <!-- HttpServlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -88,10 +115,152 @@
             <artifactId>rendersnake</artifactId>
         </dependency>
 
+        <!-- Test dependencies -->
+
+        <!-- JBehave -->
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>3.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test materials -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-website-ref</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-resources-website-new</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>zip</includeTypes>
+                            <outputDirectory>target/materials</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <webApp>
+                        <contextPath>/ui-monitoring-server</contextPath>
+                    </webApp>
+                    <stopPort>9966</stopPort>
+                    <stopKey>PARENT</stopKey>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>storage.location</name>
+                            <value>${project.build.directory}/storage</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <daemon>true</daemon>
+                            <scanIntervalSeconds>10</scanIntervalSeconds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <failIfNoTests>true</failIfNoTests>
+                            <systemPropertyVariables>
+                                <URL>http://localhost:8080/ui-monitoring-server</URL>
+                                <WEBSITE_REF>${materials}/ui-monitoring-materials-resources-website-ref</WEBSITE_REF>
+                                <WEBSITE_NEW>${materials}/ui-monitoring-materials-resources-website-new</WEBSITE_NEW>
+                                <PAGE_REF>${materials}/ui-monitoring-materials-resources-page-ref</PAGE_REF>
+                                <PAGE_NEW_CONTENT>${materials}/ui-monitoring-materials-resources-page-new-content</PAGE_NEW_CONTENT>
+                                <PAGE_NEW_LAYOUT>${materials}/ui-monitoring-materials-resources-page-new-layout</PAGE_NEW_LAYOUT>
+                                <PAGE_NEW_LOOK>${materials}/ui-monitoring-materials-resources-page-new-look</PAGE_NEW_LOOK>
+                                <!--<BROWSER>Firefox</BROWSER>-->
+                                <BROWSER>PhantomJS</BROWSER>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

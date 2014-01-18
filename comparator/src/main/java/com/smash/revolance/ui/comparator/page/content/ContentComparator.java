@@ -38,11 +38,17 @@ public class ContentComparator implements IContentComparator
                 reference.remove( match.getReference() );
                 addedElements.remove( match.getMatch() );
 
-                comparison = BaseComparison( match );
-
                 Collection<ElementDifferency> differencies = elementComparator.compare( element, match.getReference() );
-                comparison.setElementDifferencies( differencies );
 
+                if(differencies.isEmpty())
+                {
+                    comparison = BaseComparison( match );
+                }
+                else
+                {
+                    comparison = ChangedComparison(match);
+                    comparison.setElementDifferencies( differencies );
+                }
             }
             catch (NoMatchFound noMatchFound)
             {
@@ -58,8 +64,6 @@ public class ContentComparator implements IContentComparator
                 addedElements.remove( element );
                 comparisons.add( comparison );
             }
-
-
         }
 
         for ( ElementBean element : addedElements )
@@ -81,6 +85,14 @@ public class ContentComparator implements IContentComparator
         ElementComparison comparison;
         comparison = new ElementComparison( match );
         comparison.setDiffType( DiffType.BASE );
+        return comparison;
+    }
+
+    private ElementComparison ChangedComparison(ElementMatch match)
+    {
+        ElementComparison comparison;
+        comparison = new ElementComparison( match );
+        comparison.setDiffType( DiffType.CHANGED );
         return comparison;
     }
 

@@ -2,11 +2,11 @@ package com.smash.revolance.ui.server.renderable.merge;
 
 import com.smash.revolance.ui.comparator.element.ElementComparison;
 import com.smash.revolance.ui.comparator.element.ElementDifferency;
+import com.smash.revolance.ui.model.diff.DiffType;
 import com.smash.revolance.ui.model.element.api.ElementBean;
-import com.smash.revolance.ui.server.renderable.ContextualRenderable;
 import org.rendersnake.HtmlCanvas;
+import org.rendersnake.Renderable;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.rendersnake.HtmlAttributesFactory.class_;
@@ -16,7 +16,7 @@ import static org.rendersnake.HtmlAttributesFactory.class_;
  * Date: 20/09/13
  * Time: 23:51
  */
-public class NewElementRenderable extends ContextualRenderable
+public class NewElementRenderable implements Renderable
 {
     private ElementComparison comparison;
     private ElementBean element = null;
@@ -24,14 +24,26 @@ public class NewElementRenderable extends ContextualRenderable
     public NewElementRenderable(String pageId, ElementComparison elementComparison)
     {
         this.comparison = elementComparison;
-        if ( elementComparison.getMatch() != null && elementComparison.getMatch().getPage().getId().contentEquals( pageId ) )
+        if ( elementComparison.getMatch() != null )
+                // && elementComparison.getMatch().getPage().getId().contentEquals( pageId ) )
         {
-            this.element = elementComparison.getMatch();
+            if( elementComparison.getDiffType() == DiffType.ADDED )
+            {
+                this.element = elementComparison.getMatch();
+            }
+            else if( elementComparison.getDiffType() == DiffType.CHANGED )
+            {
+                this.element = elementComparison.getReference();
+            }
+            else if( elementComparison.getDiffType() == DiffType.BASE )
+            {
+                this.element = elementComparison.getReference();
+            }
         }
     }
 
     @Override
-    public void renderWithContext(HtmlCanvas html, HttpSession context) throws IOException
+    public void renderOn(HtmlCanvas html) throws IOException
     {
         if ( element != null )
         {
@@ -42,8 +54,12 @@ public class NewElementRenderable extends ContextualRenderable
                               .data( "x", element.getX() )
                               .data( "y", element.getY() )
                               .data( "caption", element.getCaption() )
+                              .data( "impl", element.getImpl() )
+                              .data( "href", element.getHref() )
+                              .data( "bg", element.getBg() )
                               .data( "diff-type", comparison.getDiffType().toString() )
-                              .data( "match-element-id", comparison.getMatch() != null ? comparison.getMatch().getInternalId() : element.getInternalId() ) )
+                              .data( "ref-element-id", comparison.getReference() != null ? comparison.getReference().getInternalId() : "" )
+                              .data( "match-element-id", comparison.getMatch() != null ? comparison.getMatch().getInternalId() : "" ) )
                     .div( class_( "comparisons" ) );
 
             if ( comparison.getElementDifferencies().contains( ElementDifferency.POS ) )
@@ -62,7 +78,8 @@ public class NewElementRenderable extends ContextualRenderable
             {
                 html.div( class_( "value-comparison" ) )._div();
             }
-            if ( element.getImpl().contentEquals( "Button" ) || element.getImpl().contentEquals( "Link" ) && comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) )
+            if ( element.getImpl().contentEquals( "Button" ) || element.getImpl().contentEquals( "Link" )
+                    && comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) )
             {
                 html.div( class_( "target-comparison" ).data( "changed", comparison.getElementDifferencies().contains( ElementDifferency.TARGET ) ? "true" : "false" ) )._div();
             }

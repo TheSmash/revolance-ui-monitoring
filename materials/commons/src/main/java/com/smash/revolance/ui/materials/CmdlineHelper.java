@@ -175,7 +175,7 @@ public class CmdlineHelper extends TestConstants
             process.exitValue();
             return true;
         }
-        catch (Exception e)
+        catch (IllegalThreadStateException e)
         {
             return false;
         }
@@ -256,4 +256,8 @@ public class CmdlineHelper extends TestConstants
         return out().contains( line );
     }
 
+    public void await(int timeout)
+    {
+        sleep( timeout );
+    }
 }

@@ -2,6 +2,7 @@ package com.smash.revolance.ui.comparator.element;
 
 
 import com.smash.revolance.ui.model.element.api.ElementBean;
+import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
  * Date: 09/06/13
  * Time: 13:31
  */
+@Service
 public class ElementComparator implements IElementComparator
 {
     @Override

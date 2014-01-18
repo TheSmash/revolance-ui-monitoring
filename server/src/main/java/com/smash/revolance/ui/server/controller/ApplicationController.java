@@ -1,79 +1,236 @@
 package com.smash.revolance.ui.server.controller;
 
-import com.smash.revolance.ui.comparator.application.ApplicationComparator;
-import com.smash.revolance.ui.comparator.application.ApplicationComparison;
-import com.smash.revolance.ui.comparator.application.IApplicationComparator;
-import com.smash.revolance.ui.comparator.page.IPageComparator;
-import com.smash.revolance.ui.comparator.page.PageComparator;
-import com.smash.revolance.ui.comparator.page.PageComparison;
-import com.smash.revolance.ui.database.FileSystemStorage;
 import com.smash.revolance.ui.database.IStorage;
 import com.smash.revolance.ui.database.StorageException;
+import com.smash.revolance.ui.explorer.ExplorationConfiguration;
+import com.smash.revolance.ui.explorer.IExplorer;
+import com.smash.revolance.ui.materials.JsonHelper;
+import com.smash.revolance.ui.model.element.ElementNotFound;
 import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import com.smash.revolance.ui.server.model.Application;
-import com.smash.revolance.ui.server.renderable.MergerRenderable;
-import com.smash.revolance.ui.server.renderable.PageComparisonRenderable;
-import com.smash.revolance.ui.server.renderable.PageRenderable;
+import com.smash.revolance.ui.server.model.Exploration;
+import com.smash.revolance.ui.server.renderable.ApplicationDetailsRenderable;
 import org.rendersnake.HtmlCanvas;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.rendersnake.HtmlAttributesFactory.*;
-
-@Service
 @Controller
 /**
  * Created by wsmash on 27/10/13.
  */
 public class ApplicationController
 {
-    IStorage repository = new FileSystemStorage("applications");
+    private IStorage logs;
 
-    IApplicationComparator sitemapComparator = new ApplicationComparator();
+    @Autowired
+    public void setLogs(IStorage logs)
+    {
+        this.logs = logs;
+    }
 
-    IPageComparator pageComparator = new PageComparator();
+    private IStorage applications;
+
+    @Autowired
+    public void setApplications(IStorage applications)
+    {
+       this.applications = applications;
+    }
+
+    IExplorer explorer;
+
+    @Autowired
+    public void setExplorer(IExplorer explorer)
+    {
+        this.explorer = explorer;
+    }
 
     @RequestMapping(value = "/applications", method = RequestMethod.POST)
-    public ModelAndView addContent(@Valid Application application, BindingResult result) throws IOException, StorageException
+    public ModelAndView declareApplication(@Valid Exploration exploration, BindingResult result) throws IOException, StorageException
     {
         if ( result.hasErrors() )
         {
-            return new ModelAndView( "ContentForm" );
+            return new ModelAndView( "ApplicationForm" );
         }
         else
         {
-            repository.store( application.getTag(), application.getContent() );
-            return new ModelAndView( "ApplicationList", "contentList", getApplications() );
+            final ExplorationConfiguration cfg = new ExplorationConfiguration();
+
+            File log = new File(logs.getLocation(), exploration.getTag());
+            log.createNewFile();
+
+            cfg.setLogFile(log);
+
+            File report = new File(applications.getLocation(), exploration.getTag());
+            cfg.setReportFile(report);
+
+            cfg.setLogin(exploration.getLogin()); // This is mandatory in both cases
+            if(exploration.isSecured())
+            {
+                cfg.setLoginField(exploration.getLoginField());
+                cfg.setPassword(exploration.getPassword());
+                cfg.setPasswordField(exploration.getPasswordField());
+            }
+
+            cfg.setBrowserHeight(exploration.getHeight());
+            cfg.setBrowserWidth(exploration.getWidth());
+            cfg.setBrowserType(exploration.getBrowserType());
+            cfg.setDomain(exploration.getDomain());
+            cfg.setUrl(exploration.getUrl());
+            cfg.setFollowButtons(exploration.isFollowButtons());
+            cfg.setFollowLinks(exploration.isFollowLinks());
+            cfg.setId(exploration.getTag());
+            cfg.setTimeout(exploration.getTimeout());
+            cfg.setPageScreenshotEnabled(true);
+            cfg.setPageElementScreenshotEnabled(true);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    try {
+                        explorer.explore(cfg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+            return new ModelAndView("ApplicationLogs", "applicationId", exploration.getTag());
+        }
+    }
+
+    @RequestMapping(value = "/applications/declare", method = RequestMethod.GET)
+    public ModelAndView displayContentForm(@RequestParam(value="withPhantom", defaultValue = "false") final String mock)
+    {
+        return new ModelAndView( "ApplicationForm", "withPhantom", mock );
+    }
+
+    @RequestMapping(value = "/applications/{applicationId}", method = RequestMethod.DELETE)
+    public ModelAndView removeApplication(@PathVariable String applicationId) throws StorageException, IOException
+    {
+        applications.delete(applicationId);
+        logs.delete(applicationId);
+        return new ModelAndView( "ApplicationList", "applications", getApplications() );
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/applications/{applicationId}/pages/{pageId}/elements/${elementId}", method = RequestMethod.GET, headers="Accept=application/json")
+    public ElementBean retrievePageElement(@PathVariable String applicationId, @PathVariable String pageId, @PathVariable String elementId) throws StorageException, IOException, ElementNotFound
+    {
+        PageBean refPage = getSiteMap(applicationId).findPageByInternalId(pageId);
+        for(ElementBean element : refPage.getContent())
+        {
+            if(element.getId().contentEquals(elementId))
+            {
+                return element;
+            }
+        }
+        throw new ElementNotFound("Element with id: '"+elementId+"' could not be found.");
+    }
+
+    @RequestMapping(value = "/applications", method = RequestMethod.GET)
+    public ModelAndView displayApplications(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
+    {
+        model.addAttribute("applications", getApplications());
+        return new ModelAndView( "ApplicationList", model );
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView displayRoot(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
+    {
+        return displayApplications(model);
+    }
+
+    @RequestMapping(value = "/applications/{contentTag}", method = RequestMethod.GET)
+    public ModelAndView displayContentDetails(@RequestParam(value="reviewId", defaultValue = "") String reviewId, @PathVariable String contentTag, @ModelAttribute("model") ModelMap model) throws StorageException, IOException
+    {
+        List<PageBean> pages = new ArrayList<PageBean>();
+        for ( PageBean page : getSiteMap(contentTag).getPages() )
+        {
+            pages.add(page);
+            if ( page.hasVariants() )
+            {
+                pages.addAll(page.getVariants());
+            }
         }
 
+        model.addAttribute( "applicationId", contentTag );
+        model.addAttribute("pagesCount", pages.size());
+
+        HtmlCanvas canvas = new HtmlCanvas();
+        new ApplicationDetailsRenderable(reviewId, pages).renderOn(canvas);
+        model.addAttribute( "pages", canvas.toHtml() );
+
+
+        return new ModelAndView( "ApplicationDetail", model );
     }
+
+
+
+    @RequestMapping(value = "/applications/{applicationId}/logs", method = RequestMethod.GET)
+    public ModelAndView renderLogs(@PathVariable String applicationId)
+    {
+        return new ModelAndView( "ApplicationLogs", "applicationId", applicationId );
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/applications/{applicationId}/logs", method = RequestMethod.GET, headers="Accept=application/json")
+    public String updateExplorationLogs(@PathVariable String applicationId, @RequestParam(value = "fromLine", defaultValue = "0") int fromLine) throws IOException, StorageException
+    {
+        List<String> logs = new ArrayList();
+        if(!this.logs.isKeyUsed(applicationId))
+        {
+            logs = Arrays.asList(new String[]{"Undefined explorationId: " + applicationId});
+        }
+        else
+        {
+            List<String> content = new ArrayList<>();
+            content.addAll(Arrays.asList(this.logs.retrieve(applicationId).split("\\n")));
+            if(!content.isEmpty())
+            {
+                while(fromLine>0 && !content.isEmpty())
+                {
+                    content.remove(0);
+                    fromLine --;
+                }
+
+                logs.addAll(content);
+            }
+        }
+        return JsonHelper.getInstance().map(logs);
+    }
+
+//-- Private methods
 
     private List<Application> getApplications() throws StorageException, IOException
     {
         List<Application> applications = new ArrayList<Application>();
 
-        for ( String key : repository.retrieveAll().keySet() )
+        for ( String key : this.applications.retrieveAll().keySet() )
         {
             Application app = new Application();
             app.setTag( key );
 
-            SiteMap sitemap = SiteMap.fromJson( repository.retrieve( key ) );
+            SiteMap sitemap = getSiteMap(key);
+
             app.setSitemap( sitemap );
             app.setUser( sitemap.getUser() );
+            app.setPagesCount( sitemap.getPagesCount() );
+            //app.setProgress( sitemap.getPagesCount()==0?0:100*getVerifiedPagesCount(sitemap)/sitemap.getPagesCount() );
+            //app.setRevision( getRevision(sitemap) );
 
             applications.add( app );
         }
@@ -81,184 +238,10 @@ public class ApplicationController
         return applications;
     }
 
-    @RequestMapping(value = "/applications/declare", method = RequestMethod.GET)
-    public ModelAndView displayContentForm(Application content, BindingResult result)
+    private SiteMap getSiteMap(String applicationId) throws IOException, StorageException
     {
-        return new ModelAndView( "ApplicationForm" );
+        return SiteMap.fromJson(applications.retrieve(applicationId));
     }
 
-    @RequestMapping(value = "/applications/{applicationId}", method = RequestMethod.DELETE)
-    public ModelAndView displayContentForm(@PathVariable String applicationId) throws StorageException, IOException
-    {
-        repository.delete( applicationId );
-        return new ModelAndView( "ApplicationList", "contentList", getApplications() );
-    }
-
-    @RequestMapping(value = "/applications/merge/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.POST, headers = "Content-Type=application/json")
-    public void displayContentForm(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @PathVariable String pageRefId, @PathVariable String pageNewId, @RequestBody List<String> contentFilter) throws StorageException, IOException
-    {
-        PageBean refPage = SiteMap.fromJson( repository.retrieve( contentTagRef ) ).findPageByInternalId( pageRefId );
-        PageBean newPage = SiteMap.fromJson( repository.retrieve( contentTagNew ) ).findPageByInternalId( pageNewId );
-
-        updateContent( refPage, contentFilter, newPage.getContent() );
-    }
-
-    public void updateContent(PageBean page, List<String> contentFilter, List<ElementBean> content)
-    {
-        List<ElementBean> elements = new ArrayList<ElementBean>();
-
-        for ( ElementBean element : page.getContent() )
-        {
-            if ( contentFilter.contains( element.getInternalId() ) )
-            {
-                elements.add( element );
-            }
-        }
-
-        for ( ElementBean element : content )
-        {
-            if ( contentFilter.contains( element.getInternalId() ) )
-            {
-                elements.add( element );
-            }
-        }
-
-        page.setContent( elements );
-    }
-
-    @RequestMapping(value = "/applications", method = RequestMethod.GET)
-    public ModelAndView displayContentList(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
-    {
-        return new ModelAndView( "ApplicationList", "contentList", getApplications() );
-    }
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView displayRoot(@ModelAttribute("model") ModelMap model) throws IOException, StorageException
-    {
-        return displayContentList(model);
-    }
-
-    @RequestMapping(value = "/applications/{contentTag}", method = RequestMethod.GET)
-    public ModelAndView displayContentDetails(@PathVariable String contentTag, @ModelAttribute("model") ModelMap model, HttpServletRequest request) throws StorageException, IOException
-    {
-        model.addAttribute( "contentTag", contentTag );
-
-        List<PageBean> pages = new ArrayList<PageBean>();
-        for ( PageBean page : SiteMap.fromJson( repository.retrieve( contentTag ) ).getPages() )
-        {
-            pages.add( page );
-            if ( page.hasVariants() )
-            {
-                pages.addAll( page.getVariants() );
-            }
-        }
-        model.addAttribute( "pages", renderPagesWithRenderables( pages, request.getSession() ) );
-        return new ModelAndView( "ApplicationDetail", model );
-    }
-
-    private List<String> renderPagesWithRenderables(List<PageBean> pages, HttpSession session)
-    {
-        List<String> renderedPages = new ArrayList<String>();
-
-        for ( PageBean pageBean : pages )
-        {
-            try
-            {
-                HtmlCanvas canvas = new HtmlCanvas();
-                new PageRenderable( pageBean ).renderWithContext( canvas, session );
-                renderedPages.add( canvas.toHtml() );
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        return renderedPages;
-    }
-
-    @RequestMapping(value = "/applications/compare/{contentTagRef}/{contentTagNew}", method = RequestMethod.GET)
-    public ModelAndView displayContentDetails(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @ModelAttribute("model") ModelMap model, HttpServletRequest request) throws StorageException, IOException
-    {
-
-        model.addAttribute( "refAppTag", contentTagRef );
-        model.addAttribute( "newAppTag", contentTagNew );
-
-        SiteMap refSitemap = SiteMap.fromJson( repository.retrieve( contentTagRef ) );
-        SiteMap newSitemap = SiteMap.fromJson( repository.retrieve( contentTagNew ) );
-
-        ApplicationComparison comparison = sitemapComparator.compare( refSitemap, newSitemap );
-
-        model.addAttribute( "pageComparisons", renderComparisonsWithRenderables( contentTagRef, contentTagNew, comparison.getPageComparisons(), request ) );
-        model.addAttribute( "pageAdded", comparison.getAddedPages() );
-        model.addAttribute( "pageRemoved", comparison.getRemovedPages() );
-
-        return new ModelAndView( "ApplicationComparison", model );
-    }
-
-    private List<String> renderComparisonsWithRenderables(String contentTagRef, String contentTagNew, List<PageComparison> pageComparisons, HttpServletRequest request) throws IOException
-    {
-        List<String> values = new ArrayList<String>();
-
-        int idx = 0;
-        for ( PageComparison comparison : pageComparisons )
-        {
-            StringWriter html = new StringWriter();
-            HtmlCanvas canvas = new HtmlCanvas( html );
-
-            canvas.tr( data( "id", String.valueOf( idx ) ).data( "variant-idx", "0" ) )
-                    .td( colspan( "2" ) );
-            canvas.render( new PageComparisonRenderable( comparison ) );
-            if ( !comparison.getPageDifferencies().isEmpty() )
-            {
-                canvas.div( class_( "span10" ) )
-                        .div( class_( "pull-right" ) )
-                        .a( type( "button" )
-                                    .class_( "btn btn-info btn-small" )
-                                    .data( "row-id", String.valueOf( idx ) )
-                                    .data( "new-page-id", comparison.getMatch().getId() )
-                                    .data( "ref-page-id", comparison.getReference().getId() )
-                                    .href( request.getContextPath() + "/applications/compare/" + contentTagRef + "/" + contentTagNew + "/" + comparison.getReference().getId() + "/" + comparison.getMatch().getId() ) )
-                        .content( "Inspect" )
-                        ._div()
-                        ._div();
-            }
-
-            canvas._td()._tr();
-            idx++;
-
-            values.add( canvas.toHtml() );
-        }
-
-        return values;
-    }
-
-    @RequestMapping(value = "/applications/compare/{contentTagRef}/{contentTagNew}/{pageRefId}/{pageNewId}", method = RequestMethod.GET)
-    public ModelAndView renderMergeView(@PathVariable String contentTagRef, @PathVariable String contentTagNew, @PathVariable String pageRefId, @PathVariable String pageNewId, @ModelAttribute("model") ModelMap model) throws StorageException, IOException
-    {
-
-        model.addAttribute( "refAppTag", contentTagRef );
-        model.addAttribute( "newAppTag", contentTagNew );
-
-        PageBean refPage = SiteMap.fromJson( repository.retrieve( contentTagRef ) ).findPageByInternalId( pageRefId );
-        PageBean newPage = SiteMap.fromJson( repository.retrieve( contentTagNew ) ).findPageByInternalId( pageNewId );
-
-        HtmlCanvas canvas = new HtmlCanvas();
-        if ( refPage != null && newPage != null )
-        {
-            PageComparison comparison = pageComparator.compare( newPage, refPage );
-            MergerRenderable merge = new MergerRenderable( comparison );
-            merge.setRefApp(contentTagRef);
-            merge.setNewApp(contentTagNew);
-            merge.renderOn( canvas );
-        }
-        else
-        {
-            canvas.h1().content( "Oups an Internal error occured. Unable to do this comparison." )._h1();
-        }
-        model.addAttribute( "content", canvas.toHtml() );
-
-        return new ModelAndView( "PageMerger", model );
-    }
 
 }

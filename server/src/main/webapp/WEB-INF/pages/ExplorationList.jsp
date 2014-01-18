@@ -13,14 +13,16 @@
                 <thead>
                     <tr>
                         <th>&nbsp;&nbsp;</th>
+                        <th>Date</th>
                         <th>Tag</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="tag" items="${tags}">
+                    <c:forEach var="exploration" items="${explorations}">
                         <tr>
                             <td><input type="checkbox"></td>
-                            <td><div class="tag"><a href="${pageContext.request.contextPath}/explorations/${tag}">${tag}</a></div></td>
+                            <td><div class="date">${exploration.value}</a></div></td>
+                            <td><div class="tag"><a href="${pageContext.request.contextPath}/explorations/${exploration.key}">${exploration.key}</a></div></td>
                         </tr>
                     </c:forEach>
                 </tbody>

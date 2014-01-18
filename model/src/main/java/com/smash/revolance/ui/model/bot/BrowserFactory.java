@@ -26,15 +26,18 @@ import com.smash.revolance.ui.materials.mock.webdriver.driver.MockedWebDriver;
 import com.smash.revolance.ui.model.user.User;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jboss.arquillian.phantom.resolver.ResolvingPhantomJSDriverService;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
@@ -82,6 +85,23 @@ public class BrowserFactory
 
                 browser = new ChromeDriver( (ChromeDriverService) service, capabilities );
             }
+            else if( browserType == BrowserType.PhantomJS )
+            {
+                DesiredCapabilities cfg = DesiredCapabilities.phantomjs();
+                cfg.setJavascriptEnabled(true);
+
+                try
+                {
+                    service = ResolvingPhantomJSDriverService.createDefaultService(cfg);
+
+                    // service resolving phantomjs binary automatically
+                    browser = new PhantomJSDriver(service, cfg);
+                }
+                catch (IOException e)
+                {
+                    throw new InstanciationError("Unable to start ghost web driver!", e);
+                }
+            }
             else if ( browserType == BrowserType.MockedWebDriver )
             {
                 try
@@ -97,7 +117,7 @@ public class BrowserFactory
 
             if ( browser != null )
             {
-                browser.manage().timeouts().implicitlyWait( 1, TimeUnit.MINUTES );
+                browser.manage().timeouts().implicitlyWait( 30, TimeUnit.SECONDS );
                 logger.log(Level.INFO, "Launching a " + browser + " browser");
 
                 browser.manage().window().setSize( new Dimension( user.getBrowserWidth(), user.getBrowserHeight() ) );
@@ -134,7 +154,7 @@ public class BrowserFactory
 
     private static enum BrowserType
     {
-        Chrome, Firefox, IE, HtmlUnit, MockedWebDriver;
+        Chrome, Firefox, IE, HtmlUnit, MockedWebDriver, PhantomJS;
 
         public static BrowserType fromString(String browserType) throws InstanciationError
         {
