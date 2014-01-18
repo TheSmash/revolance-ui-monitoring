@@ -44,10 +44,12 @@ Quick start
 ## unit testing
 
   > mvn clean test
+  > mvn clean test -Dmaven.surefire.debug
 
 ## integration testing
 
   > mvn clean install
+  > mvnDebug clean install
   
 # From Libraries to the Distribution
 
