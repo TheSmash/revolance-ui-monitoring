@@ -1,4 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=ready)](https://waffle.io/TheSmash/revolance-ui-monitoring)
+[![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=In%20dev)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monitoring.png)](https://travis-ci.org/TheSmash/revolance-ui-monitoring)
 ============
 
@@ -26,26 +27,39 @@ Well I think this project can help us to fill that purpose!
 That's it for the speech guys and now let's have some more technical insight.
 
 
-Components:
+Requirements
 ===========
 
+  - Java 1.7
+  - Maven at least 3.04
+  - Firefox
 
-an Explorer (ui-explorer):
-  - Parse and explore all the pages of a web app and then produces a JSon report.
-  
-a Comparator (ui-comparator): 
-  - Compare two exploration report files. The output of this comparison says what are the differencies.
-  
-a Database (ui-database):
-  - Store and retrieve the reports.
-      
-a Server (ui-server) provide a set of Rest APIs to:
-  - store and retrieve reports
-  - compare pages
-  - accept (or not) a change on a page content
-  - start / cancel an exploration
+Quick start
+===========
 
-The server also provide an HTML5/CSS3 UI over the Rest APIs 
+## compilation 
+
+  > mvn clean install -DskipTests
+
+## unit testing
+
+  > mvn clean test
+
+## integration testing
+
+  > mvn clean install
+  
+# From Libraries to the Distribution
+
+  * base components : model + explorer + database
+  * war  : base components + explorer + server
+  * distrib : war + cmdline + distrib
+  
+# Testing vision
+
+  * each modules has his unit tests
+  * the integration tests are run on the war directly passing through the UI and with bdd scenarios
+  * the smoke tests checks that the scripting and the necessary libraries are well packaged
 
 Author
 ======
