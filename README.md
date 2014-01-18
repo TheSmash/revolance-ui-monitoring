@@ -3,39 +3,22 @@
 [![Stories in Test](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=in%20test)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 [![Stories in Done](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=done)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monitoring.png)](https://travis-ci.org/TheSmash/revolance-ui-monitoring)
+
 ============
 
+Welcome to the RevoLance initiative!
 
-Testers prove their value on automation, explorating testing and not on repeting
-clicks on buttons to look for broken links.
+[![RevoLance](http://thesmash.github.io/revolance-ui-monitoring/images/logo-cutted.png)](http://thesmash.github.io/revolance-ui-monitoring) 
 
-The process is to validate once and for all pages of the app:
-  - the content
-  - the layout
-  - the title
-  - the look
-  - the url
-  
-What is a change in the content?
-Well there are a lot of UI automation tools out there. Some rely on the UI while some others don't.
+# Whant to know more?
 
-This project is trying to mix the two approches. Thus validating an element of the content should not be too strongly 
-linked to his appearance neither to his position. But it should be at first about his textual value and his href.
-Functionally the most important thing is that the link is there in the content and properly working. 
-Your user is expecting to get redirected toward the appropriate href. And secondly it's also about
-having a nice page where the layout is ok. We do want our users to have a good UX through our ui, right?
-Well I think this project can help us to fill that purpose!
-
-That's it for the speech guys and now let's have some more technical insight.
+> http://thesmash.github.io/revolance-ui-monitoring/ui-monitoring.html
 
 
 
 # User quick start
 
-  - start => ./start.sh
-  - stop => ./stop.sh
-  - status => ./status.sh
-  
+> start => ./start.sh
   connect to http://localhost/ui-monitoring-server
 
 #Developer quick start
@@ -48,17 +31,17 @@ That's it for the speech guys and now let's have some more technical insight.
 
 ## compilation 
 
-  > mvn clean install -DskipTests
+> mvn clean install -DskipTests
 
 ## unit testing
 
-  > mvn clean test
-  > mvn clean test -Dmaven.surefire.debug
+> mvn clean test
+> mvn clean test -Dmaven.surefire.debug
 
 ## integration testing
 
-  > mvn clean install
-  > mvnDebug clean install
+> mvn clean install
+> mvnDebug clean install
   
 # From Libraries to the Distribution
 
@@ -77,6 +60,6 @@ That's it for the speech guys and now let's have some more technical insight.
 Author
 ======
 
-    smash william / bethesmash@gmail.com
+> smash william / bethesmash@gmail.com
    
    
