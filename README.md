@@ -1,5 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=ready)](https://waffle.io/TheSmash/revolance-ui-monitoring)
-[![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=In%20dev)](https://waffle.io/TheSmash/revolance-ui-monitoring)
+[![Stories in Dev](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=in%20dev)](https://waffle.io/TheSmash/revolance-ui-monitoring)
+[![Stories in Test](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=in%20test)](https://waffle.io/TheSmash/revolance-ui-monitoring)
+[![Stories in Done](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=done)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monitoring.png)](https://travis-ci.org/TheSmash/revolance-ui-monitoring)
 ============
 
