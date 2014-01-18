@@ -8,18 +8,16 @@ Revolance UI  [![Build Status](https://travis-ci.org/TheSmash/revolance-ui-monit
 
 Welcome to the RevoLance initiative!
 
-[![RevoLance](http://thesmash.github.io/revolance-ui-monitoring/images/logo-cutted.png)](http://thesmash.github.io/revolance-ui-monitoring) 
+-> [![RevoLance](http://thesmash.github.io/revolance-ui-monitoring/images/logo-cutted.png)](http://thesmash.github.io/revolance-ui-monitoring) <-
 
-# Whant to know more?
+# Want to know more?
 
 > http://thesmash.github.io/revolance-ui-monitoring/ui-monitoring.html
 
 
-
 # User quick start
 
-> start => ./start.sh
-  connect to http://localhost/ui-monitoring-server
+> ./start.sh and then connect to http://localhost:8080/ui-monitoring-server
 
 #Developer quick start
 
@@ -31,17 +29,17 @@ Welcome to the RevoLance initiative!
 
 ## compilation 
 
-> mvn clean install -DskipTests
+`mvn clean install -DskipTests`
 
 ## unit testing
 
-> mvn clean test
-> mvn clean test -Dmaven.surefire.debug
+`mvn clean test`
+`mvn clean test -Dmaven.surefire.debug`
 
 ## integration testing
 
-> mvn clean install
-> mvnDebug clean install
+`mvn clean install`
+`mvnDebug clean install`
   
 # From Libraries to the Distribution
 
