@@ -38,7 +38,7 @@
         <constructor-arg name="root" value="logs"/>
     </bean>
 
-    <bean id="explorer" class="com.smash.revolance.ui.explorer.explorer"></bean>
+    <bean id="explorer" class="com.smash.revolance.ui.explorer.Explorer"></bean>
     <bean id="applicationComparator" class="com.smash.revolance.ui.comparator.application.ApplicationComparator"></bean>
     <bean id="pageComparator" class="com.smash.revolance.ui.comparator.page.PageComparator"></bean>
     <bean id="elementComparator" class="com.smash.revolance.ui.comparator.element.ElementComparator"></bean>
