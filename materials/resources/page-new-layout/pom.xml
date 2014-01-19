@@ -10,7 +10,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>page-new-layout</artifactId>
+    <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
 
     <build>
         <plugins>
