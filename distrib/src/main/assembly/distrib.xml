@@ -32,20 +32,12 @@
 
         <fileSet>
             <directory>${basedir}/src/main/resources</directory>
-            <outputDirectory>/bin</outputDirectory>
+            <outputDirectory>/bin/drivers</outputDirectory>
             <includes>
-                <include>driver/*</include>
+                <include>${project.build.directory}/drivers/*</include>
             </includes>
             <filtered>true</filtered>
             <fileMode>0777</fileMode>
-        </fileSet>
-
-        <fileSet>
-            <directory>${basedir}/src/main/resources</directory>
-            <outputDirectory>/samples</outputDirectory>
-            <includes>
-                <include>samples/*</include>
-            </includes>
         </fileSet>
 
     </fileSets>
@@ -66,12 +58,12 @@
         <dependencySet>
             <outputDirectory>/samples</outputDirectory>
             <includes>
-                <include>${project.groupId}:ui-materials-resources-website-ref</include>
-                <include>${project.groupId}:ui-materials-resources-website-new</include>
-                <include>${project.groupId}:ui-materials-resources-page-ref</include>
-                <include>${project.groupId}:ui-materials-resources-page-new-look</include>
-                <include>${project.groupId}:ui-materials-resources-page-new-layout</include>
-                <include>${project.groupId}:ui-materials-resources-page-new-content</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-website-ref</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-website-new</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-page-ref</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-page-new-look</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-page-new-layout</include>
+                <include>${project.groupId}:ui-monitoring-materials-resources-page-new-content</include>
             </includes>
         </dependencySet>
     </dependencySets>
