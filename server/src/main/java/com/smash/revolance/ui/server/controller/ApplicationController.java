@@ -217,7 +217,7 @@ public class ApplicationController
 
     private List<Application> getApplications() throws StorageException, IOException
     {
-        List<Application> applications = new ArrayList<Application>();
+        List<Application> applications = new ArrayList<>();
 
         for ( String key : this.applications.retrieveAll().keySet() )
         {
@@ -229,8 +229,6 @@ public class ApplicationController
             app.setSitemap( sitemap );
             app.setUser( sitemap.getUser() );
             app.setPagesCount( sitemap.getPagesCount() );
-            //app.setProgress( sitemap.getPagesCount()==0?0:100*getVerifiedPagesCount(sitemap)/sitemap.getPagesCount() );
-            //app.setRevision( getRevision(sitemap) );
 
             applications.add( app );
         }
