@@ -1,1 +1,3 @@
-ui.iml
+*.iml
+target
+.idea
