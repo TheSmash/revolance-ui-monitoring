@@ -1,2 +1,8 @@
 language: java
     - oraclejdk7
+    
+notifications:
+  email:
+    - bethesmash@gmail.com
+    - jdcoffre@gmail.com
+    - duthils@free.fr

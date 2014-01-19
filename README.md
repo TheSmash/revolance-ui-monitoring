@@ -9,6 +9,9 @@ Welcome to RevoLance UI Monitoring!
 [![Stories in Test](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=in%20test)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 [![Stories in Done](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=done)](https://waffle.io/TheSmash/revolance-ui-monitoring)
 
+# News
+
+Created a [Jira ticket](https://issues.sonatype.org/browse/OSSRH-8474) at [Sonatype](https://oss.sonatype.org/index.html) to be able to deploy artifacts! 
 
 
 # Want to know more?
