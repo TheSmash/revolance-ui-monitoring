@@ -35,28 +35,24 @@
             <artifactId>ui-monitoring-materials-resources-page-ref</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-materials-resources-page-new-content</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-materials-resources-page-new-layout</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-materials-resources-page-new-look</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -70,7 +66,6 @@
             <artifactId>ui-monitoring-materials-resources-website-new</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -112,6 +107,18 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
             </plugin>
 
         </plugins>
