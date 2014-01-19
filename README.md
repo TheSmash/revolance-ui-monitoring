@@ -49,7 +49,7 @@ Welcome to RevoLance UI Monitoring!
 
   * Send a mail at bethesmash [at] gmail [dot] com
   * Then have a look at the taskboard and choose something that is ready to be implemented: [![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=ready)](https://waffle.io/TheSmash/revolance-ui-monitoring)
-  * Then fork the project in your repository. When your implementation is finished take care to add or update the automation layer consistent with the implemented feature/bug. After that you just have to send pull request and we will review your code and integrate your modifications. Your name will also appear on the main page of this product as a contributor. Any contribution is a good contribution, so don't hesitate!
+  * First fork the project in your repository. When your implementation is finished take care to keep the automation layer consistent with the implemented feature/bug. After that you just have to send pull request and we will review your code and integrate your modifications. Your name will also appear on the main page of this product as a contributor. Any contribution is a good contribution, so don't hesitate!
   
 # Architecture
 
