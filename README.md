@@ -1,5 +1,4 @@
 
-
 Welcome to RevoLance UI Monitoring!
 ============
 
@@ -45,6 +44,11 @@ Welcome to RevoLance UI Monitoring!
 
 `mvn clean install`
 `mvnDebug clean install`
+
+# How to contribute
+
+  * Send a mail at bethesmash [at] gmail [dot] com
+  * Then have a look at the taskboard and choose something that is ready to be implemented: [![Stories in Ready](https://badge.waffle.io/TheSmash/revolance-ui-monitoring.png?label=ready)](https://waffle.io/TheSmash/revolance-ui-monitoring)
   
 # Architecture
 
@@ -64,6 +68,6 @@ Welcome to RevoLance UI Monitoring!
 Author
 ======
 
-> smash william / bethesmash@gmail.com
+> smash william / bethesmash [at] gmail [dot] com
    
    
