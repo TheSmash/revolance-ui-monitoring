@@ -50,7 +50,7 @@ Welcome to the RevoLance initiative!
 
   * each modules has his unit tests
   * the integration tests are run on the war directly passing through the UI and with bdd scenarios
-  * the smoke tests checks that the scripting and the necessary libraries are well packaged
+  * the smoke tests checks that the scripting and the necessary libraries are well packaged (to be run locally and not in travis ci)
 
 
 
