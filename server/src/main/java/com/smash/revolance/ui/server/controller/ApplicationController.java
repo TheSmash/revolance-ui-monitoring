@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Controller
 /**
  * Created by wsmash on 27/10/13.
  */
+@Controller
 public class ApplicationController
 {
     private IStorage logs;
