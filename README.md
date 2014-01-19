@@ -11,7 +11,7 @@ Welcome to RevoLance UI Monitoring!
 
 # News
 
-Created a [Jira ticket](https://issues.sonatype.org/browse/OSSRH-8474) at Sonatype to be able to deploy artifacts! 
+Created a [Jira ticket](https://issues.sonatype.org/browse/OSSRH-8474) at [Sonatype](https://oss.sonatype.org/index.html) to be able to deploy artifacts! 
 
 
 # Want to know more?
