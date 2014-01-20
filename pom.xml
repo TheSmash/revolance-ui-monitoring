@@ -54,6 +54,13 @@
 
     </properties>
 
+    <repositories>
+        <repository>
+            <id>rendersnake-repo</id>
+            <url>http://rendersnake.googlecode.com/svn/repo</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
 
         <dependencies>
