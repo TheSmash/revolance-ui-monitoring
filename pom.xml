@@ -56,6 +56,10 @@
 
     <repositories>
         <repository>
+            <id>jboss-repository</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>rendersnake-repo</id>
             <url>http://rendersnake.googlecode.com/svn/repo</url>
         </repository>
