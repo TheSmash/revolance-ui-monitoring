@@ -23,6 +23,7 @@ package com.smash.revolance.ui.model.application;
  */
 
 import com.smash.revolance.ui.model.page.IPage;
+import com.smash.revolance.ui.model.user.User;
 import org.openqa.selenium.Alert;
 
 /**
@@ -40,6 +41,18 @@ public class DefaultApplication extends Application
     }
 
     @Override
+    public void login(User user, IPage page) throws Exception
+    {
+        return;
+    }
+
+    @Override
+    public boolean isLoginPage(IPage page) throws Exception
+    {
+        return false;
+    }
+
+    @Override
     public boolean isPageBroken(IPage page)
     {
         return false;
@@ -54,7 +67,6 @@ public class DefaultApplication extends Application
     @Override
     public void awaitPageLoaded(IPage page) throws Exception
     {
-        // page.addMetaInf("k", "v");
         return;
     }
 }

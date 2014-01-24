@@ -69,7 +69,7 @@ public class ServerLifecycleITest extends TestConstants
         assertThat( listDistribFiles(), hasItems(   endsWith("/start.sh"),
                                                     endsWith("/stop.sh"),
                                                     endsWith("/status.sh"),
-                                                    endsWith("/config/browsers.xml"),
+                                                    endsWith("/config/settings.json"),
                                                     containsString("/bin/ui-monitoring-cmdline"),
                                                     containsString("/web-apps/ui-monitoring-server"),
                                                     containsString("/samples/")));

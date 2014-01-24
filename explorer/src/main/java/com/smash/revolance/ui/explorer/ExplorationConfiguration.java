@@ -23,6 +23,7 @@ package com.smash.revolance.ui.explorer;
  */
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -40,38 +41,29 @@ public class ExplorationConfiguration
     private ArrayList<String> excludedLinks   = new ArrayList<String>();
     private ArrayList<String> excludedButtons = new ArrayList<String>();
 
-    private String id          = "";
-    private String domain      = "";
-    private String url         = "";
+    private String id     = "";
+    private String domain = "";
+    private String url    = "";
+
     private String browserType = "";
+    private String driverPath  = "";
+    private String browserPath = "";
 
-    private String password      = "";
-    private String passwordField = "";
-
-    private String loginField = "";
-    private String login      = "";
+    private String login    = "";
+    private String password = "";
 
     private int     browserWidth;
     private int     browserHeight;
     private boolean exploreVariants;
-    private int timeout = 0;
 
-    private File reportFile;
-    private File logFile;
+    private int timeout = 0;
+    private File   reportFile;
+    private File   logFile;
+    private byte[] applicationModel;
 
     public ExplorationConfiguration()
     {
 
-    }
-
-    public String getPasswordField()
-    {
-        return passwordField;
-    }
-
-    public void setPasswordField(String passField)
-    {
-        this.passwordField = passField;
     }
 
     public String getPassword()
@@ -82,16 +74,6 @@ public class ExplorationConfiguration
     public void setPassword(String password)
     {
         this.password = password;
-    }
-
-    public String getLoginField()
-    {
-        return loginField;
-    }
-
-    public void setLoginField(String loginField)
-    {
-        this.loginField = loginField;
     }
 
     public String getLogin()
@@ -264,5 +246,30 @@ public class ExplorationConfiguration
     public File getReportFile()
     {
         return reportFile;
+    }
+
+    public void setDriverPath(String driverPath)
+    {
+        this.driverPath = driverPath;
+    }
+
+    public String getDriverPath()
+    {
+        return this.driverPath;
+    }
+
+    public void setBrowserPath(String browserPath)
+    {
+        this.browserPath = browserPath;
+    }
+
+    public String getBrowserPath()
+    {
+        return browserPath;
+    }
+
+    public void setApplicationModel(byte[] applicationModel)
+    {
+        this.applicationModel = applicationModel;
     }
 }

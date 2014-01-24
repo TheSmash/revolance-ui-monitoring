@@ -57,8 +57,6 @@ public interface IPage
 
     boolean isBroken();
 
-    boolean hasBrokenLinks() throws Exception;
-
     List<Element> getBrokenLinks() throws Exception;
 
     List<Element> getContent() throws Exception;

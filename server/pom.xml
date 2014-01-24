@@ -211,6 +211,10 @@
                             <name>storage.location</name>
                             <value>${project.build.directory}/storage</value>
                         </systemProperty>
+                        <systemProperty>
+                            <name>settings</name>
+                            <value>${project.build.testOutputDirectory}/settings.json</value>
+                        </systemProperty>
                     </systemProperties>
                 </configuration>
                 <executions>

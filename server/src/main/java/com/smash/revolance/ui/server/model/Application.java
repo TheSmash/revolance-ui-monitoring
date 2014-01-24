@@ -48,25 +48,13 @@ public class Application
 
     int pagesCount = 0;
 
-    MultipartFile file;
-
     private UserBean user;
-    private int revision;
+
     private int progress;
 
     public Application()
     {
         date = new SimpleDateFormat().format( new Date() );
-    }
-
-    public MultipartFile getFile()
-    {
-        return file;
-    }
-
-    public void setFile(MultipartFile file)
-    {
-        this.file = file;
     }
 
     public void setTag(String tag)
@@ -89,11 +77,6 @@ public class Application
         return date;
     }
 
-    public String getContent() throws IOException
-    {
-        return new String( getFile().getBytes() );
-    }
-
     public void setUser(UserBean user)
     {
         this.user = user;
@@ -112,16 +95,6 @@ public class Application
     public int getPagesCount()
     {
         return this.pagesCount;
-    }
-
-    public void setRevision(int revision)
-    {
-        this.revision = revision;
-    }
-
-    public int getRevision()
-    {
-        return revision;
     }
 
     public void setProgress(int progress)

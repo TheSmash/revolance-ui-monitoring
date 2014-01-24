@@ -445,9 +445,10 @@ public class UserExplorer extends Thread
 
     private void handleUserAccountLogic(Page page) throws Exception
     {
-        if ( getApplication() != null )
+        Application application = getApplication();
+        if ( application != null && application.isLoginPage(page) )
         {
-            logIn( page );
+            getApplication().login(user, page);
         }
     }
 
@@ -520,11 +521,6 @@ public class UserExplorer extends Thread
         variant.setUrl( variant.getUrl() + "#" + hash );
 
         return variant.getBean();
-    }
-
-    private boolean logIn(Page page) throws Exception
-    {
-        return getApplication().login(user, page);
     }
 
     private SiteMap getSiteMap()

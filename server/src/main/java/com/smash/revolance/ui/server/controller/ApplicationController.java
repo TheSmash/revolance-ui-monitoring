@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wsmash on 27/10/13.
@@ -81,11 +82,11 @@ public class ApplicationController
     }
 
     @RequestMapping(value = "/applications", method = RequestMethod.POST)
-    public ModelAndView declareApplication(@Valid Exploration exploration, BindingResult result) throws IOException, StorageException
+    public ModelAndView declareApplication(@Valid Exploration exploration, BindingResult result, @ModelAttribute("model") ModelMap model) throws IOException, StorageException
     {
         if ( result.hasErrors() )
         {
-            return new ModelAndView( "ApplicationForm" );
+            return displayApplicationForm(model);
         }
         else
         {
@@ -102,14 +103,32 @@ public class ApplicationController
             cfg.setLogin(exploration.getLogin()); // This is mandatory in both cases
             if(exploration.isSecured())
             {
-                cfg.setLoginField(exploration.getLoginField());
                 cfg.setPassword(exploration.getPassword());
-                cfg.setPasswordField(exploration.getPasswordField());
+                cfg.setApplicationModel(exploration.getApplicationModel().getBytes());
             }
 
             cfg.setBrowserHeight(exploration.getHeight());
             cfg.setBrowserWidth(exploration.getWidth());
-            cfg.setBrowserType(exploration.getBrowserType());
+
+            Map<String, Object> settings = (Map<String, Object>) JsonHelper.getInstance().map(Map.class, new File(System.getProperty("settings", "")));
+            List<Map<String, String>> browsers = (List<Map<String, String>>) settings.get("browsers");
+
+            boolean found = false;
+            for(Map<String, String> browser : browsers)
+            {
+                if(browser.get("name").contentEquals(exploration.getBrowserType()))
+                {
+                    cfg.setBrowserType(browser.get("name"));
+                    cfg.setDriverPath(browser.get("driverPath"));
+                    cfg.setBrowserPath(browser.get("browserPath"));
+                    found = true;
+                }
+                if(found)
+                {
+                    break;
+                }
+            }
+
             cfg.setDomain(exploration.getDomain());
             cfg.setUrl(exploration.getUrl());
             cfg.setFollowButtons(exploration.isFollowButtons());
@@ -136,9 +155,14 @@ public class ApplicationController
     }
 
     @RequestMapping(value = "/applications/declare", method = RequestMethod.GET)
-    public ModelAndView displayContentForm(@RequestParam(value="withPhantom", defaultValue = "false") final String mock)
+    public ModelAndView displayApplicationForm(@ModelAttribute("model") ModelMap model) throws IOException
     {
-        return new ModelAndView( "ApplicationForm", "withPhantom", mock );
+        Map<String, Object> settings = (Map<String, Object>) JsonHelper.getInstance().map(Map.class, new File(System.getProperty("settings", "")));
+        model.addAttribute("browsers", settings.get("browsers"));
+
+        model.addAttribute("resolutions", settings.get("resolutions"));
+
+        return new ModelAndView( "ApplicationForm", model );
     }
 
     @RequestMapping(value = "/applications/{applicationId}", method = RequestMethod.DELETE)

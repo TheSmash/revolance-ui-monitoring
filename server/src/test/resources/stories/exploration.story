@@ -10,7 +10,7 @@ Meta:
 
 Scenario: Explore sitemap-ref
 
-Given goto <URL>/applications/declare?withPhantom=true
+Given goto <URL>/applications/declare
 Given do type sitemap-ref in tag
 Given do type <PAGE_REF> in domain
 Given do type index.html in page
@@ -23,7 +23,7 @@ Then applications-count==1
 
 Scenario: Explore sitemap-new-content
 
-Given goto <URL>/applications/declare?withPhantom=true
+Given goto <URL>/applications/declare
 Given do type sitemap-new-content in tag
 Given do type <PAGE_NEW_CONTENT> in domain
 Given do type index.html in page
@@ -43,5 +43,3 @@ Given do select sitemap-new-content as referenceApplicationId
 Given do type TheSmash@Revolance in reviewer
 When do click on create-review
 Then reviews-count==1
-
-

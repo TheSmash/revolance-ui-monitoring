@@ -24,6 +24,7 @@ package com.smash.revolance.ui.server.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by wsmash on 27/10/13.
@@ -34,19 +35,16 @@ public class Exploration
     private String tag;
 
     @NotEmpty
-    private String page;
-
-    @NotEmpty
     @URL
     private String domain;
 
-    private String login = "";
+    private String page = "";
 
-    private String loginField = "";
+    private String login = "";
 
     private String password = "";
 
-    private String passwordField = "";
+    private MultipartFile applicationModel;
 
     private int timeout = 1800;
 
@@ -159,14 +157,14 @@ public class Exploration
         this.followButtons = followButtons;
     }
 
-    public String getPasswordField()
+    public MultipartFile getApplicationModel()
     {
-        return passwordField;
+        return applicationModel;
     }
 
-    public void setPasswordField(String passField)
+    public void setApplicationModel(MultipartFile file)
     {
-        this.passwordField = passField;
+        this.applicationModel = file;
     }
 
     public String getPassword()
@@ -177,16 +175,6 @@ public class Exploration
     public void setPassword(String password)
     {
         this.password = password;
-    }
-
-    public String getLoginField()
-    {
-        return loginField;
-    }
-
-    public void setLoginField(String loginField)
-    {
-        this.loginField = loginField;
     }
 
     public String getLogin()

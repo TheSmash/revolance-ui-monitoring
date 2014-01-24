@@ -1,0 +1,11 @@
+{
+    "browsers": [
+        {
+            "name":"Firefox",
+            "driverPath":"",
+            "browserPath":""
+        }
+    ],
+
+    "resolutions": ["320x480", "800x600", "1280x800", "1600x1200", "1920x1080"]
+}

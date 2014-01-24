@@ -56,7 +56,7 @@ public class BaseTests extends TestConstants
     {
         user.setBrowserType( "Chrome" );
         user.setDriverPath( getChromeDriverPath() );
-        user.setBrowserBinary( "/usr/bin/google-chrome" );
+        user.setBrowserPath("/usr/bin/google-chrome");
     }
 
     public static void setupBrowserForTest(User user)

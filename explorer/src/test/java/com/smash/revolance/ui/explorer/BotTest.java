@@ -123,7 +123,7 @@ public class BotTest
     {
         user.setBrowserType( "Chrome" );
         user.setDriverPath( getChromeDriverPath() );
-        user.setBrowserBinary( "/usr/bin/google-chrome" );
+        user.setBrowserPath("/usr/bin/google-chrome");
     }
 
     public static String getChromeDriverPath()

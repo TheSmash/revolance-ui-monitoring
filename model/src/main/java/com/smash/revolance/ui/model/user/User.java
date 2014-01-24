@@ -26,8 +26,11 @@ import com.smash.revolance.ui.model.application.Application;
 import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.bot.Bot;
 import com.smash.revolance.ui.model.bot.BrowserFactory;
+import com.smash.revolance.ui.model.element.api.Element;
+import com.smash.revolance.ui.model.element.api.ElementBean;
 import com.smash.revolance.ui.model.helper.UserHelper;
 import com.smash.revolance.ui.model.page.api.Page;
+import com.smash.revolance.ui.model.page.api.PageBean;
 import com.smash.revolance.ui.model.sitemap.SiteMap;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -35,6 +38,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,17 +60,14 @@ public class User
 
     private DriverService driverService;
 
-
     private UserBean bean = new UserBean(this);
     private Page currentPage;
 
     private Bot    bot;
     private Logger log;
 
-    private String driverPath    = "";
-    private String browserBinary = "";
-    private String loginField;
-    private String passwdField;
+    private String driverPath  = "";
+    private String browserPath = "";
 
 
     public User()
@@ -100,24 +101,6 @@ public class User
         bean.setPageElementScreenshotEnabled(b);
     }
 
-    public void typeLogin() throws Exception
-    {
-        WebElement element = bot.getBrowser().findElement(By.id(loginField));
-        element.sendKeys(getId());
-    }
-
-    public void typePasswdAndSubmit() throws Exception
-    {
-        WebElement element = bot.getBrowser().findElement(By.id(passwdField));
-        element.sendKeys(getPasswd());
-    }
-
-    public void login() throws Exception
-    {
-        typeLogin();
-        typePasswdAndSubmit();
-    }
-
     public Application getApplication()
     {
         if(app == null)
@@ -130,7 +113,6 @@ public class User
     public void setApplication(Application app)
     {
         this.app = app;
-        setDomain(app.getDomain());
     }
 
     public String getLogin()
@@ -322,14 +304,14 @@ public class User
         this.bean.setBrowserWidth( width );
     }
 
-    public String getBrowserBinary()
+    public String getBrowserPath()
     {
-        return browserBinary;
+        return browserPath;
     }
 
-    public void setBrowserBinary(String binary)
+    public void setBrowserPath(String binary)
     {
-        this.browserBinary = binary;
+        this.browserPath = binary;
     }
 
     public UserBean getBean()
@@ -412,37 +394,6 @@ public class User
         return driverPath;
     }
 
-    public void setPageElementScreenshotEnabled(boolean b)
-    {
-        this.bean.setPageElementScreenshotEnabled( b );
-    }
-
-    public void setPageScreenshotEnabled(boolean b)
-    {
-        this.bean.setPageScreenshotEnabled( b );
-    }
-
-    public String getApplicationId()
-    {
-        return this.app.getId();
-    }
-
-    public void addExcludedButtons(String button)
-    {
-        if ( button != null && !button.isEmpty() )
-        {
-            getExcludedButtons().add( button );
-        }
-    }
-
-    public void addExcludedLink(String link)
-    {
-        if ( link != null && !link.isEmpty() )
-        {
-            getExcludedLinks().add( link );
-        }
-    }
-
     public User goTo(Page page)
     {
         UserHelper.browseTo( page );
@@ -471,31 +422,6 @@ public class User
         this.currentPage = currentPage;
     }
 
-    /*
-    public boolean canSee(String url, String impl, String txt) throws Exception
-    {
-        return !Element.filterElementsByText( filterContentByImpl( url, impl ), txt ).isEmpty();
-    }
-
-    public boolean cannotSee(String url, String impl, String txt) throws Exception
-    {
-        return !canSee( url, impl, txt );
-    }
-
-
-    public List<ElementBean> filterContentByImpl(String url, String... impl) throws Exception
-    {
-        PageBean page = getSiteMap().findPage( url );
-        if ( page != null )
-        {
-            return Element.filterElementsByImpls( page.getContent(), impl );
-        } else
-        {
-            return new ArrayList<ElementBean>();
-        }
-    }
-    */
-
     public Bot getBot() throws BrowserFactory.InstanciationError
     {
         return bot;
@@ -510,23 +436,4 @@ public class User
         return log;
     }
 
-    public String getLoginField()
-    {
-        return loginField;
-    }
-
-    public String getPasswdField()
-    {
-        return passwdField;
-    }
-
-    public void setLoginField(String loginField)
-    {
-        this.loginField = loginField;
-    }
-
-    public void setPasswdField(String passwdField)
-    {
-        this.passwdField = passwdField;
-    }
 }

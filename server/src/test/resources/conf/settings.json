@@ -1,0 +1,36 @@
+{
+    "browsers": [
+        {
+            "name":"IE 8",
+            "driverPath":"",
+            "browserPath":""
+        },
+        {
+            "name":"IE 9",
+            "driverPath":"",
+            "browserPath":""
+        },
+        {
+            "name":"IE 10",
+            "driverPath":"",
+            "browserPath":""
+        },
+        {
+            "name":"Chrome",
+            "driverPath":"",
+            "browserPath":""
+        },
+        {
+            "name":"Firefox",
+            "driverPath":"",
+            "browserPath":""
+        },
+        {
+            "name":"PhantomJS",
+            "driverPath":"",
+            "browserPath":""
+        }
+    ],
+
+    "resolutions": ["320x480", "800x600", "1280x800", "1600x1200", "1920x1080"]
+}

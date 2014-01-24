@@ -61,31 +61,24 @@
                         </div>
                         <div id="login-controls" hidden>
                             <div class="control-group">
-                                <label class="control-label" for="domain">Login</label>
+                                <label class="control-label" for="applicationModel">Upload your application model</label>
+                                <div class="controls">
+                                  <input type="file" path="applicationModel" name="applicationModel" id="applicationModel" />
+                                  <form:errors path="applicationModel" cssClass="error" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="login">Login</label>
                                 <div class="controls" id="login-controls">
                                   <input type="text" path="login" name="login" id="login" placeholder="Enter the user login" />
                                   <form:errors path="login" cssClass="error" />
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label" for="domain">Login field</label>
-                                <div class="controls" id="login-field-controls">
-                                  <input type="text" path="loginField" name="loginField" id="loginField" placeholder="Enter the login field identifier" />
-                                  <form:errors path="loginField" cssClass="error" />
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label" for="domain">Password</label>
+                                <label class="control-label" for="password">Password</label>
                                 <div class="controls" id="password-controls">
-                                  <input type="text" path="password" name="password" id="login" placeholder="Enter the passwd of the user" />
+                                  <input type="text" path="password" name="password" id="password" placeholder="Enter the passwd of the user" />
                                   <form:errors path="password" cssClass="error" />
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label" for="domain">Password field</label>
-                                <div class="controls" id="password-field-controls">
-                                  <input type="text" path="passwordField" name="passwordField" id="passwordField" placeholder="Enter the passwd field identifier" />
-                                  <form:errors path="passwordField" cssClass="error" />
                                 </div>
                             </div>
                         </div>
@@ -94,26 +87,19 @@
                         <div class="control-group">
                             <label class="control-label" for="resolution">Resolution</label>
                             <div class="controls">
-                                <label class="radio"><input name="resolution" type="radio" value="320x480" id="320x480" />320x480</label>
-                                <label class="radio"><input name="resolution" type="radio" value="800x600" id="800x600" />800x600</label>
-                                <label class="radio"><input name="resolution" type="radio" value="1280x800" id="1280x800" />1280x800</label>
-                                <label class="radio"><input name="resolution" type="radio" value="1600x1200" id="1600x1200" checked />1600x1200</label>
-                                <label class="radio"><input name="resolution" type="radio" value="1920x1080" id="1920x1080" />1920x1080</label>
-                                <form:errors path="id" cssClass="error" />
+                                <c:forEach var="resolution" items="${resolutions}">
+                                <label class="radio"><input name="resolution" type="radio" value="${resolution}" id="${resolution}" />${resolution}</label>
+                                </c:forEach>
+                                <form:errors path="resolution" cssClass="error" />
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label" for="browserType">Browser</label>
                             <div class="controls">
-                                <label class="radio"><input name="browserType" type="radio" value="Firefox" id="Firefox" checked />Firefox</label>
-                                <c:if test="${withPhantom == true}">
-                                <label class="radio"><input name="browserType" type="radio" value="PhantomJS" id="PhantomJS" />PhantomJS</label>
-                                </c:if>
-                                <!--
-                                <label class="radio"><input name="browserType" type="radio" value="Chrome" id="Chrome" disabled/>Chrome</label>
-                                <label class="radio"><input name="browserType" type="radio" value="IExplorer" id="IExplorer" disabled/>IExplorer</label>
-                                -->
-                                <form:errors path="id" cssClass="error" />
+                                <c:forEach var="browser" items="${browsers}">
+                                <label class="radio"><input name="${browser.name}" type="radio" value="${browser.name}" id="${browser.name}" />${browser.name}</label>
+                                </c:forEach>
+                                <form:errors path="browserType" cssClass="error" />
                             </div>
                         </div>
                         <div class="control-group">

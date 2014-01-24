@@ -68,8 +68,8 @@ public class Explorer implements IExplorer
         user.setPasswd(configuration.getPassword());
         user.setPasswdField(configuration.getPasswordField());
 
-        // user.setDriverPath(internalConfiguration.getDriverPath());
-        // user.setBrowserBinary(internalConfiguration.getBrowserPath());
+        user.setDriverPath(configuration.getDriverPath());
+        user.setBrowserPath(configuration.getBrowserPath());
 
         LOG.info("Launching exploration id: " + user.getId());
         LOG.info("Log file: " + configuration.getLogFile());

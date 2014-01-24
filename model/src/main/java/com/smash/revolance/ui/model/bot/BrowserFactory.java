@@ -69,7 +69,7 @@ public class BrowserFactory
             else if ( browserType == BrowserType.Chrome )
             {
                 File driver = new File( user.getDriverPath() );
-                File binary = new File( user.getBrowserBinary() );
+                File binary = new File( user.getBrowserPath() );
 
 
                 // ImmutableMap<String, String> env = new ImmutableMap.Builder<String, String>().build();
