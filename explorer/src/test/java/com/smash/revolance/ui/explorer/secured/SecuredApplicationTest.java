@@ -30,6 +30,7 @@ import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.user.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -44,6 +45,7 @@ import static org.hamcrest.core.Is.is;
  * Date: 26/01/13
  * Time: 17:50
  */
+@Ignore
 public class SecuredApplicationTest
 {
     private static String      target;
@@ -104,7 +106,7 @@ public class SecuredApplicationTest
         user.enablePageScreenshot(true);
         user.enablePageElementScreenshot(false);
 
-        user.setBrowserType( "Firefox" );
+        user.setBrowserType( "PhantomJS" );
         user.setDomain(domain);
         user.setHome(HOME);
 
