@@ -22,7 +22,6 @@ package com.smash.revolance.ui.explorer;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-import java.io.IOException;
 
 /**
  * User: wsmash
@@ -31,5 +30,5 @@ import java.io.IOException;
  */
 public interface IExplorer
 {
-    public void explore(ExplorationConfiguration configuration) throws IOException;
+    public void explore(ExplorationConfiguration configuration) throws Exception;
 }

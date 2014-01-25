@@ -23,7 +23,6 @@ package com.smash.revolance.ui.model.application;
  */
 
 import com.smash.revolance.ui.model.helper.JarClassLoader;
-
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -50,7 +49,7 @@ public class ApplicationFactory
     public Application buildApplication(ApplicationConfiguration setup) throws NoSuchMethodException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException, ClassNotFoundException
     {
         Application app = getApplication( setup.getId(), setup.getApplicationDir(), setup.getApplicationImplementation(), setup.getApplicationVersion() );
-        app.setup( setup );
+
         return app;
     }
 

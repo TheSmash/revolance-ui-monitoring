@@ -22,13 +22,20 @@ package com.smash.revolance.ui.explorer;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
+import com.smash.revolance.ui.model.application.Application;
+import com.smash.revolance.ui.model.helper.JarClassLoader;
 import com.smash.revolance.ui.model.user.User;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.util.UUID;
 
 /**
  * User: wsmash
@@ -42,7 +49,7 @@ public class Explorer implements IExplorer
 
 
     @Override
-    public void explore(ExplorationConfiguration configuration) throws IOException
+    public void explore(ExplorationConfiguration configuration) throws Exception
     {
         // LOG.addAppender(new FileAppender(new SimpleLayout(), internalConfiguration.getLogFile().getAbsolutePath()));
 
@@ -51,6 +58,13 @@ public class Explorer implements IExplorer
 
         user.setFollowLinks(configuration.isFollowLinksEnabled());
         user.setFollowButtons(configuration.isFollowButtonsEnabled());
+
+        if(configuration.isApplicationSecured())
+        {
+            File applicationJar = storeApplication(configuration.getApplication());
+            Application application = instanciateApplication(applicationJar, configuration.getApplicationClassName());
+            user.setApplication(application);
+        }
 
         user.enablePageScreenshot(true);
         user.enablePageElementScreenshot(true);
@@ -63,10 +77,7 @@ public class Explorer implements IExplorer
         user.setExcludedButtons(configuration.getExcludedButtons());
 
         user.setLogin(configuration.getLogin());
-        user.setLoginField(configuration.getLoginField());
-
         user.setPasswd(configuration.getPassword());
-        user.setPasswdField(configuration.getPasswordField());
 
         user.setDriverPath(configuration.getDriverPath());
         user.setBrowserPath(configuration.getBrowserPath());
@@ -78,6 +89,24 @@ public class Explorer implements IExplorer
 
         UserExplorer explorer = new UserExplorer( user, logger, configuration.getReportFile(), configuration.getTimeout() );
         explorer.explore();
+    }
+
+    private Application instanciateApplication(File applicationJar, String fullClassName) throws ClassNotFoundException, MalformedURLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException
+    {
+        ClassLoader loader = new JarClassLoader( applicationJar.toURI().toURL() );
+        if ( loader == null )
+        {
+            loader = Thread.currentThread().getContextClassLoader();
+        }
+        Class<?> applicationClass = loader.loadClass(fullClassName);
+        return (Application) applicationClass.getDeclaredConstructor().newInstance();
+    }
+
+    private File storeApplication(byte[] application) throws IOException
+    {
+        File file = File.createTempFile(UUID.randomUUID().toString(), "jar");
+        FileUtils.writeByteArrayToFile(file, application);
+        return file;
     }
 
 }

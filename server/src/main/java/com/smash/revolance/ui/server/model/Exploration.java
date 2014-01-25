@@ -58,6 +58,8 @@ public class Exploration
 
     private boolean secured = false;
 
+    private String applicationClassName;
+
     public Exploration()
     {
 
@@ -128,7 +130,8 @@ public class Exploration
         this.resolution = resolution;
     }
 
-    public String getBrowserType() {
+    public String getBrowserType()
+    {
         return browserType;
     }
 
@@ -197,4 +200,13 @@ public class Exploration
         this.secured = secured;
     }
 
+    public String getApplicationClassName()
+    {
+        return applicationClassName;
+    }
+
+    public void setApplicationClassName(String applicationClassName)
+    {
+        this.applicationClassName = applicationClassName;
+    }
 }

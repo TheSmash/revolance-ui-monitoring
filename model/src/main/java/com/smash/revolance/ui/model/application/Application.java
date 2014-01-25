@@ -26,9 +26,6 @@ import com.smash.revolance.ui.model.page.IPage;
 import com.smash.revolance.ui.model.user.User;
 import org.openqa.selenium.Alert;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * User: wsmash
  * Date: 26/01/13
@@ -47,6 +44,6 @@ public abstract class Application
 
     public abstract boolean isAuthorized(IPage page) throws Exception;
 
-    public abstract void awaitPageLoaded(IPage page) throws Exception;
+    public abstract void awaitLoaded(IPage page) throws Exception;
 
 }

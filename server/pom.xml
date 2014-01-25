@@ -213,7 +213,7 @@
                         </systemProperty>
                         <systemProperty>
                             <name>settings</name>
-                            <value>${project.build.testOutputDirectory}/settings.json</value>
+                            <value>${project.build.testOutputDirectory}/conf/settings.json</value>
                         </systemProperty>
                     </systemProperties>
                 </configuration>

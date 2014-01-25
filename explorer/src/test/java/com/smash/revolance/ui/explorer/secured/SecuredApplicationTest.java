@@ -23,14 +23,13 @@ package com.smash.revolance.ui.explorer.secured;
  */
 
 import com.smash.revolance.ui.explorer.UserExplorer;
+import com.smash.revolance.ui.materials.SecuredApplication;
 import com.smash.revolance.ui.model.application.Application;
-import com.smash.revolance.ui.model.application.DefaultApplication;
 import com.smash.revolance.ui.model.element.ElementNotFound;
 import com.smash.revolance.ui.model.page.api.Page;
 import com.smash.revolance.ui.model.user.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -45,7 +44,6 @@ import static org.hamcrest.core.Is.is;
  * Date: 26/01/13
  * Time: 17:50
  */
-@Ignore
 public class SecuredApplicationTest
 {
     private static String      target;
@@ -74,7 +72,6 @@ public class SecuredApplicationTest
 
     }
 
-    private static Application app2;
     private static User        administrator;
     private static User        user_A;
     private static User        user_B;
@@ -82,42 +79,36 @@ public class SecuredApplicationTest
     @BeforeClass
     public static void setUp() throws Exception
     {
-        app = new DefaultApplication();
-
-        app.setUsersHome( login );
-        app.setDomain( domain );
-
-        app.setExcludedLink( "link-1" );
-        app.setExcludedLink( "link-2" );
-
-        app.setExcludedButton( "button-1" );
-        app.setExcludedButton( "button-2" );
-
-        assertThat( app.getId(), is( "website" ) );
-        assertThat( app.getReportFolder(), is( target + "/" + app.getId() ) );
-        assertThat( app.getUserCount(), is( 3 ) );
-
-        administrator = app.getUser( "super user" );
-        setupBrowserForTest( administrator );
+        administrator = createUser("administrator");
+        administrator.setApplication(new SecuredApplication());
         checkUser( administrator );
 
-        user_A = app.getUser( "user_A" );
-        setupBrowserForTest( user_A );
-        checkUser( user_A );
+        user_A = createUser("user_A");
+        user_A.setApplication(new SecuredApplication());
+        checkUser(user_A);
 
-        user_B = app.getUser( "user_B" );
-        setupBrowserForTest( user_B );
-        checkUser( user_B );
+        user_B = createUser("user_B");
+        user_B.setApplication(new SecuredApplication());
+        checkUser(user_B);
     }
 
-    private static void setupBrowserForFirefox(User user)
+    private static User createUser(String userName)
     {
+        User user = new User(userName);
+
+        user.setBrowserWidth(800);
+        user.setBrowserHeight(600);
+        user.setFollowButtons(true);
+        user.setFollowLinks(true);
+        user.setExploreVariantsEnabled(false);
+        user.enablePageScreenshot(true);
+        user.enablePageElementScreenshot(false);
+
         user.setBrowserType( "Firefox" );
-    }
+        user.setDomain(domain);
+        user.setHome(HOME);
 
-    public static void setupBrowserForTest(User user)
-    {
-        user.setBrowserType( "MockedWebDriver" );
+        return user;
     }
 
     private static void checkUser(User user)
@@ -135,20 +126,9 @@ public class SecuredApplicationTest
     @AfterClass
     public static void tearDown() throws Exception
     {
-        for ( User user : app.getUsers() )
-        {
-            try
-            {
-                if ( user.isBrowserActive() )
-                {
-                    user.getBrowser().quit();
-                }
-            }
-            catch (Exception e)
-            {
-                // Ignore gently
-            }
-        }
+        administrator.stopBot();
+        user_A.stopBot();
+        user_B.stopBot();
     }
 
     @Test
@@ -156,9 +136,9 @@ public class SecuredApplicationTest
     {
         File tmp = File.createTempFile("exploration", ".log");
 
-        new UserExplorer( administrator, tmp, 60 ).explore( );
+        new UserExplorer( administrator, tmp, 360 ).explore( );
 
-        Page adminPage = administrator.getSiteMap().findPageByUrl( HOME ).getInstance();
+        Page adminPage = administrator.getSiteMap().findPageByUrl(HOME).getInstance();
 
         assertThat( "Wrong number of buttons for administrator", adminPage.getButtons().size(), is( 2 ) );
         assertThat( "Wrong number of links for administrator", adminPage.getLinks().size(), is( 2 ) );
@@ -167,7 +147,7 @@ public class SecuredApplicationTest
         assertThat( "Missing link 'button-1' for administrator", adminPage.getButton( "button-1" ), notNullValue() );
         assertThat( "Missing link 'button-2' for administrator", adminPage.getButton( "button-2" ), notNullValue() );
 
-        new UserExplorer( user_A, tmp, 60 ).explore( );
+        new UserExplorer( user_A, tmp, 360 ).explore( );
 
         Page userAPage = user_A.getSiteMap().findPageByUrl( HOME ).getInstance();
 
@@ -176,7 +156,7 @@ public class SecuredApplicationTest
         assertThat( "Missing link 'link-1' for user_A", userAPage.getLink( "link-1" ), notNullValue() );
         assertThat( "Missing link 'link-2' for user_A", userAPage.getLink( "link-2" ), notNullValue() );
 
-        new UserExplorer( user_B, tmp, 60 ).explore();
+        new UserExplorer( user_B, tmp, 360 ).explore();
 
         Page userBPage = user_B.getSiteMap().findPageByUrl( HOME ).getInstance();
 

@@ -239,7 +239,7 @@ public class PageParser
         }
         else if ( page.isExternal() )
         {
-            logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getApplication().getDomain() + "'.");
+            logger.log(Level.WARN, "Page with url: '" + page.getUrl() + "' is out of the domain: '" + page.getUser().getDomain() + "'.");
         }
     }
 

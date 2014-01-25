@@ -32,6 +32,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-monitoring-materials-secured-application</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ui-monitoring-materials-mock-webdriver-commons</artifactId>
             <version>${project.version}</version>
             <type>zip</type>

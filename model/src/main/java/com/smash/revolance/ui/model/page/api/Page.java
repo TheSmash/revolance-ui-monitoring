@@ -137,7 +137,7 @@ public class Page implements IPage
         getUser().getLogger().log(Level.INFO, "Awaiting page: '" + getTitle() + "' to be loaded" );
         long mark = System.currentTimeMillis();
 
-        getApplication().awaitPageLoaded( this );
+        getApplication().awaitLoaded(this);
 
         long duration = ( System.currentTimeMillis() - mark ) / 1000;
         getUser().getLogger().log(Level.INFO, "Awaiting page: '" + getTitle() + "' to be loaded [Done] [Duration: " + duration + " sec]" );
@@ -209,12 +209,6 @@ public class Page implements IPage
     public boolean isBroken()
     {
         return bean.isBroken();
-    }
-
-    @Override
-    public boolean hasBrokenLinks() throws Exception
-    {
-        return !getBrokenLinks().isEmpty();
     }
 
     @Override

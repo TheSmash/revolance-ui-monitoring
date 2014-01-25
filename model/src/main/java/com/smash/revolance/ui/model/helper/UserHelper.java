@@ -86,7 +86,8 @@ public class UserHelper
             handleAlert( user );
             doBrowse( user, url );
             return true;
-        } else
+        }
+        else
         {
             return false;
         }

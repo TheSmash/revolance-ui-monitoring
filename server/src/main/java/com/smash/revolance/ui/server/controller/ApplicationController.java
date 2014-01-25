@@ -104,7 +104,9 @@ public class ApplicationController
             if(exploration.isSecured())
             {
                 cfg.setPassword(exploration.getPassword());
-                cfg.setApplicationModel(exploration.getApplicationModel().getBytes());
+                cfg.setApplication(exploration.getApplicationModel().getBytes());
+                cfg.setApplicationSecured(true);
+                cfg.setApplicationClassName(exploration.getApplicationClassName());
             }
 
             cfg.setBrowserHeight(exploration.getHeight());
@@ -144,7 +146,7 @@ public class ApplicationController
                 {
                     try {
                         explorer.explore(cfg);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

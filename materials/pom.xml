@@ -20,6 +20,7 @@
         <module>resources</module>
         <module>mock</module>
         <module>commons</module>
+        <module>secured-application</module>
     </modules>
 
 

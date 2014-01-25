@@ -59,14 +59,7 @@
                                 <form:errors path="isSecured" cssClass="error" />
                             </div>
                         </div>
-                        <div id="login-controls" hidden>
-                            <div class="control-group">
-                                <label class="control-label" for="applicationModel">Upload your application model</label>
-                                <div class="controls">
-                                  <input type="file" path="applicationModel" name="applicationModel" id="applicationModel" />
-                                  <form:errors path="applicationModel" cssClass="error" />
-                                </div>
-                            </div>
+                        <div id="login-controls">
                             <div class="control-group">
                                 <label class="control-label" for="login">Login</label>
                                 <div class="controls" id="login-controls">
@@ -79,6 +72,20 @@
                                 <div class="controls" id="password-controls">
                                   <input type="text" path="password" name="password" id="password" placeholder="Enter the passwd of the user" />
                                   <form:errors path="password" cssClass="error" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="applicationModel">Application model</label>
+                                <div class="controls">
+                                  <input type="file" path="applicationModel" name="applicationModel" id="applicationModel" />
+                                  <form:errors path="applicationModel" cssClass="error" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="applicationClassName">Application model <br />class name</label>
+                                <div class="controls">
+                                  <input type="text" path="applicationClassName" name="applicationClassName" id="applicationClassName" />
+                                  <form:errors path="applicationClassName" cssClass="error" />
                                 </div>
                             </div>
                         </div>
@@ -97,7 +104,7 @@
                             <label class="control-label" for="browserType">Browser</label>
                             <div class="controls">
                                 <c:forEach var="browser" items="${browsers}">
-                                <label class="radio"><input name="${browser.name}" type="radio" value="${browser.name}" id="${browser.name}" />${browser.name}</label>
+                                <label class="radio"><input name="browserType" type="radio" value="${browser.name}" id="${browser.name}" />${browser.name}</label>
                                 </c:forEach>
                                 <form:errors path="browserType" cssClass="error" />
                             </div>
@@ -151,7 +158,8 @@
     </div>
 </div>
 <script>
-    $("input[type=radio]").change(function(){
+    $("#login-controls").hide();
+    $("input[type=radio][name=isSecured]").change(function(){
         if($(this).attr('id')=="yes")
         {
             $("#login-controls").show();

@@ -65,7 +65,7 @@ public class DefaultApplication extends Application
     }
 
     @Override
-    public void awaitPageLoaded(IPage page) throws Exception
+    public void awaitLoaded(IPage page) throws Exception
     {
         return;
     }

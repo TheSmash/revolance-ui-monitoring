@@ -86,9 +86,7 @@ public class BotTest
     {
         app = new DefaultApplication();
 
-        assertThat( app.getUserCount(), is( 3 ) );
-
-        user = app.getUser( "super user" );
+        user = new User( "super user" );
 
         setupBrowserForTest( user );
 

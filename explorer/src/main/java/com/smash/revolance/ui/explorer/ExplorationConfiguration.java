@@ -23,7 +23,6 @@ package com.smash.revolance.ui.explorer;
  */
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -57,9 +56,11 @@ public class ExplorationConfiguration
     private boolean exploreVariants;
 
     private int timeout = 0;
-    private File   reportFile;
-    private File   logFile;
-    private byte[] applicationModel;
+    private File    reportFile;
+    private File    logFile;
+    private byte[]  application;
+    private boolean applicationSecured;
+    private String applicationClassName;
 
     public ExplorationConfiguration()
     {
@@ -268,8 +269,34 @@ public class ExplorationConfiguration
         return browserPath;
     }
 
-    public void setApplicationModel(byte[] applicationModel)
+    public void setApplication(byte[] application)
     {
-        this.applicationModel = applicationModel;
+        this.application = application;
+    }
+
+    public byte[] getApplication()
+    {
+        return application;
+    }
+
+    public void setApplicationSecured(boolean b)
+    {
+        this.applicationSecured = b;
+    }
+
+    public boolean isApplicationSecured()
+    {
+        return applicationSecured;
+    }
+
+    public String getApplicationClassName()
+    {
+        return applicationClassName;
+    }
+
+
+    public void setApplicationClassName(String applicationClassName)
+    {
+        this.applicationClassName = applicationClassName;
     }
 }
